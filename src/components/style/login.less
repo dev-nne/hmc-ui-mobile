@@ -1,0 +1,58 @@
+.login {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 60%;
+    padding-bottom: 30px;
+
+    &-title {
+      // border-top: 1px solid #aaa;
+      font-weight: bold;
+      font-size: 22px;
+      text-align: center;
+      width: 100%;
+      padding-top: 20px;
+    }
+
+    &-form-box {
+      width: 100%;
+      padding: 0 20px;
+
+      &-button {
+        width: 100%;
+        padding-top: 10px;
+      }
+    }
+
+    &-phone-number {
+      font-weight: bold;
+      padding-top: 20px;
+      padding-bottom: 20px;
+      text-align: center;
+      width: 100%;
+    }
+  }
+
+  &-bottom {
+    display: flex;
+    flex-direction: column;
+    align-content: space-between;
+    &-tab {
+      height: 40%;
+    }
+  }
+
+  //탭
+  &-tabbar {
+    position: relative !important;
+  }
+  &-tabbar-item {
+    background: #333;
+  }
+}

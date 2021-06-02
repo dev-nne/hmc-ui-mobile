@@ -6,41 +6,34 @@ Vue.use(Router);
 const routes = [
   {
     path: "*",
-    redirect: "/sample"
-  },
-  {
-    name: "user",
-    component: () => import("./view/user"),
-    meta: {
-      title: "로그인"
-    }
-  },
-  {
-    name: "cart",
-    component: () => import("./view/cart"),
-    meta: {
-      title: "카트"
-    }
-  },
-  {
-    name: "goods",
-    component: () => import("./view/goods"),
-    meta: {
-      title: "상품"
-    }
+    redirect: "sample"
   },
   {
     name: "sample",
-    component: () => import("./view/sample"),
+    component: () => import("./components/component/login"),
     meta: {
-      title: "Sample"
+      title: "login"
+    }
+  },
+  {
+    name: "provision",
+    component: () => import("./components/component/provision"),
+    meta: {
+      title: "provision"
     }
   },
   {
     name: "certification",
-    component: () => import("./view/certification"),
+    component: () => import("./components/component/certification"),
     meta: {
       title: "certification"
+    }
+  },
+  {
+    name: "userPage",
+    component: () => import("./components/component/userPage"),
+    meta: {
+      title: "userPage"
     }
   }
 ];
