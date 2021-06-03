@@ -8,23 +8,7 @@
       </div>
 
       <div class="prov-main-info">
-        <div class="prov-main-info-box">
-          <div class="prov-main-info-box-title">시승 예약 시간</div>
-          <div class="prov-main-info-box-time">
-            5.17.월 13:00 ~ 14:00(1시간)
-          </div>
-        </div>
-
-        <div class="prov-main-info-box">
-          <div class="prov-main-info-box-title">드라이빙라운지 성수</div>
-
-          <div class="prov-main-info-box-content">
-            <p>서울 성동구 성수이로 134 현대자동차 동부서비스센터 1층</p>
-            <p><van-icon name="phone" /> 02-3409-7365</p>
-            <p class="parking">주차장</p>
-            <p>서울 성동구 성수이로 134 현대자동차 동부서비스센터 지하 1층</p>
-          </div>
-        </div>
+        <UserInfo />
 
         <div class="prov-main-info-box">
           <div class="prov-main-info-box-title">이용약관</div>
@@ -62,7 +46,7 @@
 
         <div class="prov-main-info-box">
           <div class="prov-main-info-box-title">서명</div>
-          <CanvasView class="canvas" />
+          <CanvasView class="canvas" ref="canvas" />
         </div>
 
         <div class="prov-main-info-button" @click="sendFormAndMove">
@@ -81,6 +65,7 @@
 import TopMenu from "../TopMenu";
 import FooterBar from "../FooterBar";
 import CanvasView from "./CanvasView";
+import UserInfo from "./UserInfo";
 
 import { Icon, Checkbox, CheckboxGroup, Collapse, CollapseItem } from "vant";
 
@@ -93,21 +78,29 @@ export default {
     [CollapseItem.name]: CollapseItem,
     TopMenu,
     FooterBar,
-    CanvasView
+    CanvasView,
+    UserInfo
   },
   data() {
     return {
       result: [],
       activeNames: ["0"],
-      painting: false
+      painting: false,
+      allChecked: false
     };
   },
   methods: {
     toggleAll() {
-      this.$refs.checkboxGroup.toggleAll("true");
+      if (!this.allChecked) this.allChecked = true;
+      else this.allChecked = false;
+      this.$refs.checkboxGroup.toggleAll({
+        checked: this.allChecked,
+        skipDisabled: true
+      });
     },
     sendFormAndMove() {
       this.$router.push("certification");
+      this.$refs.canvas.handleSaveImg();
     }
   },
   created() {}

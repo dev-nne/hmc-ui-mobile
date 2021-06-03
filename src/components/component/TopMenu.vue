@@ -8,7 +8,7 @@
           class="nav-navBar-logobox-logoImg"
         />
       </div>
-      <div class="nav-navBar-title">Hyundai World Wide</div>
+      <div class="nav-navBar-title">Hyundai Driving Lounge</div>
     </div>
   </div>
 </template>

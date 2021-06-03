@@ -2,9 +2,11 @@
 
 @import "./vant.css";
 
+@import "./font.css";
+
 body {
   font-size: 16px;
-  /* background-color: #f8f8f8; */
   background-color: #fff;
-  -webkit-font-smoothing: antialiased;
+  color: #2c2c2c;
+  font-family: "HyundaiSansText" !important;
 }

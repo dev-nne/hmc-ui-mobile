@@ -35,6 +35,13 @@ const routes = [
     meta: {
       title: "userPage"
     }
+  },
+  {
+    name: "returnPage",
+    component: () => import("./components/component/returnPage"),
+    meta: {
+      title: "returnPage"
+    }
   }
 ];
 

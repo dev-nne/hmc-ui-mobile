@@ -1,0 +1,161 @@
+.user {
+  width: 100%;
+
+  &-main {
+    width: 100%;
+
+    &-carbox {
+      width: 100%;
+      display: flex;
+      position: relative;
+
+      &-text {
+        padding: 10px;
+        position: absolute;
+        top: 10%;
+        left: 5%;
+        z-index: 1;
+
+        h2 {
+          font-weight: 800;
+          margin-bottom: 2px;
+          font-family: "HyundaiSansHead";
+        }
+        span {
+          font-size: 12px;
+          color: #002c5e;
+        }
+      }
+
+      &-img {
+        width: 100%;
+        height: 200px;
+        position: relative;
+
+        img {
+          width: 75%;
+          position: absolute;
+          bottom: 0;
+          right: 5%;
+        }
+      }
+    }
+
+    //시승일정
+    &-userinfo {
+      padding: 15px;
+      background: #f7f3f2;
+
+      .userInfo-box:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    //스마트키
+    &-smartkey {
+      padding: 20px;
+
+      &-title {
+        font-weight: 800;
+        margin-bottom: 10px;
+        font-family: "HyundaiSansHead";
+        font-size: 14px;
+      }
+
+      &-icon-box {
+        display: flex;
+        padding: 10px;
+        width: 100%;
+        justify-content: space-between;
+
+        &-circle {
+          width: 20%;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+
+          &-box {
+            width: 65px;
+            height: 65px;
+            border: 1px solid #002c5e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 35px;
+            box-shadow: 1px 1px 3px rgba(77, 77, 116, 0.178);
+            overflow: hidden;
+            transition: 0.2s;
+
+            img {
+              height: 100%;
+              padding: 30%;
+              display: block;
+            }
+          }
+
+          span {
+            font-size: 12px;
+            text-align: center;
+            margin-top: 10px;
+            font-weight: 600;
+          }
+        }
+
+        &-circle:last-child img {
+          height: 100%;
+          padding: 25%;
+        }
+      }
+    }
+
+    //고객센터
+    &-contact {
+      padding: 30px;
+      width: calc(100% - 30px);
+      text-align: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.07);
+      font-weight: bold;
+      font-size: 14px;
+      margin: 10px auto;
+    }
+  }
+}
+
+.clicked {
+  background: #002c5e;
+}
+
+.returnPop {
+  padding: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  h1 {
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+  }
+  p {
+    padding: 10px 0;
+    font-size: 14px;
+    text-align: center;
+  }
+  .button-box {
+    display: flex;
+    justify-content: space-between;
+    button {
+      width: 49%;
+      margin-top: 15px;
+      padding: 10px;
+      background: #e2e2e2;
+      border-radius: 20px;
+      border: none;
+    }
+    .returnBtn {
+      background: #002c5e;
+      color: white;
+    }
+  }
+}

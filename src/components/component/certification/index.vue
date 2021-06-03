@@ -36,16 +36,27 @@
         <div class="cert-main-info-type">
           <div class="cert-main-info-type-title">면허 번호</div>
           <div class="cert-main-info-type-num">
-            <van-dropdown-menu
-              active-color="#1989fa"
-              class="cert-main-info-type-num-dropdown"
-            >
-              <van-dropdown-item
-                v-model="value1"
-                :options="option1"
-                class="cert-main-info-type-num-dropdown-menu"
+            <div class="cert-main-info-type-num-field">
+              <van-field
+                readonly
+                clickable
+                :value="value"
+                placeholder="발급 지역 선택"
+                @click="showPicker = true"
+                class="cert-main-info-type-num-field"
+              /><van-icon name="arrow-down" />
+            </div>
+            <van-popup v-model="showPicker" round position="bottom">
+              <van-picker
+                title="발급지역"
+                show-toolbar
+                :columns="columns"
+                @cancel="showPicker = false"
+                @confirm="onConfirm"
+                confirm-button-text="Confirm"
+                cancel-button-text="Cancel"
               />
-            </van-dropdown-menu>
+            </van-popup>
 
             <input
               type="text"
@@ -93,16 +104,7 @@
 </template>
 
 <script>
-import {
-  Icon,
-  Field,
-  Button,
-  DropdownMenu,
-  DropdownItem,
-  RadioGroup,
-  Radio,
-  Popup
-} from "vant";
+import { Icon, Field, Button, RadioGroup, Radio, Popup, Picker } from "vant";
 
 import TopMenu from "@/components/component/TopMenu.vue";
 import getDate from "../commonJS/getDate";
@@ -111,14 +113,13 @@ import FooterBar from "../FooterBar";
 
 export default {
   components: {
-    [DropdownItem.name]: DropdownItem,
-    [DropdownMenu.name]: DropdownMenu,
     [Button.name]: Button,
     [Field.name]: Field,
     [RadioGroup.name]: RadioGroup,
     [Radio.name]: Radio,
     [Icon.name]: Icon,
     [Popup.name]: Popup,
+    [Picker.name]: Picker,
     TopMenu,
     DatetiemPicker,
     FooterBar
@@ -131,15 +132,9 @@ export default {
       day: "",
       username: "",
       password: "",
-      value1: 0,
-      option1: [
-        { text: "서울", value: 0 },
-        { text: "경기", value: 1 },
-        { text: "제주", value: 2 },
-        { text: "제주", value: 3 },
-        { text: "제주", value: 4 },
-        { text: "제주", value: 5 }
-      ],
+      value: "",
+      showPicker: false,
+      columns: ["서울", "경기", "인천", "부산", "광주", "전라도", "강원도"],
       show: false,
       selectDay: false
     };
@@ -172,6 +167,10 @@ export default {
     },
     sendFormAndMove() {
       this.$router.push("userPage");
+    },
+    onConfirm(value) {
+      this.value = value;
+      this.showPicker = false;
     }
   }
 };

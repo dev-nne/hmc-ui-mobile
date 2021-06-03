@@ -3,9 +3,12 @@
     <canvas
       ref="drawing-board"
       class="drawing-board__canvas"
-      v-on:mousedown="handleMouseDown"
-      v-on:mouseup="handleMouseUp"
-      v-on:mousemove="handleMouseMove"
+      @mousedown="handleMouseDown"
+      @mouseup="handleMouseUp"
+      @mousemove="handleMouseMove"
+      @touchstart="handleTouchStart"
+      @touchmove="handleTouchMove"
+      @touchend="handleTouchEnd"
       :width="`${WIDTH}px`"
       :height="`${height}px`"
     ></canvas>
@@ -74,6 +77,7 @@ const methods = {
       y: event.pageY
     };
     this.startDrawing(event);
+    console.log(this.ref);
   },
   handleMouseDown(event) {
     this.mouseDown = true;
@@ -81,13 +85,36 @@ const methods = {
       x: event.pageX,
       y: event.pageY
     };
-    console.log(this.WIDTH);
     this.ctx.moveTo(this.currentMouse.x, this.currentMouse.y);
   },
   handleMouseUp() {
     this.mouseDown = false;
+  },
+
+  // 모바일 터치 이벤트
+  handleTouchStart(event) {
+    const touch = event.touches[0];
+    const rect = this.ref.getBoundingClientRect();
+    this.ctx.beginPath();
+    this.ctx.moveTo(touch.clientX - rect.x, touch.clientY - rect.y);
+  },
+  handleTouchMove(event) {
+    event.preventDefault();
+    const touch = event.touches[0];
+    const rect = this.ref.getBoundingClientRect();
+    this.ctx.lineTo(touch.clientX - rect.x, touch.clientY - rect.y);
+    this.ctx.stroke();
+  },
+  handleTouchEnd(event) {
+    this.ctx.closePath();
+    this.ctx.save();
+  },
+  handleSaveImg() {
+    let dataURL = this.ref.toDataURL("image/png");
+    console.log(dataURL);
   }
 };
+
 export default {
   name: "DrawingBoard",
   data,
