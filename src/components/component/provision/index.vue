@@ -13,31 +13,50 @@
         <div class="prov-main-info-box">
           <div class="prov-main-info-box-title">이용약관</div>
 
+          <div class="prov-main-info-box-checkbox-all" @click="toggleAll">
+            <van-checkbox
+              ref="checkbox_all"
+              name="d"
+              v-model="allChecked"
+              icon-size="14px"
+            ></van-checkbox>
+            전체약관동의
+          </div>
           <van-checkbox-group
             v-model="result"
             ref="checkboxGroup"
             class="prov-main-info-box-checkboxGroup"
           >
-            <div class="prov-main-info-box-checkbox-all" @click="toggleAll">
-              <van-checkbox name="d" icon-size="14px"></van-checkbox>
-              전체약관동의
-            </div>
-
             <div class="line"></div>
             <div class="prov-main-info-box-checkbox">
-              <van-checkbox name="a" icon-size="14px"
+              <van-checkbox
+                ref="checkbox_1"
+                name="a"
+                icon-size="14px"
+                v-model="checked_1"
+                @click="toggle('a')"
                 >(필수) 서비스 이용약관</van-checkbox
               ><van-icon name="arrow" class="goProv" />
             </div>
 
             <div class="prov-main-info-box-checkbox">
-              <van-checkbox name="b" icon-size="14px"
+              <van-checkbox
+                ref="checkbox_2"
+                name="b"
+                icon-size="14px"
+                v-model="checked_2"
+                @click="toggle('b')"
                 >(필수) 개인정보 수집 · 이용에 대한 동의</van-checkbox
               ><van-icon name="arrow" class="goProv" />
             </div>
 
             <div class="prov-main-info-box-checkbox">
-              <van-checkbox name="c" icon-size="14px"
+              <van-checkbox
+                ref="checkbox_3"
+                name="c"
+                icon-size="14px"
+                v-model="checked_3"
+                @click="toggle('c')"
                 >(필수) 위치기반 서비스 이용약관</van-checkbox
               ><van-icon name="arrow" class="goProv" />
             </div>
@@ -86,13 +105,49 @@ export default {
       result: [],
       activeNames: ["0"],
       painting: false,
-      allChecked: false
+      allChecked: false,
+      checked_1: false,
+      checked_2: false,
+      checked_3: false
     };
   },
   methods: {
+    toggle(name) {
+      console.log(name);
+      if (name === "a") {
+        !this.checked_1 ? (this.checked_1 = true) : (this.checked_1 = false);
+        this.$refs.checkbox_1.toggle(this.checked_1);
+      }
+      if (name === "b") {
+        !this.checked_2 ? (this.checked_2 = true) : (this.checked_2 = false);
+        this.$refs.checkbox_2.toggle(this.checked_2);
+      }
+      if (name === "c") {
+        !this.checked_3 ? (this.checked_3 = true) : (this.checked_3 = false);
+        this.$refs.checkbox_3.toggle(this.checked_3);
+      }
+
+      if (this.checked_1 && this.checked_2 && this.checked_3) {
+        this.allChecked = true;
+        this.$refs.checkbox_all.toggle(this.allChecked);
+      } else {
+        this.allChecked = false;
+        this.$refs.checkbox_all.toggle(this.allChecked);
+      }
+    },
     toggleAll() {
-      if (!this.allChecked) this.allChecked = true;
-      else this.allChecked = false;
+      if (!this.allChecked) {
+        this.allChecked = true;
+        this.checked_1 = true;
+        this.checked_2 = true;
+        this.checked_3 = true;
+      } else {
+        this.allChecked = false;
+        this.checked_1 = false;
+        this.checked_2 = false;
+        this.checked_3 = false;
+      }
+      console.log(this.result.length);
       this.$refs.checkboxGroup.toggleAll({
         checked: this.allChecked,
         skipDisabled: true
