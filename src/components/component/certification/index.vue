@@ -60,18 +60,22 @@
               />
             </van-popup>
 
-            <van-field
-              readonly
-              clickable
-              :value="keyValue"
-              @touchstart.native.stop="keypadShow = true"
-            />
-            <van-number-keyboard
-              v-model="keyValue"
-              :show="keypadShow"
-              :maxlength="6"
-              @blur="keypadShow = false"
-            />
+            <div class="cert-main-info-type-num-input">
+              <van-field
+                readonly
+                clickable
+                :value="keyValue"
+                @touchstart.native.stop="keypadShow = true"
+              />
+              <van-number-keyboard
+                v-model="keyValue"
+                :show="keypadShow"
+                :maxlength="6"
+                @blur="keypadShow = false"
+                close-button-text="Close"
+              />
+            </div>
+
             <!-- <input
               type="text"
               class="cert-main-info-type-num-input"

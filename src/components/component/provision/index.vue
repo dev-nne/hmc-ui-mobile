@@ -35,8 +35,11 @@
                 icon-size="14px"
                 v-model="checked_1"
                 @click="toggle('a')"
-                >(필수) 서비스 이용약관</van-checkbox
-              ><van-icon name="arrow" class="goProv" />
+                ><span class="red">(필수)</span> 서비스 이용약관</van-checkbox
+              ><van-icon name="arrow" class="goProv" @click="showPopup1" />
+              <van-popup v-model="show1" closeable class="consent-popup" round
+                ><Consent @sentToAgreement="getAgreement1"
+              /></van-popup>
             </div>
 
             <div class="prov-main-info-box-checkbox">
@@ -46,8 +49,12 @@
                 icon-size="14px"
                 v-model="checked_2"
                 @click="toggle('b')"
-                >(필수) 개인정보 수집 · 이용에 대한 동의</van-checkbox
-              ><van-icon name="arrow" class="goProv" />
+                ><span class="red">(필수)</span> 개인정보 수집 · 이용에 대한
+                동의</van-checkbox
+              ><van-icon name="arrow" class="goProv" @click="showPopup2" />
+              <van-popup v-model="show2" closeable round class="consent-popup"
+                ><Consent2 @sentToAgreement="getAgreement2"
+              /></van-popup>
             </div>
 
             <div class="prov-main-info-box-checkbox">
@@ -57,8 +64,12 @@
                 icon-size="14px"
                 v-model="checked_3"
                 @click="toggle('c')"
-                >(필수) 위치기반 서비스 이용약관</van-checkbox
-              ><van-icon name="arrow" class="goProv" />
+                ><span class="red">(필수)</span> 위치기반 서비스
+                이용약관</van-checkbox
+              ><van-icon name="arrow" class="goProv" @click="showPopup3" />
+              <van-popup v-model="show3" closeable round class="consent-popup"
+                ><Consent3 @sentToAgreement="getAgreement3"
+              /></van-popup>
             </div>
           </van-checkbox-group>
         </div>
@@ -85,8 +96,18 @@ import TopMenu from "../TopMenu";
 import FooterBar from "../FooterBar";
 import CanvasView from "./CanvasView";
 import UserInfo from "./UserInfo";
+import Consent from "./consent/Consent";
+import Consent2 from "./consent/Consent2";
+import Consent3 from "./consent/Consent3";
 
-import { Icon, Checkbox, CheckboxGroup, Collapse, CollapseItem } from "vant";
+import {
+  Icon,
+  Checkbox,
+  CheckboxGroup,
+  Collapse,
+  CollapseItem,
+  Popup
+} from "vant";
 
 export default {
   components: {
@@ -95,25 +116,29 @@ export default {
     [CheckboxGroup.name]: CheckboxGroup,
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
+    [Popup.name]: Popup,
     TopMenu,
     FooterBar,
     CanvasView,
-    UserInfo
+    UserInfo,
+    Consent,
+    Consent2,
+    Consent3
   },
   data() {
     return {
       result: [],
-      activeNames: ["0"],
-      painting: false,
       allChecked: false,
       checked_1: false,
       checked_2: false,
-      checked_3: false
+      checked_3: false,
+      show1: false,
+      show2: false,
+      show3: false
     };
   },
   methods: {
     toggle(name) {
-      console.log(name);
       if (name === "a") {
         !this.checked_1 ? (this.checked_1 = true) : (this.checked_1 = false);
         this.$refs.checkbox_1.toggle(this.checked_1);
@@ -156,10 +181,37 @@ export default {
     sendFormAndMove() {
       this.$router.push("certification");
       this.$refs.canvas.handleSaveImg();
+    },
+    showPopup1() {
+      this.show1 = true;
+    },
+    showPopup2() {
+      this.show2 = true;
+    },
+    showPopup3() {
+      this.show3 = true;
+    },
+    getAgreement1() {
+      this.show1 = false;
+      this.checked_1 = true;
+    },
+    getAgreement2() {
+      this.show2 = false;
+      this.checked_2 = true;
+    },
+    getAgreement3() {
+      this.show3 = false;
+      this.checked_3 = true;
     }
-  },
-  created() {}
+  }
 };
 </script>
 
-<style></style>
+<style>
+.consent-popup {
+  width: 85%;
+  height: 90%;
+  padding: 20px;
+  overflow: scroll;
+}
+</style>
