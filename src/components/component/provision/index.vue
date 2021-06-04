@@ -137,11 +137,13 @@ export default {
       show3: false
     };
   },
+
   methods: {
     toggle(name) {
       if (name === "a") {
         !this.checked_1 ? (this.checked_1 = true) : (this.checked_1 = false);
         this.$refs.checkbox_1.toggle(this.checked_1);
+        console.log(this.checked_1);
       }
       if (name === "b") {
         !this.checked_2 ? (this.checked_2 = true) : (this.checked_2 = false);
@@ -172,7 +174,6 @@ export default {
         this.checked_2 = false;
         this.checked_3 = false;
       }
-      console.log(this.result.length);
       this.$refs.checkboxGroup.toggleAll({
         checked: this.allChecked,
         skipDisabled: true
@@ -194,14 +195,20 @@ export default {
     getAgreement1() {
       this.show1 = false;
       this.checked_1 = true;
+      this.$refs.checkbox_1.toggle(true);
+      this.toggle();
     },
     getAgreement2() {
       this.show2 = false;
       this.checked_2 = true;
+      this.$refs.checkbox_2.toggle(true);
+      this.toggle();
     },
     getAgreement3() {
       this.show3 = false;
       this.checked_3 = true;
+      this.$refs.checkbox_3.toggle(true);
+      this.toggle();
     }
   }
 };
