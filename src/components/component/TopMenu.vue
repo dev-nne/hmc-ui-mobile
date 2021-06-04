@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="nav">
     <div class="nav-navBar">
       <div class="nav-navBar-logobox" @click="gohome">
         <img

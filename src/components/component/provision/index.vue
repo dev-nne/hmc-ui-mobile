@@ -82,6 +82,16 @@
         <div class="prov-main-info-button" @click="sendFormAndMove">
           다음
         </div>
+
+        <van-popup v-model="alert" class="alert">
+          <p>약관 동의 후 서비스 이용이 가능합니다.</p>
+          <button @click="closeAlert">확인</button>
+        </van-popup>
+
+        <van-popup v-model="alert2" class="alert"
+          ><p>서명 입력 후 서비스 이용이 가능합니다.</p>
+          <button @click="closeAlert2">확인</button></van-popup
+        >
       </div>
     </div>
 
@@ -106,7 +116,8 @@ import {
   CheckboxGroup,
   Collapse,
   CollapseItem,
-  Popup
+  Popup,
+  Notify
 } from "vant";
 
 export default {
@@ -117,6 +128,7 @@ export default {
     [Collapse.name]: Collapse,
     [CollapseItem.name]: CollapseItem,
     [Popup.name]: Popup,
+    [Notify.name]: Notify,
     TopMenu,
     FooterBar,
     CanvasView,
@@ -134,7 +146,11 @@ export default {
       checked_3: false,
       show1: false,
       show2: false,
-      show3: false
+      show3: false,
+      alert: false,
+      alert2: false,
+      imgData:
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWIAAABkCAYAAAC8cjrTAAADU0lEQVR4Xu3UQQ0AAAwCseHf9GTcpzNAUhZ2jgABAgRSgaXpwgkQIEDgDLEnIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQOABYI8AZeQ3jFUAAAAASUVORK5CYII="
     };
   },
 
@@ -180,8 +196,38 @@ export default {
       });
     },
     sendFormAndMove() {
-      this.$router.push("certification");
-      this.$refs.canvas.handleSaveImg();
+      let IMGurl = this.$refs.canvas.sendImgCode();
+
+      if (this.allChecked) {
+        if (IMGurl !== this.imgData) {
+          this.$router.push("certification");
+          this.$refs.canvas.handleSaveImg();
+          this.checked_1 = false;
+          this.checked_2 = false;
+          this.checked_3 = false;
+          IMGurl = this.ungData;
+        } else {
+          this.alert2 = true;
+        }
+      } else {
+        this.alert = true;
+      }
+
+      // if (this.allChecked && IMGurl !== this.imgData) {
+      //   console.log(IMGurl);
+      //   this.$router.push("certification");
+      //   this.$refs.canvas.handleSaveImg();
+      //   this.checked_1 = false;
+      //   this.checked_2 = false;
+      //   this.checked_3 = false;
+      //   IMGurl = this.ungData;
+      // } else if (!this.allChecked && IMGurl !== this.imgData) {
+      //   this.alert = true;
+      // } else if (this.allChecked && IMGurl === this.imgData) {
+      //   this.alert2 = true;
+      // } else {
+      //   this.alert = true;
+      // }
     },
     showPopup1() {
       this.show1 = true;
@@ -209,6 +255,12 @@ export default {
       this.checked_3 = true;
       this.$refs.checkbox_3.toggle(true);
       this.toggle();
+    },
+    closeAlert() {
+      this.alert = false;
+    },
+    closeAlert2() {
+      this.alert2 = false;
     }
   }
 };

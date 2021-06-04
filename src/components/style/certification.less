@@ -1,4 +1,6 @@
 .cert {
+  margin-top: 50px;
+  height: calc(100vh - 50px);
   display: flex;
   flex-direction: column;
   height: 100vh;
@@ -65,11 +67,19 @@
           width: 100%;
           justify-content: space-between;
 
+          .van-cell:after {
+            border-bottom: none;
+          }
+
           &-field {
             display: -webkit-box;
             -webkit-box-orient: horizontal;
             align-items: center;
             width: 38%;
+
+            .van-cell {
+              width: 100%;
+            }
           }
 
           .van-cell {

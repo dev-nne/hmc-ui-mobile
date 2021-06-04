@@ -112,6 +112,10 @@ const methods = {
   handleSaveImg() {
     let dataURL = this.ref.toDataURL("image/png");
     console.log(dataURL);
+  },
+  sendImgCode() {
+    let dataURL = this.ref.toDataURL("image/png");
+    return dataURL;
   }
 };
 

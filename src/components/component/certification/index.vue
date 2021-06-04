@@ -70,7 +70,7 @@
               <van-number-keyboard
                 v-model="keyValue"
                 :show="keypadShow"
-                :maxlength="6"
+                :maxlength="10"
                 @blur="keypadShow = false"
                 close-button-text="Close"
               />
