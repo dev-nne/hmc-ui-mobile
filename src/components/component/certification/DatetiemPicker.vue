@@ -2,11 +2,11 @@
   <van-datetime-picker
     v-model="currentDate"
     type="date"
-    title="Choose Date"
+    title="날짜 선택"
     :min-date="minDate"
     :max-date="maxDate"
-    confirm-button-text="Confirm"
-    cancel-button-text="Cancel"
+    confirm-button-text="확인"
+    cancel-button-text="취소"
     @confirm="confirmDate"
     @cancel="cancelPick"
   />

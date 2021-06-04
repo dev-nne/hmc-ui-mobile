@@ -4,7 +4,7 @@
     <div class="user-main">
       <div class="user-main-carbox">
         <div class="user-main-carbox-text">
-          <h2>소나타 Premium Plus</h2>
+          <h2>쏘나타 Premium Plus</h2>
           <span>123허4567</span>
         </div>
 
@@ -76,7 +76,7 @@
         </div>
       </van-popup>
       <div class="user-main-contact">
-        고객센터 1833-2654
+        고객센터 <a href="tel:1833-2654">1833-2654</a>
       </div>
     </div>
 
@@ -126,6 +126,7 @@ export default {
     },
     cancelCarReturn() {
       this.show = false;
+      this.img[3].click = false;
     }
   }
 };

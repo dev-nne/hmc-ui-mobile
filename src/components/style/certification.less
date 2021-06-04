@@ -65,16 +65,20 @@
           justify-content: space-between;
 
           &-field {
-            display: flex;
+            display: -webkit-box;
+            -webkit-box-orient: horizontal;
             align-items: center;
-            width: 50%;
-            padding-right: 10px;
+            width: 38%;
           }
 
           .van-cell {
             background: none;
             margin-bottom: 0;
             padding: 0;
+
+            .van-icon {
+              padding-right: 10px;
+            }
 
             .van-field__body {
               ::placeholder {
@@ -85,7 +89,7 @@
           }
 
           &-input {
-            width: 65%;
+            width: 55%;
             border: none;
             outline: none;
             background: none;
@@ -107,7 +111,7 @@
             color: rgba(0, 0, 0, 0.4);
             margin-left: 20px;
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 400;
           }
 
           .day:first-child {

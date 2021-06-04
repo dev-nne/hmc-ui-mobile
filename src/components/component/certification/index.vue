@@ -51,18 +51,32 @@
                 title="발급지역"
                 show-toolbar
                 :columns="columns"
+                default-index="1"
+                item-height="36px"
                 @cancel="showPicker = false"
                 @confirm="onConfirm"
-                confirm-button-text="Confirm"
-                cancel-button-text="Cancel"
+                confirm-button-text="확인"
+                cancel-button-text="취소"
               />
             </van-popup>
 
-            <input
+            <van-field
+              readonly
+              clickable
+              :value="keyValue"
+              @touchstart.native.stop="keypadShow = true"
+            />
+            <van-number-keyboard
+              v-model="keyValue"
+              :show="keypadShow"
+              :maxlength="6"
+              @blur="keypadShow = false"
+            />
+            <!-- <input
               type="text"
               class="cert-main-info-type-num-input"
               placeholder="숫자를 입력하세요"
-            />
+            /> -->
           </div>
           <div class="cert-main-info-type-title">발급일</div>
           <div
@@ -104,7 +118,16 @@
 </template>
 
 <script>
-import { Icon, Field, Button, RadioGroup, Radio, Popup, Picker } from "vant";
+import {
+  Icon,
+  Field,
+  Button,
+  RadioGroup,
+  Radio,
+  Popup,
+  Picker,
+  NumberKeyboard
+} from "vant";
 
 import TopMenu from "@/components/component/TopMenu.vue";
 import getDate from "../commonJS/getDate";
@@ -120,6 +143,7 @@ export default {
     [Icon.name]: Icon,
     [Popup.name]: Popup,
     [Picker.name]: Picker,
+    [NumberKeyboard.name]: NumberKeyboard,
     TopMenu,
     DatetiemPicker,
     FooterBar
@@ -136,7 +160,9 @@ export default {
       showPicker: false,
       columns: ["서울", "경기", "인천", "부산", "광주", "전라도", "강원도"],
       show: false,
-      selectDay: false
+      selectDay: false,
+      keypadShow: false,
+      keyValue: ""
     };
   },
   created() {
