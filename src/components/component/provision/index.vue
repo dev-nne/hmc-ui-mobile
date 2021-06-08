@@ -76,7 +76,7 @@
 
         <div class="prov-main-info-box">
           <div class="prov-main-info-box-title">서명</div>
-          <CanvasView class="canvas" ref="canvas" />
+          <CanvasView class="canvas" ref="canvas" @drawingTrue="drawingTrue" />
         </div>
 
         <div class="prov-main-info-button" @click="sendFormAndMove">
@@ -149,8 +149,7 @@ export default {
       show3: false,
       alert: false,
       alert2: false,
-      imgData:
-        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWIAAABkCAYAAAC8cjrTAAADU0lEQVR4Xu3UQQ0AAAwCseHf9GTcpzNAUhZ2jgABAgRSgaXpwgkQIEDgDLEnIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQMAQ+wECBAjEAoY4LkA8AQIEDLEfIECAQCxgiOMCxBMgQOABYI8AZeQ3jFUAAAAASUVORK5CYII="
+      drawing: false
     };
   },
 
@@ -159,7 +158,6 @@ export default {
       if (name === "a") {
         !this.checked_1 ? (this.checked_1 = true) : (this.checked_1 = false);
         this.$refs.checkbox_1.toggle(this.checked_1);
-        console.log(this.checked_1);
       }
       if (name === "b") {
         !this.checked_2 ? (this.checked_2 = true) : (this.checked_2 = false);
@@ -196,38 +194,18 @@ export default {
       });
     },
     sendFormAndMove() {
-      let IMGurl = this.$refs.canvas.sendImgCode();
-
       if (this.allChecked) {
-        if (IMGurl !== this.imgData) {
+        if (this.drawing) {
           this.$router.push("certification");
-          this.$refs.canvas.handleSaveImg();
-          this.checked_1 = false;
           this.checked_2 = false;
           this.checked_3 = false;
-          IMGurl = this.ungData;
+          this.drawing = false;
         } else {
           this.alert2 = true;
         }
       } else {
         this.alert = true;
       }
-
-      // if (this.allChecked && IMGurl !== this.imgData) {
-      //   console.log(IMGurl);
-      //   this.$router.push("certification");
-      //   this.$refs.canvas.handleSaveImg();
-      //   this.checked_1 = false;
-      //   this.checked_2 = false;
-      //   this.checked_3 = false;
-      //   IMGurl = this.ungData;
-      // } else if (!this.allChecked && IMGurl !== this.imgData) {
-      //   this.alert = true;
-      // } else if (this.allChecked && IMGurl === this.imgData) {
-      //   this.alert2 = true;
-      // } else {
-      //   this.alert = true;
-      // }
     },
     showPopup1() {
       this.show1 = true;
@@ -261,6 +239,9 @@ export default {
     },
     closeAlert2() {
       this.alert2 = false;
+    },
+    drawingTrue(v) {
+      this.drawing = v;
     }
   }
 };

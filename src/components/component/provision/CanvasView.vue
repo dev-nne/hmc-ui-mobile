@@ -27,7 +27,8 @@ const data = () => ({
     y: 0
   },
   WIDTH: 0,
-  mouseDown: false
+  mouseDown: false,
+  drawing: false
 });
 const props = {
   msg: String,
@@ -77,7 +78,6 @@ const methods = {
       y: event.pageY
     };
     this.startDrawing(event);
-    console.log(this.ref);
   },
   handleMouseDown(event) {
     this.mouseDown = true;
@@ -104,14 +104,11 @@ const methods = {
     const rect = this.ref.getBoundingClientRect();
     this.ctx.lineTo(touch.clientX - rect.x, touch.clientY - rect.y);
     this.ctx.stroke();
+    this.$emit("drawingTrue", true);
   },
   handleTouchEnd(event) {
     this.ctx.closePath();
     this.ctx.save();
-  },
-  handleSaveImg() {
-    let dataURL = this.ref.toDataURL("image/png");
-    console.log(dataURL);
   },
   sendImgCode() {
     let dataURL = this.ref.toDataURL("image/png");

@@ -27,6 +27,7 @@
               block
               native-type="submit"
               class="loginBtn"
+              @click="test"
             >
               로그인
             </van-button>
@@ -46,13 +47,15 @@
 </template>
 
 <script>
-import { Icon, Form, Field, Button, Tabbar, TabbarItem } from "vant";
+import { Icon, Form, Field, Button, Tabbar, TabbarItem, Notify } from "vant";
 import TopMenu from "../TopMenu.vue";
 import FooterBar from "../FooterBar";
+import axios from "axios";
 
 export default {
   components: {
     [TabbarItem.name]: TabbarItem,
+    [Notify.name]: Notify,
     [Tabbar.name]: Tabbar,
     [Button.name]: Button,
     [Field.name]: Field,
@@ -72,6 +75,19 @@ export default {
     onSubmit(values) {
       console.log("submit", values);
       this.$router.push("provision");
+    },
+    test() {
+      axios
+        .get("https://reqres.in/api/users?page=2")
+        .then(res => console.log(res))
+        .catch(err => {
+          console.log(err);
+          Notify({ type: "danger", message: "이름과 전화번호를 확인하세요" });
+        })
+        .then(() => {
+          // always
+          console.log("test");
+        });
     }
   }
 };

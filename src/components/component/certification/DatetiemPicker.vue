@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     confirmDate(data) {
-      this.$emit("childconfirm", this.show, data);
+      this.$emit("childconfirm", this.show, data, true);
     },
     cancelPick() {
       this.$emit("childcancel", this.show);

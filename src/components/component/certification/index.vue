@@ -66,12 +66,13 @@
                 clickable
                 :value="keyValue"
                 @touchstart.native.stop="keypadShow = true"
+                ref="numberKeyinput"
               />
               <van-number-keyboard
                 v-model="keyValue"
                 :show="keypadShow"
                 :maxlength="10"
-                @blur="keypadShow = false"
+                @blur="closeKeypad"
                 close-button-text="Close"
               />
             </div>
@@ -112,6 +113,21 @@
         <div class="cert-main-info-button" @click="sendFormAndMove">
           인증하기
         </div>
+
+        <van-popup v-model="alert" class="alert">
+          <p>발급 지역을 선택하세요.</p>
+          <button @click="closeAlert">확인</button>
+        </van-popup>
+
+        <van-popup v-model="alert2" class="alert"
+          ><p>면허번호 10자리를 입력하세요.</p>
+          <button @click="closeAlert2">확인</button></van-popup
+        >
+
+        <van-popup v-model="alert3" class="alert"
+          ><p>발급일을 입력하세요.</p>
+          <button @click="closeAlert3">확인</button></van-popup
+        >
       </div>
     </div>
 
@@ -166,14 +182,19 @@ export default {
       show: false,
       selectDay: false,
       keypadShow: false,
-      keyValue: ""
+      keyValue: "",
+      validate1: false,
+      validate2: false,
+      validate3: false,
+      alert: false,
+      alert2: false,
+      alert3: false
     };
   },
   created() {
     this.years = getDate().year;
     this.month = getDate().month + 1;
     this.day = getDate().day;
-    console.log(this.years, this.month);
   },
   methods: {
     onSubmit(values) {
@@ -186,21 +207,59 @@ export default {
     parents(data) {
       this.show = data;
     },
-    parentDate(show, data) {
+    parentDate(show, data, bool) {
       this.show = show;
       let dateValue = new Date(data);
       this.years = dateValue.getFullYear();
       this.month = dateValue.getMonth() + 1;
       this.day = dateValue.getDate();
-
+      this.validate3 = bool;
       this.selectDay = true;
     },
     sendFormAndMove() {
-      this.$router.push("userPage");
+      if (this.validate1) {
+        if (this.validate2) {
+          if (this.validate3) {
+            this.$router.push("userPage");
+            console.log(
+              this.checked,
+              this.value,
+              this.keyValue,
+              this.years,
+              this.month,
+              this.day
+            );
+          } else {
+            this.alert3 = true;
+          }
+        } else {
+          this.alert2 = true;
+        }
+      } else {
+        this.alert = true;
+      }
     },
     onConfirm(value) {
       this.value = value;
       this.showPicker = false;
+      this.validate1 = true;
+    },
+    closeAlert() {
+      this.alert = false;
+    },
+    closeAlert2() {
+      this.alert2 = false;
+    },
+    closeAlert3() {
+      this.alert3 = false;
+    },
+    closeKeypad() {
+      this.keypadShow = false;
+      if (this.keyValue.length === 10) {
+        this.validate2 = true;
+      } else {
+        this.validate2 = false;
+      }
     }
   }
 };
