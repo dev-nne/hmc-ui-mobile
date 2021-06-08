@@ -1,9 +1,7 @@
 .user {
   margin-top: 50px;
-  height: calc(100vh - 150px);
   width: 100%;
   margin-bottom: 100px;
-  overflow: scroll;
 
   &-main {
     width: 100%;
@@ -115,18 +113,32 @@
 
     //고객센터
     &-contact {
-      padding: 30px;
+      padding: 30px 0;
       width: calc(100% - 30px);
       text-align: center;
       border-top: 1px solid rgba(0, 0, 0, 0.07);
       font-size: 14px;
       margin: 10px auto;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
       a {
-        color: #2c2c2c;
+        color: #333;
         font-size: 16px;
-        text-decoration: underline;
-        font-weight: 600;
+        margin-left: 4px;
+        position: relative;
+      }
+
+      a:after {
+        content: "";
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        height: 1px;
+        background: rgba(0, 0, 0, 0.2);
       }
     }
   }

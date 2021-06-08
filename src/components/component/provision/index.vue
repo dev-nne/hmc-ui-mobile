@@ -19,6 +19,7 @@
               name="d"
               v-model="allChecked"
               icon-size="14px"
+              shape="squre"
             ></van-checkbox>
             전체약관동의
           </div>
@@ -31,6 +32,7 @@
             <div class="prov-main-info-box-checkbox">
               <van-checkbox
                 ref="checkbox_1"
+                shape="squre"
                 name="a"
                 icon-size="14px"
                 v-model="checked_1"
@@ -47,6 +49,7 @@
                 ref="checkbox_2"
                 name="b"
                 icon-size="14px"
+                shape="squre"
                 v-model="checked_2"
                 @click="toggle('b')"
                 ><span class="red">(필수)</span> 개인정보 수집 · 이용에 대한
@@ -62,6 +65,7 @@
                 ref="checkbox_3"
                 name="c"
                 icon-size="14px"
+                shape="squre"
                 v-model="checked_3"
                 @click="toggle('c')"
                 ><span class="red">(필수)</span> 위치기반 서비스
@@ -151,6 +155,9 @@ export default {
       alert2: false,
       drawing: false
     };
+  },
+  mounted() {
+    window.scrollTo(0, 0);
   },
 
   methods: {

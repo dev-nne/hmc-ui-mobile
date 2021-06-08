@@ -67,6 +67,7 @@
                 :value="keyValue"
                 @touchstart.native.stop="keypadShow = true"
                 ref="numberKeyinput"
+                placeholder="면허번호 10자리"
               />
               <van-number-keyboard
                 v-model="keyValue"
@@ -178,7 +179,25 @@ export default {
       password: "",
       value: "",
       showPicker: false,
-      columns: ["서울", "경기", "인천", "부산", "광주", "전라도", "강원도"],
+      columns: [
+        "서울 (11)",
+        "부산 (12)",
+        "경기 (13)",
+        "강원 (14)",
+        "충북 (15)",
+        "충남 (16)",
+        "전북 (17)",
+        "전남 (18)",
+        "경북 (19)",
+        "경남 (20)",
+        "제주 (21)",
+        "대구 (22)",
+        "인천 (23)",
+        "광주 (24)",
+        "대전 (25)",
+        "울산 (26)",
+        "경기북부 (28)"
+      ],
       show: false,
       selectDay: false,
       keypadShow: false,
@@ -195,6 +214,9 @@ export default {
     this.years = getDate().year;
     this.month = getDate().month + 1;
     this.day = getDate().day;
+  },
+  mounted() {
+    window.scrollTo(0, 0);
   },
   methods: {
     onSubmit(values) {

@@ -34,10 +34,6 @@
           </div>
         </van-form>
       </div>
-
-      <div class="login-main-phone-number">
-        고객센터 <a href="tel:1833-2654">1833-2654</a>
-      </div>
     </div>
 
     <div class="login-bottom">
@@ -70,6 +66,9 @@ export default {
       password: "",
       active: 0
     };
+  },
+  mounted() {
+    window.scrollTo(0, 0);
   },
   methods: {
     onSubmit(values) {

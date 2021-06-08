@@ -77,7 +77,8 @@
         </div>
       </van-popup>
       <div class="user-main-contact">
-        고객센터 <a href="tel:1833-2654">1833-2654</a>
+        {{ this.contactCenter }}
+        <a ref="callNum" href="">{{ this.contactNumber }}</a>
       </div>
     </div>
 
@@ -115,8 +116,14 @@ export default {
         { click: false, src: img3, srcW: img3W },
         { click: false, src: img4, srcW: img4W }
       ],
-      show: false
+      show: false,
+      contactNumber: "02-3409-7365",
+      contactCenter: "드라이빙라운지 성수"
     };
+  },
+  mounted() {
+    window.scrollTo(0, 0);
+    this.$refs.callNum.href = `tel:${this.contactNumber}`;
   },
   methods: {
     clickBtn(x) {
