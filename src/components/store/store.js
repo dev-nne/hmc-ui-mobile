@@ -7,8 +7,23 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    show: false
+    isLocal: true,
+    auth: false,
+    // 고객정보
+    userInfo: {
+      bookNumber: "",
+      centerName: "",
+      spaceName: "",
+      carName: "",
+      bookDay: "",
+      bookTime: "",
+      address: "",
+      spaceNumber: ""
+    },
+    fellow: false
   },
   getters: getters,
   mutations: mutations
 });
+
+export default { store };

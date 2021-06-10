@@ -3,16 +3,23 @@
     <div class="userInfo-box">
       <div class="userInfo-box-title">시승 일정</div>
       <div class="userInfo-box-time">
-        5.17.월 13:00 ~ 14:00(1시간)
+        {{ `${this.userInfo.bookDay} ${this.userInfo.bookTime}` }}
       </div>
     </div>
 
     <div class="userInfo-box">
-      <div class="userInfo-box-title">드라이빙라운지 성수</div>
+      <div class="userInfo-box-title">
+        {{ `${this.userInfo.centerName} ${this.userInfo.spaceName}` }}
+      </div>
 
       <div class="userInfo-box-content">
-        <p>서울 성동구 성수이로 134 현대자동차 동부서비스센터 1층</p>
-        <p class="number"><van-icon name="phone" /> 02-3409-7365</p>
+        <p>
+          {{ this.userInfo.address }}
+        </p>
+        <p class="number">
+          <van-icon name="phone" />
+          <a ref="callNum" href="tel"> {{ this.userInfo.spaceNumber }}</a>
+        </p>
 
         <div class="userInfo-box-content-collapseBox">
           <van-icon :name="icon" class="collapseBtn" @click="clickCollapseBtn">
@@ -37,8 +44,15 @@ export default {
   data() {
     return {
       collapse: false,
-      icon: "arrow-down"
+      icon: "arrow-down",
+      userInfo: {}
     };
+  },
+  created() {
+    this.userInfo = this.$store.state.userInfo;
+  },
+  mounted() {
+    this.$refs.callNum.href = `tel:${this.userInfo.spaceNumber}`;
   },
   methods: {
     clickCollapseBtn() {
@@ -50,4 +64,49 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="less">
+.userInfo {
+  &-box {
+    background: white;
+    padding: 15px;
+    margin-bottom: 15px;
+
+    &-title {
+      font-weight: 600;
+      padding-bottom: 10px;
+      font-size: 14px;
+      font-family: "HyundaiSansHead";
+    }
+
+    &-time {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    &-content {
+      font-size: 12px;
+      line-height: 18px;
+      width: 100%;
+
+      .number {
+        display: flex;
+        align-items: center;
+        margin-top: 2px;
+
+        a {
+          color: #333;
+          margin-left: 2px;
+          text-decoration: underline;
+        }
+      }
+
+      &-collapseBox {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 5px;
+        color: #002c5e;
+        font-weight: 600;
+      }
+    }
+  }
+}
+</style>

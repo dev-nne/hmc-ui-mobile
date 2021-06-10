@@ -13,3 +13,33 @@
     </p>
   </div>
 </template>
+
+<style lang="less">
+.footer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100px;
+
+  &-logo-box {
+    width: 30px;
+
+    &-img {
+      width: 100%;
+      display: block;
+    }
+  }
+
+  &-rights {
+    font-size: 10px;
+    color: #ebebeb;
+    padding-top: 15px;
+  }
+}
+</style>

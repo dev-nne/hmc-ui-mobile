@@ -111,6 +111,20 @@
       }
     }
 
+    &-fellow {
+      padding: 15px;
+      width: calc(100% - 40px);
+      text-align: center;
+      margin: 0 auto 20px auto;
+      border: 1px solid #002c5e;
+      box-shadow: 1px 1px 3px rgba(77, 77, 116, 0.178);
+      color: #002c5e;
+      border-radius: 30px;
+      font-weight: 600;
+      transition: 0.2s;
+      font-size: 14px;
+    }
+
     //고객센터
     &-contact {
       padding: 30px 0;
@@ -141,10 +155,42 @@
         background: rgba(0, 0, 0, 0.2);
       }
     }
+
+    .fellowPop {
+      width: 85%;
+      border-radius: 10px;
+    }
+    .fellowPop2 {
+      width: 70%;
+      border-radius: 10px;
+      padding: 20px;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      p {
+        width: 100%;
+        text-align: center;
+        padding: 10px 0;
+        font-weight: 600;
+      }
+      button {
+        width: 90%;
+        margin-top: 10px;
+        background: #002c5e;
+        padding: 8px;
+        border-radius: 10px;
+        color: white;
+        outline: none;
+        border: none;
+      }
+    }
   }
 }
 
 .clicked {
+  color: white;
   background: #002c5e;
 }
 

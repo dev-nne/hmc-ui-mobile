@@ -37,7 +37,8 @@
                 icon-size="14px"
                 v-model="checked_1"
                 @click="toggle('a')"
-                ><span class="red">(필수)</span> 서비스 이용약관</van-checkbox
+                ><span class="red">(필수)</span> 시승차 이용 및 서비스 이용
+                약관</van-checkbox
               ><van-icon name="arrow" class="goProv" @click="showPopup1" />
               <van-popup v-model="show1" closeable class="consent-popup" round
                 ><Consent @sentToAgreement="getAgreement1"
@@ -52,15 +53,15 @@
                 shape="squre"
                 v-model="checked_2"
                 @click="toggle('b')"
-                ><span class="red">(필수)</span> 개인정보 수집 · 이용에 대한
-                동의</van-checkbox
+                ><span class="red">(필수)</span> 개인정보 수집 및
+                이용안내</van-checkbox
               ><van-icon name="arrow" class="goProv" @click="showPopup2" />
               <van-popup v-model="show2" closeable round class="consent-popup"
                 ><Consent2 @sentToAgreement="getAgreement2"
               /></van-popup>
             </div>
 
-            <div class="prov-main-info-box-checkbox">
+            <div class="prov-main-info-box-checkbox-select">
               <van-checkbox
                 ref="checkbox_3"
                 name="c"
@@ -68,9 +69,17 @@
                 shape="squre"
                 v-model="checked_3"
                 @click="toggle('c')"
-                ><span class="red">(필수)</span> 위치기반 서비스
-                이용약관</van-checkbox
-              ><van-icon name="arrow" class="goProv" @click="showPopup3" />
+              ></van-checkbox>
+              <div class="checkbox-content">
+                <span class="choice">(선택)</span>
+                <div>
+                  차량구입 관련 상담 및 정보 제공 안내 <br /><span
+                    class="addContent"
+                    >(마케팅 활용 및 광고성 정보 전송)</span
+                  >
+                </div>
+              </div>
+              <van-icon name="arrow" class="goProv" @click="showPopup3" />
               <van-popup v-model="show3" closeable round class="consent-popup"
                 ><Consent3 @sentToAgreement="getAgreement3"
               /></van-popup>
@@ -201,9 +210,24 @@ export default {
       });
     },
     sendFormAndMove() {
-      if (this.allChecked) {
+      const userChecking = {
+        cecking: this.checked_1,
+        cecking2: this.checked_2,
+        cecking3: this.checked_3
+      };
+
+      if (this.checked_1 && this.checked_2) {
         if (this.drawing) {
           this.$router.push("certification");
+          console.log(userChecking);
+          if (!this.$store.state.isLocal) {
+            this.$axios
+              .post("/static/bookingInfo.json", userChecking)
+              .then((res, req) => {
+                console.log(res);
+              });
+          }
+          this.checked_1 = false;
           this.checked_2 = false;
           this.checked_3 = false;
           this.drawing = false;

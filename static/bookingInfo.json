@@ -1,0 +1,29 @@
+{
+  "DisplayResponse": [
+    {
+      "tsrdPrctNo": "2018072300001",
+      "tsrdSvcNm": "방문시승",
+      "tsrdCtrNm": "일산",
+      "tsrdStrgNm": "경기북부",
+      "tsrdCar": "그랜저IG",
+      "tsrdPrctYmd": "20180731",
+      "tsrdTim": "10:00-12:00",
+      "tsrdPrctScnNm": "고객예약",
+      "prctStNm": "대기",
+      "tsrdAdr": "경기 고양시 일산동구 백마로 494 ",
+      "tsrdTn": "031-908-7365",
+      "saleCarCtyNo": "IGJS4TCT2"
+    }
+  ],
+  "infoResponse": {
+    "prct_YN": null,
+    "sort_FIELD": null,
+    "sort_TYPE": null,
+    "total_RECORDS": null,
+    "rsp_CD": "0",
+    "rsp_MESSAGE": "성공",
+    "tsrd_PHB_RSON_SBC": null,
+    "page_RECORES": null,
+    "page_NO": null
+  }
+}

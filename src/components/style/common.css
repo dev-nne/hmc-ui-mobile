@@ -1,7 +1,5 @@
 @import "./reset.css";
 
-@import "./vant.css";
-
 @import "./font.css";
 
 body {
@@ -9,4 +7,33 @@ body {
   background-color: #fff;
   color: #333;
   font-family: "HyundaiSansText" !important;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.van-field--error .van-field__control,
+.van-field--error .van-field__control::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.van-field__control::placeholder {
+  color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.van-field__error-message {
+  position: absolute;
+  top: 100%;
+  padding-top: 10px;
+}
+
+.van-cell {
+  overflow: visible !important;
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.van-cell::after {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }

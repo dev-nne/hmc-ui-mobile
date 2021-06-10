@@ -79,9 +79,6 @@
             float: right;
           }
         }
-        &-checkbox:last-child {
-          margin-bottom: 0;
-        }
 
         &-canvas {
           width: 100%;
@@ -89,6 +86,33 @@
 
         .red {
           color: #ce1212;
+        }
+
+        &-checkbox-select {
+          display: flex;
+          font-size: 14px;
+          width: 100%;
+          justify-content: space-between;
+
+          .van-checkbox {
+            margin-right: 8px;
+            align-items: start;
+          }
+
+          .checkbox-content {
+            flex: 1;
+            color: #888;
+            display: flex;
+
+            .choice {
+              margin-right: 4px;
+            }
+            .addContent {
+              font-size: 12px;
+              margin-top: 4px;
+              display: block;
+            }
+          }
         }
       }
 
@@ -116,6 +140,7 @@
   p {
     text-align: center;
     padding: 30px;
+    line-height: 16px;
   }
 
   button {

@@ -1,63 +1,65 @@
 import Vue from "vue";
-import Router from "vue-router";
+import VueRouter from "vue-router";
+import { store } from "./components/store/store";
 
-Vue.use(Router);
+Vue.use(VueRouter);
 
-const routes = [
-  {
-    path: "*",
-    redirect: "sample"
-  },
-  {
-    name: "sample",
-    component: () => import("./components/component/login"),
-    meta: {
-      title: "login"
+export const router = new VueRouter({
+  mode: "history",
+  routes: [
+    {
+      path: "/",
+      redirect: "/login"
+    },
+    {
+      name: "login",
+      path: "/login",
+      component: () => import("@/components/component/login"),
+      meta: { authRequired: false }
+    },
+    {
+      name: "provision",
+      path: "/provision",
+      component: () => import("@/components/component/provision"),
+      meta: { authRequired: true }
+    },
+    {
+      name: "certification",
+      path: "/certification",
+      component: () => import("@/components/component/certification"),
+      meta: { authRequired: true }
+    },
+    {
+      name: "userPage",
+      path: "/userPage",
+      component: () => import("@/components/component/userPage"),
+      meta: { authRequired: true }
+    },
+    {
+      name: "returnPage",
+      path: "/returnPage",
+      component: () => import("@/components/component/returnPage"),
+      meta: { authRequired: true }
+    },
+    {
+      path: "*",
+      component: () => import("@/components/component/login")
     }
-  },
-  {
-    name: "provision",
-    component: () => import("./components/component/provision"),
-    meta: {
-      title: "provision"
-    }
-  },
-  {
-    name: "certification",
-    component: () => import("./components/component/certification"),
-    meta: {
-      title: "certification"
-    }
-  },
-  {
-    name: "userPage",
-    component: () => import("./components/component/userPage"),
-    meta: {
-      title: "userPage"
-    }
-  },
-  {
-    name: "returnPage",
-    component: () => import("./components/component/returnPage"),
-    meta: {
-      title: "returnPage"
-    }
-  }
-];
-
-// add route path
-routes.forEach(route => {
-  route.path = route.path || "/" + (route.name || "");
+  ]
 });
-
-const router = new Router({ routes });
 
 router.beforeEach((to, from, next) => {
-  const title = to.meta && to.meta.title;
-  if (title) {
-    document.title = title;
+  if (
+    to.matched.some(routeInfo => {
+      return routeInfo.meta.authRequired;
+    }) &&
+    store.state.auth !== true
+  ) {
+    console.log("login plzzz");
+    next("login");
+  } else {
+    next();
   }
-  next();
 });
 
-export { router };
+export default { router };

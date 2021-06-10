@@ -88,7 +88,6 @@
           <div
             class="cert-main-info-type-num cert-main-info-type-day"
             @click="showPop"
-            :showPop="this.show"
           >
             <span class="day" :class="{ dayCSS: selectDay }">
               {{ years }}
@@ -223,8 +222,7 @@ export default {
       console.log("submit", values);
     },
     showPop() {
-      this.$store.state.show = true;
-      this.show = this.$store.state.show;
+      this.show = true;
     },
     parents(data) {
       this.show = data;
@@ -239,10 +237,22 @@ export default {
       this.selectDay = true;
     },
     sendFormAndMove() {
+      const userLicense = {
+        number: ""
+      };
+
       if (this.validate1) {
         if (this.validate2) {
           if (this.validate3) {
             this.$router.push("userPage");
+            if (!this.$store.state.isLocal) {
+              this.$axios
+                .get("/static/bookingInfo.json", userLicense)
+                .then((res, req) => {
+                  console.log(res);
+                });
+              this.$router.push("userPage");
+            }
             console.log(
               this.checked,
               this.value,
