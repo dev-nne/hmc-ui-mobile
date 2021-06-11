@@ -37,3 +37,10 @@ body {
 .van-cell::after {
   border-bottom: 1px solid rgba(0, 0, 0, 0.5);
 }
+
+/* certification */
+.van-toast__text {
+  padding: 5px;
+  font-size: 12px;
+  font-weight: 400;
+}

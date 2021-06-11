@@ -46,13 +46,14 @@
 </template>
 
 <script>
-import { Form, Field, Button, NumberKeyboard } from "vant";
+import { Form, Field, Button, NumberKeyboard, Toast } from "vant";
 export default {
   components: {
     [NumberKeyboard.name]: NumberKeyboard,
     [Button.name]: Button,
     [Field.name]: Field,
-    [Form.name]: Form
+    [Form.name]: Form,
+    [Toast.name]: Toast
   },
   data() {
     return {
@@ -88,6 +89,7 @@ export default {
         });
         this.$emit("cancelPop", false);
       }
+      Toast("동승자가 추가되었습니다.");
     },
     cancelFellow() {
       this.$emit("cancelPop", false);

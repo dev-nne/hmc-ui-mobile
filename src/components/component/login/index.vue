@@ -127,7 +127,7 @@ export default {
       };
 
       if (this.username.length > 1) {
-        if (this.phoneNum.length > 9) {
+        if (this.phoneNum.length > 7) {
           if (this.$store.state.isLocal === true) {
             this.$axios
               .get("/static/bookingInfo.json")
