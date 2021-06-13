@@ -242,57 +242,73 @@ export default {
       if (this.validate1) {
         if (this.validate2) {
           if (this.validate3) {
-            if (this.$store.state.isLocal) {
-              this.$axios.get("/static/licenseInfo.json").then(res => {
-                const code = res.data.code;
-                if (code === "00") {
+            if (!this.$store.state.isLocal) {
+              const licenseObj = {
+                tsrdPrctNo: "2018072310011" // 임시
+                // 하단에 면허 관련 추가 파라미터 추가 예정
+              };
+
+              this.$axios
+                // .post("/static/bookingInfo.json", userChecking)
+                .post(
+                  // "http://192.168.10.199:8080/mobile/license.do",
+                  "/mobile/license.do",
+                  licenseObj
+                )
+                .then((res, req) => {
+                  console.log(res);
                   this.$router.push("userPage");
-                } else if (code === "01") {
-                  Toast(
-                    "운전면허 발급 내역이 없습니다. 입력한 정보를 확인해 주세요."
-                  );
-                } else if (code === "01") {
-                  Toast(
-                    "만료된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-                  );
-                } else if (code === "02") {
-                  Toast(
-                    "만료된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-                  );
-                } else if (code === "03") {
-                  Toast(
-                    "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-                  );
-                } else if (code === "04") {
-                  Toast(
-                    "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-                  );
-                } else if (code === "11") {
-                  Toast(
-                    "정지된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-                  );
-                } else if (code === "12") {
-                  Toast(
-                    "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-                  );
-                } else if (code === "13") {
-                  Toast(
-                    "정지된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-                  );
-                } else if (code === "14") {
-                  Toast("입력한 정보(이름)를  확인해 주세요.");
-                } else if (code === "21") {
-                  Toast("입력한 정보(생년월일)를  확인해 주세요.");
-                } else if (code === "22") {
-                  Toast("입력한 정보를  확인해 주세요. ");
-                } else if (code === "23") {
-                  Toast("Some messages");
-                } else if (code === "24") {
-                  Toast("입력한 정보(면허종류)를  확인해 주세요.");
-                } else {
-                  Toast("입력한 정보를  확인해 주세요.");
-                }
-              });
+                });
+              // this.$axios.get("/static/licenseInfo.json").then(res => {
+              //   const code = res.data.code;
+              //   if (code === "00") {
+              //     this.$router.push("userPage");
+              //   } else if (code === "01") {
+              //     Toast(
+              //       "운전면허 발급 내역이 없습니다. 입력한 정보를 확인해 주세요."
+              //     );
+              //   } else if (code === "01") {
+              //     Toast(
+              //       "만료된 운전면허 입니다. 입력한 정보를  확인해 주세요."
+              //     );
+              //   } else if (code === "02") {
+              //     Toast(
+              //       "만료된 운전면허 입니다. 입력한 정보를  확인해 주세요."
+              //     );
+              //   } else if (code === "03") {
+              //     Toast(
+              //       "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
+              //     );
+              //   } else if (code === "04") {
+              //     Toast(
+              //       "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
+              //     );
+              //   } else if (code === "11") {
+              //     Toast(
+              //       "정지된 운전면허 입니다. 입력한 정보를  확인해 주세요."
+              //     );
+              //   } else if (code === "12") {
+              //     Toast(
+              //       "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
+              //     );
+              //   } else if (code === "13") {
+              //     Toast(
+              //       "정지된 운전면허 입니다. 입력한 정보를  확인해 주세요."
+              //     );
+              //   } else if (code === "14") {
+              //     Toast("입력한 정보(이름)를  확인해 주세요.");
+              //   } else if (code === "21") {
+              //     Toast("입력한 정보(생년월일)를  확인해 주세요.");
+              //   } else if (code === "22") {
+              //     Toast("입력한 정보를  확인해 주세요. ");
+              //   } else if (code === "23") {
+              //     Toast("Some messages");
+              //   } else if (code === "24") {
+              //     Toast("입력한 정보(면허종류)를  확인해 주세요.");
+              //   } else {
+              //     Toast("입력한 정보를  확인해 주세요.");
+              //   }
+              // });
             }
             console.log(
               this.checked,

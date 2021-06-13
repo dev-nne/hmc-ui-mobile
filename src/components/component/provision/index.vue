@@ -211,9 +211,11 @@ export default {
     },
     sendFormAndMove() {
       const userChecking = {
-        cecking: this.checked_1,
-        cecking2: this.checked_2,
-        cecking3: this.checked_3
+        tsrdPrctNo: "2018072310011", // 임시
+        prctInfoAgrYn: this.checked_1 === true ? "Y" : "N",
+        prctInfoCjgtAgrYn: this.checked_2 === true ? "Y" : "N",
+        prctMarketingYn: this.checked_3 === true ? "Y" : "N",
+        signImg: "signImgString"
       };
 
       if (this.checked_1 && this.checked_2) {
@@ -222,7 +224,12 @@ export default {
           console.log(userChecking);
           if (!this.$store.state.isLocal) {
             this.$axios
-              .post("/static/bookingInfo.json", userChecking)
+              // .post("/static/bookingInfo.json", userChecking)
+              .post(
+                // "http://192.168.10.199:8080/mobile/agreement.do",
+                "/mobile/agreement.do",
+                userChecking
+              )
               .then((res, req) => {
                 console.log(res);
               });

@@ -7,7 +7,7 @@ Vue.use(Vuex);
 
 export const store = new Vuex.Store({
   state: {
-    isLocal: true,
+    isLocal: false,
     auth: false,
     // 고객정보
     userInfo: {

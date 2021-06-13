@@ -119,11 +119,16 @@ export default {
   methods: {
     submit() {
       const phoneNumber = this.phoneNum.slice(-4, this.phoneNum.length);
+      // const userInfo = {
+      //   CHAN_SCN_CD: "02",
+      //   ORG_SCN_CD: "A",
+      //   SBCR_NM: this.username,
+      //   SBCR_CCPC: phoneNumber
+      // };
       const userInfo = {
-        CHAN_SCN_CD: "02",
-        ORG_SCN_CD: "A",
-        SBCR_NM: this.username,
-        SBCR_CCPC: phoneNumber
+        userName: this.username,
+        phone: phoneNumber,
+        tsrdPrctNo: "2018072310011"
       };
 
       if (this.username.length > 1) {
@@ -144,15 +149,41 @@ export default {
                 console.log("에러코드:" + err);
               });
           } else {
-            this.$axios.post("/static/bookingInfo.json", userInfo).then(res => {
-              if (res.data.infoResponse.rsp_CD === JSON.stringify(0)) {
-                this.$store.state.auth = true;
-                this.$store.commit("userInfoSetting", res.data);
-                this.$router.push("provision");
-              } else {
-                this.alert1 = true;
-              }
-            });
+            this.$axios
+              // .post("http://192.168.10.199:8080/mobile/login.do", userInfo)
+              .post("/mobile/login.do", userInfo)
+              .then(res => {
+                if (res.data.infoResponse.rsp_CD === "200") {
+                  this.$store.state.auth = true;
+                  this.$store.commit("userInfoSetting", res.data);
+                  this.$router.push("provision");
+
+                  // 예약정보 확인후 user에 대한 동의 여부 및 싸인 여부에 대한 체크 API 호출
+                  const userCheckObj = {
+                    tsrdPrctNo: "2018072310011"
+                  };
+                  this.$axios
+                    .post(
+                      // "http://192.168.10.199:8080/mobile/getUserInfoById.do",
+                      "/mobile/getUserInfoById.do",
+                      userCheckObj
+                    )
+                    // .post("/mobile/login.do", userInfo)
+                    .then(res => {
+                      if (res.data.infoResponse.rsp_CD === "200") {
+                        this.$store.state.auth = true;
+                        this.$store.commit("userInfoSetting", res.data);
+                        this.$router.push("provision");
+
+                        // 예약정보 확인후 user에 대한 동의 여부 및 싸인 여부에 대한 체크 API 호출
+                      } else {
+                        this.alert1 = true;
+                      }
+                    });
+                } else {
+                  this.alert1 = true;
+                }
+              });
           }
         } else {
           this.alert2 = true;

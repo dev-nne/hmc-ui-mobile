@@ -220,29 +220,67 @@ export default {
       this.show[0] = false;
       this.img[0].click = false;
       console.log(this.show);
-      Notify({
-        type: "primary",
-        message: "잠금이 해제되었습니다.",
-        duration: 1500
-      });
+
+      let doorObj = {
+        tsrdPrctNo: "2018072310011", // 임시
+        action: "open" // open, close
+      };
+
+      this.$axios
+        // .post("/static/bookingInfo.json", userChecking)
+        // .post("http://192.168.10.199:8080/control/door.do", doorObj)
+        .post("/control/door.do", doorObj)
+        .then((res, req) => {
+          console.log(res);
+          Notify({
+            type: "primary",
+            message: "잠금이 해제되었습니다.",
+            duration: 1500
+          });
+        });
     },
     confirm2() {
       this.show[1] = false;
       this.img[1].click = false;
-      Notify({
-        type: "primary",
-        message: "잠금설정 되었습니다.",
-        duration: 1500
-      });
+
+      let doorObj = {
+        tsrdPrctNo: "2018072310011", // 임시
+        action: "close" // open, close
+      };
+
+      this.$axios
+        // .post("/static/bookingInfo.json", userChecking)
+        // .post("http://192.168.10.199:8080/control/door.do", doorObj)
+        .post("/control/door.do", doorObj)
+        .then((res, req) => {
+          console.log(res);
+          Notify({
+            type: "primary",
+            message: "잠금설정 되었습니다.",
+            duration: 1500
+          });
+        });
     },
     confirm3() {
       this.show[2] = false;
       this.img[2].click = false;
-      Notify({
-        type: "primary",
-        message: "비상등을 켭니다.",
-        duration: 1500
-      });
+
+      let hornObj = {
+        tsrdPrctNo: "2018072310011" // 임시
+      };
+
+      this.$axios
+        // .post("/static/bookingInfo.json", userChecking)
+        // .post("http://192.168.10.199:8080/control/horn.do", hornObj)
+        .post("/control/horn.do", hornObj)
+        .then((res, req) => {
+          console.log(res);
+          Notify({
+            type: "primary",
+            message: "비상등을 켭니다.",
+            duration: 1500
+          });
+        });
     },
     handlePopup(x) {
       this.show[x] = true;
@@ -251,6 +289,18 @@ export default {
       this.$router.push("returnPage");
       this.$store.state.auth = false;
       this.$store.state.fellow = false;
+
+      let returnObj = {
+        tsrdPrctNo: "2018072310011" // 임시
+      };
+
+      this.$axios
+        // .post("/static/bookingInfo.json", userChecking)
+        // .post("http://192.168.10.199:8080/control/return.do", returnObj)
+        .post("/control/return.do", returnObj)
+        .then((res, req) => {
+          console.log(res);
+        });
     },
     cancel(x) {
       this.show[x] = false;
