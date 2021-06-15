@@ -9,7 +9,7 @@
         </div>
 
         <div class="user-main-carbox-img">
-          <img src="@/assets/car.png" alt="" />
+          <img src="/static/car.png" alt="" />
         </div>
       </div>
 
@@ -23,42 +23,42 @@
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="[clickBtn(0), handlePopup(0)]"
-              :class="{ clicked: img[0].click }"
+              @click="handlePopup(0)"
+              :class="{ clicked: show[0] }"
             >
-              <img :src="img[0].click ? img[0].srcW : img[0].src" />
+              <img src="@/assets/icon2.svg" />
+              <span>문 열기</span>
             </div>
-            <span>문 열기</span>
           </div>
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="[clickBtn(1), handlePopup(1)]"
-              :class="{ clicked: img[1].click }"
+              @click="handlePopup(1)"
+              :class="{ clicked: show[1] }"
             >
-              <img :src="img[1].click ? img[1].srcW : img[1].src" />
+              <img src="@/assets/icon1.svg" />
+              <span>문 잠금</span>
             </div>
-            <span>문 잠금</span>
           </div>
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="[clickBtn(2), handlePopup(2)]"
-              :class="{ clicked: img[2].click }"
+              @click="handlePopup(2)"
+              :class="{ clicked: show[2] }"
             >
-              <img :src="img[2].click ? img[2].srcW : img[2].src" />
+              <img src="@/assets/icon3.svg" />
+              <span>비상등</span>
             </div>
-            <span>비상등</span>
           </div>
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="[clickBtn(3), handlePopup(3)]"
-              :class="{ clicked: img[3].click }"
+              @click="handlePopup(3)"
+              :class="{ clicked: show[3] }"
             >
-              <img :src="img[3].click ? img[3].srcW : img[3].src" />
+              <img src="@/assets/icon4.svg" />
+              <span>차량반납</span>
             </div>
-            <span>차량반납</span>
           </div>
         </div>
       </div>
@@ -123,11 +123,7 @@
         </div>
       </van-popup>
 
-      <div
-        class="user-main-fellow"
-        :class="{ clicked: fellow }"
-        @click="fellowAdd"
-      >
+      <div class="user-main-fellow" @click="fellowAdd">
         동승자 교대 시승하기
       </div>
 
@@ -169,14 +165,6 @@ import TopMenu from "../TopMenu";
 import FooterBar from "../FooterBar";
 import FellowField from "./FellowField.vue";
 import UserInfo from "../provision/UserInfo";
-import img1 from "@/assets/icon2.png";
-import img2 from "@/assets/icon1.png";
-import img3 from "@/assets/icon3.png";
-import img4 from "@/assets/icon4.png";
-import img1W from "@/assets/icon2_white.png";
-import img2W from "@/assets/icon1_white.png";
-import img3W from "@/assets/icon3_white.png";
-import img4W from "@/assets/icon4_white.png";
 
 export default {
   components: {
@@ -189,12 +177,6 @@ export default {
   },
   data() {
     return {
-      img: [
-        { click: false, src: img1, srcW: img1W },
-        { click: false, src: img2, srcW: img2W },
-        { click: false, src: img3, srcW: img3W },
-        { click: false, src: img4, srcW: img4W }
-      ],
       fellow: false,
       show: [false, false, false, false],
       userInfo: {},
@@ -210,16 +192,8 @@ export default {
     this.userInfo = this.$store.state.userInfo;
   },
   methods: {
-    clickBtn(x) {
-      this.img.map(x => {
-        x.click = false;
-      });
-      this.img[x].click = true;
-    },
     confirm1() {
-      this.show[0] = false;
-      this.img[0].click = false;
-      console.log(this.show);
+      this.show = [...false];
 
       let doorObj = {
         tsrdPrctNo: "2018072310011", // 임시
@@ -227,9 +201,9 @@ export default {
       };
 
       this.$axios
-        // .post("/static/bookingInfo.json", userChecking)
         // .post("http://192.168.10.199:8080/control/door.do", doorObj)
-        .post("/control/door.do", doorObj)
+        .post("/control/car.do", doorObj)
+        // .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
         .then((res, req) => {
           console.log(res);
           Notify({
@@ -240,18 +214,19 @@ export default {
         });
     },
     confirm2() {
-      this.show[1] = false;
-      this.img[1].click = false;
+      this.show = [...false];
 
       let doorObj = {
         tsrdPrctNo: "2018072310011", // 임시
-        action: "close" // open, close
+        action: "close" // open, closes
       };
 
       this.$axios
         // .post("/static/bookingInfo.json", userChecking)
         // .post("http://192.168.10.199:8080/control/door.do", doorObj)
-        .post("/control/door.do", doorObj)
+        .post("/control/car.do", doorObj)
+        // .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
+
         .then((res, req) => {
           console.log(res);
           Notify({
@@ -262,9 +237,7 @@ export default {
         });
     },
     confirm3() {
-      this.show[2] = false;
-      this.img[2].click = false;
-
+      this.show = [...false];
       let hornObj = {
         tsrdPrctNo: "2018072310011" // 임시
       };
@@ -283,6 +256,7 @@ export default {
         });
     },
     handlePopup(x) {
+      this.show = [...this.show];
       this.show[x] = true;
     },
     clickCarReturn() {
@@ -303,14 +277,9 @@ export default {
         });
     },
     cancel(x) {
-      this.show[x] = false;
-      this.img[x].click = false;
+      this.show = [...false];
     },
     fellowAdd() {
-      this.img.map(x => {
-        x.click = false;
-      });
-
       if (!this.$store.state.fellow) {
         this.fellow = true;
       } else {

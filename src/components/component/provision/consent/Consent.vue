@@ -113,11 +113,10 @@ export default {
       padding: 10px;
       line-height: 18px;
       background: #eeeeee;
-      border-radius: 10px;
       margin-bottom: 10px;
 
       span {
-        color: #ce1212;
+        color: #e63312;
         font-weight: 600;
       }
     }
@@ -140,15 +139,15 @@ export default {
     h5 {
       font-weight: 400;
       line-height: 14px;
-      color: #ce1212;
+      color: #e63312;
     }
 
     button {
       padding: 10px 0;
       border: none;
       outline: none;
-      border-radius: 20px;
       background: #012c5f;
+      font-family: "HyundaiSansHead";
       color: white;
       width: 60%;
     }

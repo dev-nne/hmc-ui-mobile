@@ -115,12 +115,17 @@ export default {
       justify-content: space-between;
       margin-top: 30px;
       margin-bottom: 10px;
+      font-size: 14px;
 
       button {
         width: 48.5%;
         height: auto;
         padding: 8px 0;
-        border-radius: 20px;
+      }
+
+      .closeBtn {
+        background: #e2e2e2;
+        border: none;
       }
     }
   }

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+  <g id="그룹_15" data-name="그룹 15" transform="translate(4039 3327)">
+    <rect id="사각형_7" data-name="사각형 7" width="36" height="36" transform="translate(-4039 -3327)" fill="none"/>
+    <g id="그룹_6" data-name="그룹 6" transform="translate(-4555.699 -3861.953)">
+      <path id="패스_5" data-name="패스 5" d="M527.285,557.1l5.11-4.074s9.481-.146,9.873,0,.729,2.108-.392,2.192-4.721.523-5.812.613-1.818,1.6-1.313,1.717,7.573,1.4,7.573,1.4,4.825-5.583,5.779-5.986,2.917-.715,2.974,0-6.228,11.43-6.957,11.768-13.982,1.108-13.982,1.108Z" transform="translate(-1.186 -2.189)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <path id="패스_6" data-name="패스 6" d="M525.138,556.685l-5.093,1.663c-.307.1-.407.635-.225,1.194l3.035,9.288c.183.559.579.927.886.831L528.835,568c.306-.1.407-.635.224-1.194l-3.035-9.288C525.841,556.957,525.445,556.585,525.138,556.685Z" transform="translate(0 -2.838)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      <g id="그룹_5" data-name="그룹 5" transform="translate(527.07 538.583)">
+        <circle id="타원_1" data-name="타원 1" cx="4.726" cy="4.726" r="4.726" transform="translate(0)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <circle id="타원_2" data-name="타원 2" cx="1.147" cy="1.147" r="1.147" transform="translate(1.604 3.579)"/>
+        <path id="패스_7" data-name="패스 7" d="M539.212,545.772h9.05l1.793-2.151-1.793-2.151h-1.48a2.439,2.439,0,0,0,.034-.392c0-.755-.318-1.366-.711-1.366s-.711.611-.711,1.366a2.432,2.432,0,0,0,.034.392h-1.012a2.427,2.427,0,0,0,.034-.392c0-.754-.318-1.366-.711-1.366s-.711.611-.711,1.366a2.542,2.542,0,0,0,.034.392h-3.847" transform="translate(-530.127 -538.76)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+        <line id="선_4" data-name="선 4" x2="7.161" transform="translate(9.452 4.725)" fill="none" stroke="#000" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"/>
+      </g>
+    </g>
+  </g>
+</svg>

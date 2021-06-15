@@ -21,10 +21,9 @@
           <a ref="callNum" href="tel"> {{ this.userInfo.spaceNumber }}</a>
         </p>
 
-        <div class="userInfo-box-content-collapseBox">
-          <van-icon :name="icon" class="collapseBtn" @click="clickCollapseBtn">
-            상세보기
-          </van-icon>
+        <div class="userInfo-box-content-collapseBox" @click="clickCollapseBtn">
+          <van-icon :name="icon" class="collapseBtn"> </van-icon>
+          상세보기
         </div>
         <div class="collapse" v-if="collapse">
           <p class="parking">주차장</p>
@@ -103,8 +102,12 @@ export default {
         display: flex;
         justify-content: flex-end;
         margin-bottom: 5px;
-        color: #002c5e;
-        font-weight: 600;
+        font-family: "H undaiSansHead";
+        align-items: center;
+
+        .collapseBtn {
+          margin-right: 4px;
+        }
       }
     }
   }

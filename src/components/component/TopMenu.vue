@@ -17,7 +17,7 @@
 export default {
   methods: {
     gohome() {
-      this.$router.push("login");
+      this.$router.push("login").catch(() => {});
     }
   }
 };

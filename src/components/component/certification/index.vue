@@ -24,10 +24,10 @@
               direction="horizontal"
               icon-size="16px"
             >
-              <van-radio name="1">2종 보통</van-radio>
-              <van-radio name="2">1종 소형</van-radio>
-              <van-radio name="3">1종 보통</van-radio>
-              <van-radio name="4">1종 대형</van-radio>
+              <van-radio name="1" shape="square">2종 보통</van-radio>
+              <van-radio name="2" shape="square">1종 소형</van-radio>
+              <van-radio name="3" shape="square">1종 보통</van-radio>
+              <van-radio name="4" shape="square">1종 대형</van-radio>
             </van-radio-group>
           </div>
         </div>
@@ -244,7 +244,7 @@ export default {
           if (this.validate3) {
             if (!this.$store.state.isLocal) {
               const licenseObj = {
-                tsrdPrctNo: "2018072310011" // 임시
+                tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
                 // 하단에 면허 관련 추가 파라미터 추가 예정
               };
 
@@ -252,7 +252,7 @@ export default {
                 // .post("/static/bookingInfo.json", userChecking)
                 .post(
                   // "http://192.168.10.199:8080/mobile/license.do",
-                  "/mobile/license.do",
+                  "https://hyundai-driving.mocean.com/mobile/license.do",
                   licenseObj
                 )
                 .then((res, req) => {

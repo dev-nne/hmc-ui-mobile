@@ -37,10 +37,10 @@
                 icon-size="14px"
                 v-model="checked_1"
                 @click="toggle('a')"
-                ><span class="red">(필수)</span> 시승차 이용 및 서비스 이용
+                ><span>(필수)</span> 시승차 이용 및 서비스 이용
                 약관</van-checkbox
               ><van-icon name="arrow" class="goProv" @click="showPopup1" />
-              <van-popup v-model="show1" closeable class="consent-popup" round
+              <van-popup v-model="show1" closeable class="consent-popup"
                 ><Consent @sentToAgreement="getAgreement1"
               /></van-popup>
             </div>
@@ -53,10 +53,9 @@
                 shape="squre"
                 v-model="checked_2"
                 @click="toggle('b')"
-                ><span class="red">(필수)</span> 개인정보 수집 및
-                이용안내</van-checkbox
+                ><span>(필수)</span> 개인정보 수집 및 이용안내</van-checkbox
               ><van-icon name="arrow" class="goProv" @click="showPopup2" />
-              <van-popup v-model="show2" closeable round class="consent-popup"
+              <van-popup v-model="show2" closeable class="consent-popup"
                 ><Consent2 @sentToAgreement="getAgreement2"
               /></van-popup>
             </div>
@@ -80,7 +79,7 @@
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup3" />
-              <van-popup v-model="show3" closeable round class="consent-popup"
+              <van-popup v-model="show3" closeable class="consent-popup"
                 ><Consent3 @sentToAgreement="getAgreement3"
               /></van-popup>
             </div>
@@ -162,7 +161,8 @@ export default {
       show3: false,
       alert: false,
       alert2: false,
-      drawing: false
+      drawing: false,
+      drawingCode: ""
     };
   },
   mounted() {
@@ -210,28 +210,28 @@ export default {
       });
     },
     sendFormAndMove() {
-      const userChecking = {
+      let userChecking = {
         tsrdPrctNo: "2018072310011", // 임시
         prctInfoAgrYn: this.checked_1 === true ? "Y" : "N",
         prctInfoCjgtAgrYn: this.checked_2 === true ? "Y" : "N",
         prctMarketingYn: this.checked_3 === true ? "Y" : "N",
-        signImg: "signImgString"
+        signImg: ""
       };
 
       if (this.checked_1 && this.checked_2) {
         if (this.drawing) {
-          this.$router.push("certification");
+          userChecking.signImg = this.$refs.canvas.sendImgCode();
           console.log(userChecking);
           if (!this.$store.state.isLocal) {
             this.$axios
-              // .post("/static/bookingInfo.json", userChecking)
               .post(
                 // "http://192.168.10.199:8080/mobile/agreement.do",
-                "/mobile/agreement.do",
+                "https://hyundai-driving.mocean.com/mobile/agreement.do",
                 userChecking
               )
               .then((res, req) => {
                 console.log(res);
+                this.$router.push("certification");
               });
           }
           this.checked_1 = false;

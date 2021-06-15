@@ -151,33 +151,39 @@ export default {
           } else {
             this.$axios
               // .post("http://192.168.10.199:8080/mobile/login.do", userInfo)
-              .post("/mobile/login.do", userInfo)
+              .post(
+                "https://hyundai-driving.mocean.com/mobile/login.do",
+                userInfo
+              )
               .then(res => {
+                console.log(res);
                 if (res.data.infoResponse.rsp_CD === "200") {
                   this.$store.state.auth = true;
                   this.$store.commit("userInfoSetting", res.data);
-                  this.$router.push("provision");
 
                   // 예약정보 확인후 user에 대한 동의 여부 및 싸인 여부에 대한 체크 API 호출
                   const userCheckObj = {
-                    tsrdPrctNo: "2018072310011"
+                    tsrdPrctNo: this.$store.state.userInfo.bookNumber
                   };
+
                   this.$axios
                     .post(
                       // "http://192.168.10.199:8080/mobile/getUserInfoById.do",
-                      "/mobile/getUserInfoById.do",
+                      "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do",
                       userCheckObj
                     )
                     // .post("/mobile/login.do", userInfo)
                     .then(res => {
-                      if (res.data.infoResponse.rsp_CD === "200") {
-                        this.$store.state.auth = true;
-                        this.$store.commit("userInfoSetting", res.data);
-                        this.$router.push("provision");
-
-                        // 예약정보 확인후 user에 대한 동의 여부 및 싸인 여부에 대한 체크 API 호출
+                      // 인증 정보를 호출하여 인증정보에 따른 페이지 전환
+                      console.log(res.data);
+                      if (res.data.prctInfoAgrYn === "Y") {
+                        if (res.data.prctInfoCjgtAgrYn === "Y") {
+                          this.$router.push("userPage");
+                        } else {
+                          this.$router.push("certification");
+                        }
                       } else {
-                        this.alert1 = true;
+                        this.$router.push("provision");
                       }
                     });
                 } else {

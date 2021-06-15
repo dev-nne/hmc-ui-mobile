@@ -7,6 +7,7 @@ body {
   background-color: #fff;
   color: #333;
   font-family: "HyundaiSansText" !important;
+  font-weight: 400;
 }
 
 * {
@@ -43,4 +44,18 @@ body {
   padding: 5px;
   font-size: 12px;
   font-weight: 400;
+}
+
+.van-picker__confirm,
+.van-picker__cancel {
+  font-family: "HyundaiSansHead";
+  font-weight: 400;
+}
+
+.van-picker__title.van-ellipsis {
+  font-family: "HyundaiSansHead";
+  font-weight: 600;
+}
+.van-popup--bottom.van-popup--round {
+  border-radius: 0 !important;
 }
