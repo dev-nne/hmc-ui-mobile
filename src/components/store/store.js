@@ -20,6 +20,7 @@ export const store = new Vuex.Store({
       address: "",
       spaceNumber: ""
     },
+    agreementInfo: {},
     fellow: false
   },
   getters: getters,

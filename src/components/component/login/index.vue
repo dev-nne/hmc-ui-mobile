@@ -6,41 +6,29 @@
       <div class="login-main-title">현대자동차 시승서비스</div>
 
       <div class="login-main-form-box">
-        <van-form>
-          <van-field
-            v-model="username"
-            name="Username"
-            label=""
-            placeholder="이름"
-            :rules="[{ required: true, message: 'Username is required' }]"
-          />
-          <van-field
-            v-model="phoneNum"
-            readonly
-            clickable
-            :value="phoneNum"
-            @touchstart.native.stop="show = true"
-            placeholder="전화번호"
-            :rules="[{ required: true, message: 'Phone Number is required' }]"
-          />
-          <van-number-keyboard
-            v-model="phoneNum"
-            :show="show"
-            :maxlength="11"
-            @blur="show = false"
-          />
-          <div class="login-main-form-box-button">
-            <van-button
-              color="#012c5f"
-              block
-              native-type="submit"
-              class="loginBtn"
-              @click="submit"
-            >
-              로그인
-            </van-button>
-          </div>
-        </van-form>
+        <input class="input" v-model="username" placeholder="이름" />
+        <input
+          type="number"
+          class="input"
+          v-model="phoneNum"
+          placeholder="전화번호"
+          pattern="\d*"
+          maxlength="11"
+          oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        />
+
+        <div class="login-main-form-box-button">
+          <van-button
+            color="#012c5f"
+            block
+            native-type="submit"
+            class="loginBtn"
+            @click="submit"
+          >
+            로그인
+          </van-button>
+        </div>
 
         <van-popup v-model="alert1" class="alert"
           ><p>
@@ -80,8 +68,7 @@ import {
   Tabbar,
   TabbarItem,
   Notify,
-  Popup,
-  NumberKeyboard
+  Popup
 } from "vant";
 import TopMenu from "../TopMenu.vue";
 import FooterBar from "../FooterBar";
@@ -90,7 +77,6 @@ import FooterBar from "../FooterBar";
 export default {
   components: {
     [TabbarItem.name]: TabbarItem,
-    [NumberKeyboard.name]: NumberKeyboard,
     [Notify.name]: Notify,
     [Popup.name]: Popup,
     [Tabbar.name]: Tabbar,
@@ -110,15 +96,22 @@ export default {
       show: false,
       alert1: false,
       alert2: false,
-      alert3: false
+      alert3: false,
+      param: ""
     };
   },
   mounted() {
     window.scrollTo(0, 0);
+    this.$router
+      .push({ name: "login", query: { id: "2018072310011" } })
+      .catch(() => {}); // 파라미터값 입력
+    this.param = this.$route.query.id; // 파라미터값 받아오기
+    console.log(this.$route.query.id);
   },
   methods: {
     submit() {
-      const phoneNumber = this.phoneNum.slice(-4, this.phoneNum.length);
+      // const phoneNumber = this.phoneNum.slice(-4, this.phoneNum.length);
+      const phoneNumber = this.phoneNum;
       // const userInfo = {
       //   CHAN_SCN_CD: "02",
       //   ORG_SCN_CD: "A",
@@ -128,8 +121,10 @@ export default {
       const userInfo = {
         userName: this.username,
         phone: phoneNumber,
-        tsrdPrctNo: "2018072310011"
+        tsrdPrctNo: this.param
       };
+
+      // "2018072310011"
 
       if (this.username.length > 1) {
         if (this.phoneNum.length > 7) {
@@ -156,7 +151,7 @@ export default {
                 userInfo
               )
               .then(res => {
-                console.log(res);
+                console.log(res.data.infoResponse.rsp_CD);
                 if (res.data.infoResponse.rsp_CD === "200") {
                   this.$store.state.auth = true;
                   this.$store.commit("userInfoSetting", res.data);
@@ -178,9 +173,9 @@ export default {
                       console.log(res.data);
                       if (res.data.prctInfoAgrYn === "Y") {
                         if (res.data.prctInfoCjgtAgrYn === "Y") {
-                          this.$router.push("userPage");
+                          this.$router.push("provision"); // userPage
                         } else {
-                          this.$router.push("certification");
+                          this.$router.push("provision"); // certification
                         }
                       } else {
                         this.$router.push("provision");

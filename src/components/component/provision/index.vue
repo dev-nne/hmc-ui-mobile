@@ -211,7 +211,7 @@ export default {
     },
     sendFormAndMove() {
       let userChecking = {
-        tsrdPrctNo: "2018072310011", // 임시
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
         prctInfoAgrYn: this.checked_1 === true ? "Y" : "N",
         prctInfoCjgtAgrYn: this.checked_2 === true ? "Y" : "N",
         prctMarketingYn: this.checked_3 === true ? "Y" : "N",
@@ -232,6 +232,7 @@ export default {
               .then((res, req) => {
                 console.log(res);
                 this.$router.push("certification");
+                this.$store.commit("agreementRes", res.data);
               });
           }
           this.checked_1 = false;

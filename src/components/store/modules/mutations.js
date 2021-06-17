@@ -17,8 +17,12 @@ const userInfoSetting = (state, data) => {
   });
 };
 
+const agreementRes = (state, data) => {
+  console.log(data);
+  state.agreementInfo = data;
+};
+
 const felloInfoSetting = (state, res, req) => {
   console.log(res, req);
 };
-
-export { userInfoSetting, felloInfoSetting };
+export { userInfoSetting, felloInfoSetting, agreementRes };

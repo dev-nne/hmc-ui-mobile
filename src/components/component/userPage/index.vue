@@ -202,7 +202,7 @@ export default {
 
       this.$axios
         // .post("http://192.168.10.199:8080/control/door.do", doorObj)
-        .post("/control/car.do", doorObj)
+        .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
         // .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
         .then((res, req) => {
           console.log(res);
@@ -224,7 +224,7 @@ export default {
       this.$axios
         // .post("/static/bookingInfo.json", userChecking)
         // .post("http://192.168.10.199:8080/control/door.do", doorObj)
-        .post("/control/car.do", doorObj)
+        .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
         // .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
 
         .then((res, req) => {
@@ -245,7 +245,7 @@ export default {
       this.$axios
         // .post("/static/bookingInfo.json", userChecking)
         // .post("http://192.168.10.199:8080/control/horn.do", hornObj)
-        .post("/control/horn.do", hornObj)
+        .post("https://hyundai-driving.mocean.com/control/horn.do", hornObj)
         .then((res, req) => {
           console.log(res);
           Notify({
@@ -265,15 +265,26 @@ export default {
       this.$store.state.fellow = false;
 
       let returnObj = {
-        tsrdPrctNo: "2018072310011" // 임시
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
       };
 
       this.$axios
         // .post("/static/bookingInfo.json", userChecking)
         // .post("http://192.168.10.199:8080/control/return.do", returnObj)
-        .post("/control/return.do", returnObj)
+        .post("https://hyundai-driving.mocean.com//control/check.do", returnObj)
         .then((res, req) => {
-          console.log(res);
+          if (res.data) {
+            this.$axios
+              // .post("/static/bookingInfo.json", userChecking)
+              // .post("http://192.168.10.199:8080/control/return.do", returnObj)
+              .post(
+                "https://hyundai-driving.mocean.com/control/return.do",
+                returnObj
+              )
+              .then((res, req) => {
+                console.log(res);
+              });
+          }
         });
     },
     cancel(x) {

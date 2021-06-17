@@ -46,7 +46,7 @@
                 class="cert-main-info-type-num-field"
               /><van-icon name="arrow-down" />
             </div>
-            <van-popup v-model="showPicker" round position="bottom">
+            <van-popup v-model="showPicker" position="bottom">
               <van-picker
                 title="발급지역"
                 show-toolbar
@@ -61,28 +61,18 @@
             </van-popup>
 
             <div class="cert-main-info-type-num-input">
-              <van-field
-                readonly
-                clickable
-                :value="keyValue"
-                @touchstart.native.stop="keypadShow = true"
-                ref="numberKeyinput"
-                placeholder="면허번호 10자리"
-              />
-              <van-number-keyboard
+              <input
+                type="number"
+                class="input"
                 v-model="keyValue"
-                :show="keypadShow"
-                :maxlength="10"
-                @blur="closeKeypad"
-                close-button-text="Close"
+                placeholder="면허번호 10자리"
+                pattern="\d*"
+                maxlength="10"
+                oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                ref="numberKeyinput"
               />
             </div>
-
-            <!-- <input
-              type="text"
-              class="cert-main-info-type-num-input"
-              placeholder="숫자를 입력하세요"
-            /> -->
           </div>
           <div class="cert-main-info-type-title">발급일</div>
           <div
@@ -240,14 +230,21 @@ export default {
     },
     sendFormAndMove() {
       if (this.validate1) {
-        if (this.validate2) {
+        if (this.keyValue.length === 10) {
           if (this.validate3) {
             if (!this.$store.state.isLocal) {
               const licenseObj = {
-                tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
-                // 하단에 면허 관련 추가 파라미터 추가 예정
+                tsrdPrctNo: this.$store.state.userInfo.bookNumber,
+                licenseNo: this.value + this.keyValue,
+                residentName: this.$store.state.agreementInfo.userName,
+                residentDate: `${this.years}${this.month}${this.day}`,
+                licenseConCode: this.checked, // 이 부분 면허종별 코드 맞나요~?~?~? 1종 2종 이런거,,,
+                country: "{{country}}",
+                language: "{{language}}",
+                terminal: "{{terminal}}"
               };
 
+              console.log(licenseObj.licenseNo);
               this.$axios
                 // .post("/static/bookingInfo.json", userChecking)
                 .post(
@@ -258,7 +255,8 @@ export default {
                 .then((res, req) => {
                   console.log(res);
                   this.$router.push("userPage");
-                });
+                })
+                .catch(err => console.log(err));
               // this.$axios.get("/static/licenseInfo.json").then(res => {
               //   const code = res.data.code;
               //   if (code === "00") {
@@ -310,14 +308,6 @@ export default {
               //   }
               // });
             }
-            console.log(
-              this.checked,
-              this.value,
-              this.keyValue,
-              this.years,
-              this.month,
-              this.day
-            );
           } else {
             this.alert3 = true;
           }
@@ -329,7 +319,8 @@ export default {
       }
     },
     onConfirm(value) {
-      this.value = value;
+      let v = value.replace(/[^0-9]/g, "");
+      this.value = v;
       this.showPicker = false;
       this.validate1 = true;
     },
@@ -342,12 +333,9 @@ export default {
     closeAlert3() {
       this.alert3 = false;
     },
-    closeKeypad() {
-      this.keypadShow = false;
-      if (this.keyValue.length === 10) {
-        this.validate2 = true;
-      } else {
-        this.validate2 = false;
+    maxLengthCheck(object) {
+      if (object.value.length > object.maxLength) {
+        object.value = object.value.slice(0, object.maxLength);
       }
     }
   }
