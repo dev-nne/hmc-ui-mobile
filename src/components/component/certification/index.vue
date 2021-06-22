@@ -24,10 +24,10 @@
               direction="horizontal"
               icon-size="16px"
             >
-              <van-radio name="1" shape="square">2종 보통</van-radio>
-              <van-radio name="2" shape="square">1종 소형</van-radio>
-              <van-radio name="3" shape="square">1종 보통</van-radio>
-              <van-radio name="4" shape="square">1종 대형</van-radio>
+              <van-radio name="32" shape="square">2종 보통</van-radio>
+              <van-radio name="13" shape="square">1종 소형</van-radio>
+              <van-radio name="12" shape="square">1종 보통</van-radio>
+              <van-radio name="11" shape="square">1종 대형</van-radio>
             </van-radio-group>
           </div>
         </div>
@@ -162,7 +162,7 @@ export default {
   },
   data() {
     return {
-      checked: "1",
+      checked: "32",
       years: "",
       month: "",
       day: "",
@@ -232,82 +232,32 @@ export default {
       if (this.validate1) {
         if (this.keyValue.length === 10) {
           if (this.validate3) {
-            if (!this.$store.state.isLocal) {
-              const licenseObj = {
-                tsrdPrctNo: this.$store.state.userInfo.bookNumber,
-                licenseNo: this.value + this.keyValue,
-                residentName: this.$store.state.agreementInfo.userName,
-                residentDate: `${this.years}${this.month}${this.day}`,
-                licenseConCode: this.checked, // 이 부분 면허종별 코드 맞나요~?~?~? 1종 2종 이런거,,,
-                country: "{{country}}",
-                language: "{{language}}",
-                terminal: "{{terminal}}"
-              };
-
-              console.log(licenseObj.licenseNo);
-              this.$axios
-                // .post("/static/bookingInfo.json", userChecking)
-                .post(
-                  // "http://192.168.10.199:8080/mobile/license.do",
-                  "https://hyundai-driving.mocean.com/mobile/license.do",
-                  licenseObj
-                )
-                .then((res, req) => {
-                  console.log(res);
-                  this.$router.push("userPage");
-                })
-                .catch(err => console.log(err));
-              // this.$axios.get("/static/licenseInfo.json").then(res => {
-              //   const code = res.data.code;
-              //   if (code === "00") {
-              //     this.$router.push("userPage");
-              //   } else if (code === "01") {
-              //     Toast(
-              //       "운전면허 발급 내역이 없습니다. 입력한 정보를 확인해 주세요."
-              //     );
-              //   } else if (code === "01") {
-              //     Toast(
-              //       "만료된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-              //     );
-              //   } else if (code === "02") {
-              //     Toast(
-              //       "만료된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-              //     );
-              //   } else if (code === "03") {
-              //     Toast(
-              //       "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-              //     );
-              //   } else if (code === "04") {
-              //     Toast(
-              //       "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-              //     );
-              //   } else if (code === "11") {
-              //     Toast(
-              //       "정지된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-              //     );
-              //   } else if (code === "12") {
-              //     Toast(
-              //       "취소된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-              //     );
-              //   } else if (code === "13") {
-              //     Toast(
-              //       "정지된 운전면허 입니다. 입력한 정보를  확인해 주세요."
-              //     );
-              //   } else if (code === "14") {
-              //     Toast("입력한 정보(이름)를  확인해 주세요.");
-              //   } else if (code === "21") {
-              //     Toast("입력한 정보(생년월일)를  확인해 주세요.");
-              //   } else if (code === "22") {
-              //     Toast("입력한 정보를  확인해 주세요. ");
-              //   } else if (code === "23") {
-              //     Toast("Some messages");
-              //   } else if (code === "24") {
-              //     Toast("입력한 정보(면허종류)를  확인해 주세요.");
-              //   } else {
-              //     Toast("입력한 정보를  확인해 주세요.");
-              //   }
-              // });
-            }
+            const licenseObj = {
+              tsrdPrctNo: this.$store.state.userInfo.bookNumber,
+              licenseNo: this.value + this.keyValue,
+              residentName: this.$store.state.agreementInfo.userName,
+              residentDate: `${this.years.toString().slice(-2)}${this.month}${
+                this.day
+              }`,
+              licenseConCode: this.checked,
+              // country: "{{country}}",
+              // language: "{{language}}",
+              // terminal: "{{terminal}}"
+              country: "KR",
+              language: "ko",
+              terminal: "AM"
+            };
+            this.$axios
+              .post(
+                "https://hyundai-driving.mocean.com/mobile/license.do",
+                licenseObj
+              )
+              .then((res, req) => {
+                console.log(res);
+                this.$router.push("userPage");
+              })
+              .catch(err => console.log(err));
+            this.$router.push("userPage");
           } else {
             this.alert3 = true;
           }

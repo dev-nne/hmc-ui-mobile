@@ -7,16 +7,46 @@
 
       <div class="login-main-form-box">
         <input class="input" v-model="username" placeholder="이름" />
-        <input
-          type="number"
-          class="input"
-          v-model="phoneNum"
-          placeholder="전화번호"
-          pattern="\d*"
-          maxlength="11"
-          oninput="javascript: if (this.value.length >
+
+        <div class="inputBox">
+          <input
+            ref="input"
+            type="number"
+            class="inputBox-input"
+            placeholder="010"
+            v-model="phoneNum1"
+            pattern="\d*"
+            maxlength="3"
+            oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-        />
+            @keyup="nextInput()"
+          />
+          <div class="line"></div>
+          <input
+            ref="input2"
+            type="number"
+            class="inputBox-input"
+            v-model="phoneNum2"
+            placeholder="0000"
+            pattern="\d*"
+            maxlength="4"
+            oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            @keyup="nextInput2()"
+          />
+          <div class="line"></div>
+          <input
+            ref="input3"
+            type="number"
+            class="inputBox-input"
+            v-model="phoneNum3"
+            placeholder="0000"
+            pattern="\d*"
+            maxlength="4"
+            oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          />
+        </div>
 
         <div class="login-main-form-box-button">
           <van-button
@@ -72,7 +102,6 @@ import {
 } from "vant";
 import TopMenu from "../TopMenu.vue";
 import FooterBar from "../FooterBar";
-// import data from "@/public/bookingInfo.json";
 
 export default {
   components: {
@@ -90,7 +119,9 @@ export default {
   data() {
     return {
       username: "",
-      phoneNum: "",
+      phoneNum1: "",
+      phoneNum2: "",
+      phoneNum3: "",
       active: 0,
       value: "",
       show: false,
@@ -110,82 +141,49 @@ export default {
   },
   methods: {
     submit() {
-      // const phoneNumber = this.phoneNum.slice(-4, this.phoneNum.length);
-      const phoneNumber = this.phoneNum;
-      // const userInfo = {
-      //   CHAN_SCN_CD: "02",
-      //   ORG_SCN_CD: "A",
-      //   SBCR_NM: this.username,
-      //   SBCR_CCPC: phoneNumber
-      // };
+      const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
       const userInfo = {
         userName: this.username,
         phone: phoneNumber,
         tsrdPrctNo: this.param
       };
 
-      // "2018072310011"
-
       if (this.username.length > 1) {
-        if (this.phoneNum.length > 7) {
-          if (this.$store.state.isLocal === true) {
-            this.$axios
-              .get("/static/bookingInfo.json")
-              .then(res => {
-                if (res.data.infoResponse.rsp_CD === JSON.stringify(0)) {
-                  this.$store.state.auth = true;
-                  this.$store.commit("userInfoSetting", res.data);
-                  this.$router.push("provision");
-                } else {
-                  this.alert1 = true;
-                }
-              })
-              .catch(err => {
-                console.log("에러코드:" + err);
-              });
-          } else {
-            this.$axios
-              // .post("http://192.168.10.199:8080/mobile/login.do", userInfo)
-              .post(
-                "https://hyundai-driving.mocean.com/mobile/login.do",
-                userInfo
-              )
-              .then(res => {
-                console.log(res.data.infoResponse.rsp_CD);
-                if (res.data.infoResponse.rsp_CD === "200") {
-                  this.$store.state.auth = true;
-                  this.$store.commit("userInfoSetting", res.data);
+        if (phoneNumber.length > 10) {
+          this.$axios
+            .post(
+              "https://hyundai-driving.mocean.com/mobile/login.do",
+              userInfo
+            )
+            .then(res => {
+              if (res.data.infoResponse.rsp_CD === "200") {
+                this.$store.state.auth = true;
+                this.$store.commit("userInfoSetting", res.data);
 
-                  // 예약정보 확인후 user에 대한 동의 여부 및 싸인 여부에 대한 체크 API 호출
-                  const userCheckObj = {
-                    tsrdPrctNo: this.$store.state.userInfo.bookNumber
-                  };
+                const userCheckObj = {
+                  tsrdPrctNo: this.$store.state.userInfo.bookNumber
+                };
 
-                  this.$axios
-                    .post(
-                      // "http://192.168.10.199:8080/mobile/getUserInfoById.do",
-                      "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do",
-                      userCheckObj
-                    )
-                    // .post("/mobile/login.do", userInfo)
-                    .then(res => {
-                      // 인증 정보를 호출하여 인증정보에 따른 페이지 전환
-                      console.log(res.data);
-                      if (res.data.prctInfoAgrYn === "Y") {
-                        if (res.data.prctInfoCjgtAgrYn === "Y") {
-                          this.$router.push("provision"); // userPage
-                        } else {
-                          this.$router.push("provision"); // certification
-                        }
+                this.$axios
+                  .post(
+                    "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
+                    userCheckObj
+                  )
+                  .then(res => {
+                    if (res.data.prctInfoAgrYn === "Y") {
+                      if (res.data.prctInfoCjgtAgrYn === "Y") {
+                        this.$router.push("provision"); // userPage
                       } else {
-                        this.$router.push("provision");
+                        this.$router.push("certification"); // certification
                       }
-                    });
-                } else {
-                  this.alert1 = true;
-                }
-              });
-          }
+                    } else {
+                      this.$router.push("provision");
+                    }
+                  });
+              } else {
+                this.alert1 = true;
+              }
+            });
         } else {
           this.alert2 = true;
         }
@@ -201,6 +199,16 @@ export default {
     },
     closeAlert3() {
       this.alert3 = false;
+    },
+    nextInput() {
+      if (this.$refs.input.value.length === 3) {
+        this.$refs.input2.focus();
+      }
+    },
+    nextInput2() {
+      if (this.$refs.input2.value.length === 4) {
+        this.$refs.input3.focus();
+      }
     }
   }
 };

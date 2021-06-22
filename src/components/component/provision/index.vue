@@ -29,7 +29,7 @@
             class="prov-main-info-box-checkboxGroup"
           >
             <div class="line"></div>
-            <div class="prov-main-info-box-checkbox">
+            <div class="prov-main-info-box-checkbox-select">
               <van-checkbox
                 ref="checkbox_1"
                 shape="squre"
@@ -37,15 +37,21 @@
                 icon-size="14px"
                 v-model="checked_1"
                 @click="toggle('a')"
-                ><span>(필수)</span> 시승차 이용 및 서비스 이용
-                약관</van-checkbox
-              ><van-icon name="arrow" class="goProv" @click="showPopup1" />
+              ></van-checkbox>
+              <div class="checkbox-content">
+                <span class="choice">(필수)</span>
+                <div class="title">
+                  시승차 이용 및 서비스 이용에 따른 주요 고지사항 및 이용약관
+                  안내
+                </div>
+              </div>
+              <van-icon name="arrow" class="goProv" @click="showPopup1" />
               <van-popup v-model="show1" closeable class="consent-popup"
                 ><Consent @sentToAgreement="getAgreement1"
               /></van-popup>
             </div>
 
-            <div class="prov-main-info-box-checkbox">
+            <div class="prov-main-info-box-checkbox-select">
               <van-checkbox
                 ref="checkbox_2"
                 name="b"
@@ -53,8 +59,15 @@
                 shape="squre"
                 v-model="checked_2"
                 @click="toggle('b')"
-                ><span>(필수)</span> 개인정보 수집 및 이용안내</van-checkbox
-              ><van-icon name="arrow" class="goProv" @click="showPopup2" />
+              >
+              </van-checkbox>
+              <div class="checkbox-content">
+                <span class="choice">(필수)</span>
+                <div class="title">
+                  개인정보 수집 및 이용안내
+                </div>
+              </div>
+              <van-icon name="arrow" class="goProv" @click="showPopup2" />
               <van-popup v-model="show2" closeable class="consent-popup"
                 ><Consent2 @sentToAgreement="getAgreement2"
               /></van-popup>
@@ -71,8 +84,8 @@
               ></van-checkbox>
               <div class="checkbox-content">
                 <span class="choice">(선택)</span>
-                <div>
-                  차량구입 관련 상담 및 정보 제공 안내 <br /><span
+                <div class="title">
+                  차량구입 관련 상담 및 각종 정보제공 안내 <br /><span
                     class="addContent"
                     >(마케팅 활용 및 광고성 정보 전송)</span
                   >
@@ -225,7 +238,6 @@ export default {
           if (!this.$store.state.isLocal) {
             this.$axios
               .post(
-                // "http://192.168.10.199:8080/mobile/agreement.do",
                 "https://hyundai-driving.mocean.com/mobile/agreement.do",
                 userChecking
               )

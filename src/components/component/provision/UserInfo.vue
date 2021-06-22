@@ -94,7 +94,6 @@ export default {
         a {
           color: #333;
           margin-left: 2px;
-          text-decoration: underline;
         }
       }
 

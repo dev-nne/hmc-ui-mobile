@@ -89,6 +89,7 @@
           font-size: 14px;
           width: 100%;
           justify-content: space-between;
+          margin-bottom: 12px;
 
           .van-checkbox {
             margin-right: 8px;
@@ -96,18 +97,25 @@
           }
 
           .checkbox-content {
-            flex: 1;
             display: flex;
+            flex: 1;
 
             .choice {
-              margin-right: 4px;
+              width: 15%;
             }
             .addContent {
               font-size: 12px;
               margin-top: 4px;
               display: block;
             }
+            .title {
+              width: 85%;
+            }
           }
+        }
+
+        &-checkbox-select:last-child {
+          margin-bottom: 0;
         }
       }
 

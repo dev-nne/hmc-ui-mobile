@@ -135,15 +135,6 @@
         <FellowField @cancelPop="canclePop" />
       </van-popup>
 
-      <van-popup
-        v-model="fellow2"
-        :close-on-click-overlay="false"
-        class="fellowPop2"
-      >
-        <p>동승자를 추가할 수 없습니다.</p>
-        <button @click="closeFellowPop">확인</button>
-      </van-popup>
-
       <div class="user-main-contact">
         <!-- {{ `${this.userInfo.centerName} ${this.userInfo.spaceName}` }} -->
         고객센터 문의
@@ -154,13 +145,19 @@
         </a>
       </div>
     </div>
-
+    <van-loading
+      type="spinner"
+      color="#1989fa"
+      vertical
+      v-if="loading"
+      class="loading"
+    />
     <FooterBar />
   </div>
 </template>
 
 <script>
-import { Popup, Notify } from "vant";
+import { Popup, Notify, Dialog, Loading } from "vant";
 import TopMenu from "../TopMenu";
 import FooterBar from "../FooterBar";
 import FellowField from "./FellowField.vue";
@@ -170,6 +167,8 @@ export default {
   components: {
     [Popup.name]: Popup,
     [Notify.name]: Notify,
+    [Dialog.name]: Dialog,
+    [Loading.name]: Loading,
     TopMenu,
     FooterBar,
     UserInfo,
@@ -180,7 +179,7 @@ export default {
       fellow: false,
       show: [false, false, false, false],
       userInfo: {},
-      fellow2: false
+      loading: false
     };
   },
   mounted() {
@@ -196,112 +195,231 @@ export default {
       this.show = [...false];
 
       let doorObj = {
-        tsrdPrctNo: "2018072310011", // 임시
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
         action: "open" // open, close
       };
-
+      this.loading = true;
       this.$axios
-        // .post("http://192.168.10.199:8080/control/door.do", doorObj)
-        .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
-        // .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
+        .post("https://hyundai-driving.mocean.com/controls/car.do", doorObj)
         .then((res, req) => {
           console.log(res);
-          Notify({
-            type: "primary",
-            message: "잠금이 해제되었습니다.",
-            duration: 1500
+          this.$axios
+            .post(
+              "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
+              res.data.commandID
+            )
+            .then(res => {
+              if (res.data.commandState === "DONE") {
+                this.loading = false;
+                Notify({
+                  type: "primary",
+                  message: "잠금이 해제되었습니다.",
+                  duration: 1500
+                });
+              } else {
+                this.loading = false;
+                Dialog.alert({
+                  message: "잠금해제에 실패하였습니다.",
+                  confirmButtonText: "확인"
+                });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              this.loading = false;
+            });
+        })
+        .catch(err => {
+          Dialog.alert({
+            message: err,
+            confirmButtonText: "확인"
           });
+          this.loading = false;
         });
     },
     confirm2() {
       this.show = [...false];
 
       let doorObj = {
-        tsrdPrctNo: "2018072310011", // 임시
-        action: "close" // open, closes
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
+        action: "close" // open, close
       };
-
+      this.loading = true;
       this.$axios
-        // .post("/static/bookingInfo.json", userChecking)
-        // .post("http://192.168.10.199:8080/control/door.do", doorObj)
-        .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
-        // .post("https://hyundai-driving.mocean.com/control/car.do", doorObj)
-
+        .post("https://hyundai-driving.mocean.com/controls/car.do", doorObj)
         .then((res, req) => {
-          console.log(res);
-          Notify({
-            type: "primary",
-            message: "잠금설정 되었습니다.",
-            duration: 1500
+          this.$axios
+            .post(
+              "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
+              res.data.commandID
+            )
+            .then(res => {
+              if (res.data.commandState === "DONE") {
+                this.loading = false;
+                Notify({
+                  type: "primary",
+                  message: "잠금이 설정되었습니다.",
+                  duration: 1500
+                });
+              } else {
+                this.loading = false;
+
+                Dialog.alert({
+                  message: "잠금설정에 실패하였습니다.",
+                  confirmButtonText: "확인"
+                });
+              }
+            })
+            .catch(err => {
+              console.log(err);
+              this.loading = false;
+            });
+        })
+        .catch(err => {
+          Dialog.alert({
+            message: err,
+            confirmButtonText: "확인"
           });
+          this.loading = false;
         });
     },
     confirm3() {
       this.show = [...false];
       let hornObj = {
-        tsrdPrctNo: "2018072310011" // 임시
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
       };
-
+      this.loading = true;
       this.$axios
-        // .post("/static/bookingInfo.json", userChecking)
-        // .post("http://192.168.10.199:8080/control/horn.do", hornObj)
-        .post("https://hyundai-driving.mocean.com/control/horn.do", hornObj)
+        .post("https://hyundai-driving.mocean.com/controls/flasher.do", hornObj)
         .then((res, req) => {
-          console.log(res);
-          Notify({
-            type: "primary",
-            message: "비상등을 켭니다.",
-            duration: 1500
+          this.$axios
+            .post(
+              "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
+              res.data.commandID
+            )
+            .then(res => {
+              if (res.data.commandState === "DONE") {
+                this.loading = false;
+                Notify({
+                  type: "primary",
+                  message: "비상등을 켭니다.",
+                  duration: 1500
+                });
+              } else {
+                this.loading = false;
+
+                Dialog.alert({
+                  message: "비상등켜기에 실패하였습니다.",
+                  confirmButtonText: "확인"
+                });
+              }
+            })
+            .catch(err => {
+              Dialog.alert({
+                message: err,
+                confirmButtonText: "확인"
+              });
+              this.loading = false;
+            });
+        })
+        .catch(err => {
+          Dialog.alert({
+            message: err,
+            confirmButtonText: "확인"
           });
+          this.loading = false;
+        });
+    },
+    clickCarReturn() {
+      // this.$store.state.auth = false;
+      // this.$store.state.fellow = false;
+
+      let returnObj = {
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
+      };
+      this.loading = true;
+      this.$axios
+        .post(
+          "https://hyundai-driving.mocean.com/controls/checkCarStatus.do",
+          returnObj
+        )
+        .then((res, req) => {
+          if (res.data.engine === "1") {
+            if (res.data.doorOpenStatus.keys.find(v => v === "0") === null) {
+              if (res.data.lampStatus.keys.find(v => v === "0") === null) {
+                if (res.data.windowStatus.keys.find(v => v === "0") === null) {
+                  if (res.data.trunk === "1") {
+                    this.$axios
+                      .post(
+                        "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
+                        returnObj
+                      )
+                      .then((res, req) => {
+                        console.log(res);
+                        this.$router.push("returnPage");
+                      })
+                      .catch(err => {
+                        Dialog.alert({
+                          message: err,
+                          confirmButtonText: "확인"
+                        });
+                        this.loading = false;
+                      });
+                  } else {
+                    this.show[3] = false;
+                    this.loading = false;
+                    Dialog.alert({
+                      message: "트렁크를 확인해주세요",
+                      confirmButtonText: "확인"
+                    });
+                  }
+                } else {
+                  this.show[3] = false;
+                  this.loading = false;
+                  Dialog.alert({
+                    message: "창문을 확인해주세요",
+                    confirmButtonText: "확인"
+                  });
+                }
+              } else {
+                this.show[3] = false;
+                this.loading = false;
+                Dialog.alert({
+                  message: "비상등을 확인해주세요",
+                  confirmButtonText: "확인"
+                });
+              }
+            } else {
+              this.show[3] = false;
+              this.loading = false;
+              Dialog.alert({
+                message: "닫히지 않은 문이 있습니다",
+                confirmButtonText: "확인"
+              });
+            }
+          } else {
+            this.show[3] = false;
+            this.loading = false;
+            Dialog.alert({
+              message: "시동이 꺼지지 않았습니다.",
+              confirmButtonText: "확인"
+            });
+            this.$router.push("returnPage");
+          }
         });
     },
     handlePopup(x) {
       this.show = [...this.show];
       this.show[x] = true;
     },
-    clickCarReturn() {
-      this.$router.push("returnPage");
-      this.$store.state.auth = false;
-      this.$store.state.fellow = false;
-
-      let returnObj = {
-        tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
-      };
-
-      this.$axios
-        // .post("/static/bookingInfo.json", userChecking)
-        // .post("http://192.168.10.199:8080/control/return.do", returnObj)
-        .post("https://hyundai-driving.mocean.com//control/check.do", returnObj)
-        .then((res, req) => {
-          if (res.data) {
-            this.$axios
-              // .post("/static/bookingInfo.json", userChecking)
-              // .post("http://192.168.10.199:8080/control/return.do", returnObj)
-              .post(
-                "https://hyundai-driving.mocean.com/control/return.do",
-                returnObj
-              )
-              .then((res, req) => {
-                console.log(res);
-              });
-          }
-        });
-    },
     cancel(x) {
       this.show = [...false];
     },
     fellowAdd() {
-      if (!this.$store.state.fellow) {
-        this.fellow = true;
-      } else {
-        this.fellow2 = true;
-      }
+      this.fellow = true;
     },
     canclePop(v) {
       this.fellow = v;
-    },
-    closeFellowPop() {
-      this.fellow2 = false;
     }
   }
 };

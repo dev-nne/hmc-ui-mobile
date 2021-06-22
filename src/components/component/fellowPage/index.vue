@@ -3,7 +3,7 @@
     <TopMenu />
     <div class="fellow-main">
       <div class="fellow-main-text">
-        동승자의 스마트키로 차량을<br />이용해 주세요
+        동승 운전자로 등록이 <br />완료되었습니다.
       </div>
       <div class="fellow-main-img">
         <img src="@/assets/fellow.png" alt="" />

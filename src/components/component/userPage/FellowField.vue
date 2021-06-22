@@ -3,31 +3,55 @@
     <div class="fel-title">[동승자 정보 입력]</div>
 
     <van-form>
-      <van-field
-        v-model="fellowname"
-        name="fellowname"
-        label=""
-        placeholder="이름"
-        :rules="[{ required: true, message: 'Username is required' }]"
-      />
-      <van-field
-        v-model="phoneNum"
-        readonly
-        clickable
-        :value="phoneNum"
-        @touchstart.native.stop="show = true"
-        placeholder="전화번호"
-        :rules="[{ required: true, message: 'Phone Number is required' }]"
-      />
-      <van-number-keyboard
-        v-model="phoneNum"
-        :show="show"
-        :maxlength="11"
-        @blur="show = false"
-        get-container="body"
-        z-index="10000"
-        close-button-text="close"
-      />
+      <div class="nameInput">
+        <input class="input" v-model="fellowname" placeholder="이름" />
+        <div class="rules" :class="{ ruleAdd: nameRule }">
+          올바른 이름을 입력해 주세요.
+        </div>
+      </div>
+
+      <div class="inputBox">
+        <input
+          ref="input"
+          type="number"
+          class="inputBox-input"
+          placeholder="010"
+          v-model="phoneNum1"
+          pattern="\d*"
+          maxlength="3"
+          oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @keyup="nextInput()"
+        />
+        <div class="line"></div>
+        <input
+          ref="input2"
+          type="number"
+          class="inputBox-input"
+          v-model="phoneNum2"
+          placeholder="0000"
+          pattern="\d*"
+          maxlength="4"
+          oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @keyup="nextInput2()"
+        />
+        <div class="line"></div>
+        <input
+          ref="input3"
+          type="number"
+          class="inputBox-input"
+          v-model="phoneNum3"
+          placeholder="0000"
+          pattern="\d*"
+          maxlength="4"
+          oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+        />
+        <div class="rules" :class="{ ruleAdd: numRule }">
+          올바른 전화번호를 입력해 주세요.
+        </div>
+      </div>
       <div class="fel-title-button">
         <van-button
           color="#012c5f"
@@ -46,53 +70,95 @@
 </template>
 
 <script>
-import { Form, Field, Button, NumberKeyboard, Toast } from "vant";
+import { Form, Button, Toast, Dialog } from "vant";
 export default {
   components: {
-    [NumberKeyboard.name]: NumberKeyboard,
     [Button.name]: Button,
-    [Field.name]: Field,
     [Form.name]: Form,
-    [Toast.name]: Toast
+    [Toast.name]: Toast,
+    [Dialog.name]: Dialog
   },
   data() {
     return {
       fellowname: "",
-      phoneNum: "",
+      phoneNum1: "",
+      phoneNum2: "",
+      phoneNum3: "",
       value: "",
-      show: false
+      show: false,
+      nameRule: false,
+      numRule: false
     };
   },
   methods: {
     submitFellow() {
-      const phoneNumber = this.phoneNum.slice(-4, this.phoneNum.length);
+      const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
       const fellowInfo = {
-        CHAN_SCN_CD: "02",
-        ORG_SCN_CD: "A",
-        SBCR_NM: this.fellowname,
-        SBCR_CCPC: phoneNumber
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber,
+        passengerName: this.fellowname,
+        passengerPhone: phoneNumber
       };
 
-      if (this.$store.state.isLocal === true) {
-        this.$store.state.fellow = true;
-        this.$emit("cancelPop", false);
+      if (
+        this.fellowname.length < 2 &&
+        this.phoneNum1 === "" &&
+        this.phoneNum2 === "" &&
+        this.phoneNum3 === ""
+      ) {
+        this.nameRule = true;
+        this.numRule = true;
+      } else if (this.fellowname.length > 1) {
+        this.nameRule = false;
+        if (
+          this.phoneNum1 !== "" &&
+          this.phoneNum2 !== "" &&
+          this.phoneNum3 !== ""
+        ) {
+          this.$axios
+            .post(
+              "https://hyundai-driving.mocean.com/mobile/registerPassenger.do",
+              fellowInfo
+            )
+            .then(res => {
+              if (res.data.infoResponse.rsp_CD === JSON.stringify(1)) {
+                this.$store.commit("felloInfoSetting", res.data);
+                Toast("동승자가 추가되었습니다.");
+              } else {
+                Dialog.alert({
+                  message: res.data.infoResponse.infoResponse,
+                  confirmButtonText: "확인"
+                });
+              }
+            })
+            .catch(err => console.log(err));
+          this.$emit("cancelPop", false);
+          this.fellowname = "";
+          this.phoneNum1 = "";
+          this.phoneNum2 = "";
+          this.phoneNum3 = "";
+        } else {
+          this.numRule = true;
+        }
       } else {
-        this.$store.state.fellow = true;
-        this.$axios.post("/static/bookingInfo.json", fellowInfo).then(res => {
-          if (res.data.infoResponse.rsp_CD === JSON.stringify(0)) {
-            this.$store.state.auth = true;
-            this.$store.commit("felloInfoSetting", res.data);
-            this.$router.push("provision");
-          } else {
-            this.alert = true;
-          }
-        });
-        this.$emit("cancelPop", false);
+        this.nameRule = true;
       }
-      Toast("동승자가 추가되었습니다.");
     },
     cancelFellow() {
+      this.fellowname = "";
+      this.phoneNum1 = "";
+      this.phoneNum2 = "";
+      this.phoneNum3 = "";
       this.$emit("cancelPop", false);
+    },
+    nextInput() {
+      if (this.$refs.input.value.length === 3) {
+        this.$refs.input2.focus();
+      }
+    },
+    nextInput2() {
+      if (this.$refs.input2.value.length === 4) {
+        this.$refs.input3.focus();
+      }
     }
   }
 };
@@ -129,16 +195,62 @@ export default {
       }
     }
   }
-  .van-form {
-    margin-top: 10px;
+  .nameInput {
+    width: calc(100% - 30px);
+    position: relative;
+    margin-bottom: 10px;
+    margin: 10px 10px 20px 10px;
 
-    .van-cell {
-      line-height: 20px;
-      margin-bottom: 15px;
+    .input {
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #ebedf0;
+      padding: 5px 0;
+      font-size: 14px;
+      position: relative;
     }
   }
-}
-.van-number-keyboard {
-  width: 100%;
+
+  ::placeholder {
+    color: rgba(0, 0, 0, 0.25);
+    font-size: 14px;
+  }
+
+  .inputBox {
+    width: calc(100% - 30px);
+    margin: 10px 10px 20px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+
+    .line {
+      width: 2%;
+      height: 1px;
+      background: #d3d3d3;
+    }
+
+    &-input {
+      width: 27%;
+      padding: 5px 0;
+      border: none;
+      border-bottom: 1px solid #ebedf0;
+      font-size: 14px;
+    }
+  }
+
+  .rules {
+    font-size: 12px;
+    position: absolute;
+    top: 110%;
+    left: 0;
+    z-index: 1;
+    color: #e63312;
+    display: none;
+  }
+
+  .ruleAdd {
+    display: block;
+  }
 }
 </style>
