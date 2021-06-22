@@ -200,34 +200,36 @@ export default {
       };
       this.loading = true;
       this.$axios
-        .post("https://hyundai-driving.mocean.com/controls/car.do", doorObj)
+        .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
         .then((res, req) => {
           console.log(res);
-          this.$axios
-            .post(
-              "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
-              res.data.commandID
-            )
-            .then(res => {
-              if (res.data.commandState === "DONE") {
+          setTimeout(() => {
+            this.$axios
+              .post(
+                "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
+                { commandID: res.data.commandID }
+              )
+              .then(res => {
+                if (res.data.commandState === "DONE") {
+                  this.loading = false;
+                  Notify({
+                    type: "primary",
+                    message: "잠금이 해제되었습니다.",
+                    duration: 1500
+                  });
+                } else {
+                  this.loading = false;
+                  Dialog.alert({
+                    message: "잠금해제에 실패하였습니다.",
+                    confirmButtonText: "확인"
+                  });
+                }
+              })
+              .catch(err => {
+                console.log(err);
                 this.loading = false;
-                Notify({
-                  type: "primary",
-                  message: "잠금이 해제되었습니다.",
-                  duration: 1500
-                });
-              } else {
-                this.loading = false;
-                Dialog.alert({
-                  message: "잠금해제에 실패하였습니다.",
-                  confirmButtonText: "확인"
-                });
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              this.loading = false;
-            });
+              });
+          }, 1500);
         })
         .catch(err => {
           Dialog.alert({
@@ -246,34 +248,36 @@ export default {
       };
       this.loading = true;
       this.$axios
-        .post("https://hyundai-driving.mocean.com/controls/car.do", doorObj)
+        .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
         .then((res, req) => {
-          this.$axios
-            .post(
-              "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
-              res.data.commandID
-            )
-            .then(res => {
-              if (res.data.commandState === "DONE") {
-                this.loading = false;
-                Notify({
-                  type: "primary",
-                  message: "잠금이 설정되었습니다.",
-                  duration: 1500
-                });
-              } else {
-                this.loading = false;
+          setTimeout(() => {
+            this.$axios
+              .post(
+                "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
+                { commandID: res.data.commandID }
+              )
+              .then(res => {
+                if (res.data.commandState === "DONE") {
+                  this.loading = false;
+                  Notify({
+                    type: "primary",
+                    message: "잠금이 설정되었습니다.",
+                    duration: 1500
+                  });
+                } else {
+                  this.loading = false;
 
-                Dialog.alert({
-                  message: "잠금설정에 실패하였습니다.",
-                  confirmButtonText: "확인"
-                });
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              this.loading = false;
-            });
+                  Dialog.alert({
+                    message: "잠금설정에 실패하였습니다.",
+                    confirmButtonText: "확인"
+                  });
+                }
+              })
+              .catch(err => {
+                console.log(err);
+                this.loading = false;
+              });
+          }, 1500);
         })
         .catch(err => {
           Dialog.alert({
@@ -292,35 +296,37 @@ export default {
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/flasher.do", hornObj)
         .then((res, req) => {
-          this.$axios
-            .post(
-              "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
-              res.data.commandID
-            )
-            .then(res => {
-              if (res.data.commandState === "DONE") {
-                this.loading = false;
-                Notify({
-                  type: "primary",
-                  message: "비상등을 켭니다.",
-                  duration: 1500
-                });
-              } else {
-                this.loading = false;
+          setTimeout(() => {
+            this.$axios
+              .post(
+                "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
+                { commandID: res.data.commandID }
+              )
+              .then(res => {
+                if (res.data.commandState === "DONE") {
+                  this.loading = false;
+                  Notify({
+                    type: "primary",
+                    message: "비상등을 켭니다.",
+                    duration: 1500
+                  });
+                } else {
+                  this.loading = false;
 
+                  Dialog.alert({
+                    message: "비상등켜기에 실패하였습니다.",
+                    confirmButtonText: "확인"
+                  });
+                }
+              })
+              .catch(err => {
                 Dialog.alert({
-                  message: "비상등켜기에 실패하였습니다.",
+                  message: err,
                   confirmButtonText: "확인"
                 });
-              }
-            })
-            .catch(err => {
-              Dialog.alert({
-                message: err,
-                confirmButtonText: "확인"
+                this.loading = false;
               });
-              this.loading = false;
-            });
+          }, 1500);
         })
         .catch(err => {
           Dialog.alert({

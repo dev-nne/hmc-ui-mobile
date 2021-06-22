@@ -133,11 +133,16 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    this.$router
-      .push({ name: "login", query: { id: "2018072310011" } })
-      .catch(() => {}); // 파라미터값 입력
-    this.param = this.$route.query.id; // 파라미터값 받아오기
-    console.log(this.$route.query.id);
+    let paramInfo = window.location.search;
+    if (paramInfo !== "") {
+      let paramArr = paramInfo.split("=");
+      this.$store.state.userInfo.bookNumber = paramArr[1];
+    }
+    // this.$router
+    // .push({ name: "login", query: { id: "2018072310011" } })
+    //   .catch(() => {}); // 파라미터값 입력
+    // this.param = this.$route.query.id; // 파라미터값 받아오기
+    // console.log(this.$route.query.id);
   },
   methods: {
     submit() {
@@ -145,7 +150,8 @@ export default {
       const userInfo = {
         userName: this.username,
         phone: phoneNumber,
-        tsrdPrctNo: this.param
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber
+        // tsrdPrctNo: this.param
       };
 
       if (this.username.length > 1) {
@@ -159,11 +165,12 @@ export default {
               if (res.data.infoResponse.rsp_CD === "200") {
                 this.$store.state.auth = true;
                 this.$store.commit("userInfoSetting", res.data);
-
                 const userCheckObj = {
                   tsrdPrctNo: this.$store.state.userInfo.bookNumber
                 };
-
+                document.cookie = `app_info=${JSON.stringify(
+                  this.$store.state
+                )}`;
                 this.$axios
                   .post(
                     "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
