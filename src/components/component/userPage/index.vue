@@ -342,6 +342,7 @@ export default {
       let returnObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
       };
+      this.show[3] = false;
       this.loading = true;
       this.$axios
         .post(
@@ -353,42 +354,49 @@ export default {
           let lampObj = res.data.lampStatus;
           let windowObj = res.data.windowStatus;
 
-          if (res.data.engine === "0") {
-            if (Object.values(doorObj).filter(v => v === "1").length === 0) {
-              if (Object.values(lampObj).filter(v => v === "1").length === 0) {
+          setTimeout(() => {
+            if (res.data.engine === "0") {
+              if (Object.values(doorObj).filter(v => v === "1").length === 0) {
                 if (
-                  Object.values(windowObj).filter(v => v === "1").length === 0
+                  Object.values(lampObj).filter(v => v === "1").length === 0
                 ) {
-                  if (res.data.trunk === "0") {
-                    this.$axios
-                      .post(
-                        "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
-                        returnObj
-                      )
-                      .then((res, req) => {
-                        console.log(res);
-                        this.$router.push("returnPage");
-                      })
-                      .catch(err => {
-                        this.loading = false;
-                        Dialog.alert({
-                          message: err,
-                          confirmButtonText: "확인"
+                  if (
+                    Object.values(windowObj).filter(v => v === "1").length === 0
+                  ) {
+                    if (res.data.trunk === "0") {
+                      this.$axios
+                        .post(
+                          "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
+                          returnObj
+                        )
+                        .then((res, req) => {
+                          console.log(res);
+                          this.$router.push("returnPage");
+                        })
+                        .catch(err => {
+                          Dialog.alert({
+                            message: err,
+                            confirmButtonText: "확인"
+                          });
                         });
+                    } else {
+                      this.loading = false;
+                      Dialog.alert({
+                        message: "트렁크를 확인해주세요",
+                        confirmButtonText: "확인"
                       });
+                    }
                   } else {
-                    this.show[3] = false;
                     this.loading = false;
                     Dialog.alert({
-                      message: "트렁크를 확인해주세요",
+                      message: "창문을 확인해주세요",
                       confirmButtonText: "확인"
                     });
                   }
                 } else {
-                  this.show[3] = false;
                   this.loading = false;
                   Dialog.alert({
-                    message: "창문을 확인해주세요",
+                    message: "비상등을 확인해주세요",
                     confirmButtonText: "확인"
                   });
                 }
@@ -396,7 +404,7 @@ export default {
                 this.show[3] = false;
                 this.loading = false;
                 Dialog.alert({
-                  message: "비상등을 확인해주세요",
+                  message: "닫히지 않은 문이 있습니다",
                   confirmButtonText: "확인"
                 });
               }
@@ -404,18 +412,11 @@ export default {
               this.show[3] = false;
               this.loading = false;
               Dialog.alert({
-                message: "닫히지 않은 문이 있습니다",
+                message: "시동이 꺼지지 않았습니다.",
                 confirmButtonText: "확인"
               });
             }
-          } else {
-            this.show[3] = false;
-            this.loading = false;
-            Dialog.alert({
-              message: "시동이 꺼지지 않았습니다.",
-              confirmButtonText: "확인"
-            });
-          }
+          }, 2000);
         });
     },
     handlePopup(x) {
