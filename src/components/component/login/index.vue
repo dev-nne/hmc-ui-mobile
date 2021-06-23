@@ -98,7 +98,8 @@ import {
   Tabbar,
   TabbarItem,
   Notify,
-  Popup
+  Popup,
+  Dialog
 } from "vant";
 import TopMenu from "../TopMenu.vue";
 import FooterBar from "../FooterBar";
@@ -107,6 +108,7 @@ export default {
   components: {
     [TabbarItem.name]: TabbarItem,
     [Notify.name]: Notify,
+    [Dialog.name]: Dialog,
     [Popup.name]: Popup,
     [Tabbar.name]: Tabbar,
     [Button.name]: Button,
@@ -133,11 +135,12 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    let paramInfo = window.location.search;
-    if (paramInfo !== "") {
-      let paramArr = paramInfo.split("=");
-      this.$store.state.userInfo.bookNumber = paramArr[1];
-    }
+    // let paramInfo = window.location.search;
+    this.param = this.$route.query.id;
+    // if (paramInfo !== "") {
+    //   let paramArr = paramInfo.split("=");
+    //   this.$store.state.userInfo.bookNumber = paramArr[1];
+    // }
     // this.$router
     // .push({ name: "login", query: { id: "2018072310011" } })
     //   .catch(() => {}); // 파라미터값 입력
@@ -150,8 +153,8 @@ export default {
       const userInfo = {
         userName: this.username,
         phone: phoneNumber,
-        tsrdPrctNo: this.$store.state.userInfo.bookNumber
-        // tsrdPrctNo: this.param
+        // tsrdPrctNo: this.$store.state.userInfo.bookNumber
+        tsrdPrctNo: this.param
       };
 
       if (this.username.length > 1) {
@@ -163,8 +166,12 @@ export default {
             )
             .then(res => {
               if (res.data.infoResponse.rsp_CD === "200") {
+                const payload = {
+                  resData: res.data,
+                  booking: userInfo.tsrdPrctNo
+                };
                 this.$store.state.auth = true;
-                this.$store.commit("userInfoSetting", res.data);
+                this.$store.commit("userInfoSetting", payload);
                 const userCheckObj = {
                   tsrdPrctNo: this.$store.state.userInfo.bookNumber
                 };
@@ -177,6 +184,8 @@ export default {
                     userCheckObj
                   )
                   .then(res => {
+                    this.$store.state.userName = this.username;
+                    this.$store.state.userNumber = phoneNumber;
                     if (res.data.prctInfoAgrYn === "Y") {
                       if (res.data.prctInfoCjgtAgrYn === "Y") {
                         this.$router.push("provision"); // userPage
@@ -190,6 +199,13 @@ export default {
               } else {
                 this.alert1 = true;
               }
+            })
+            .catch(err => {
+              console.log(err);
+              Dialog.alert({
+                message: "예약된 정보를 확인해주세요",
+                confirmButtonText: "확인"
+              });
             });
         } else {
           this.alert2 = true;

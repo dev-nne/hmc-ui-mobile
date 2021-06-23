@@ -74,7 +74,7 @@
               />
             </div>
           </div>
-          <div class="cert-main-info-type-title">발급일</div>
+          <div class="cert-main-info-type-title">생년월일</div>
           <div
             class="cert-main-info-type-num cert-main-info-type-day"
             @click="showPop"
@@ -115,7 +115,7 @@
         >
 
         <van-popup v-model="alert3" class="alert"
-          ><p>발급일을 입력하세요.</p>
+          ><p>생년월일을 입력하세요.</p>
           <button @click="closeAlert3">확인</button></van-popup
         >
       </div>
@@ -137,6 +137,7 @@ import {
   Popup,
   Picker,
   Toast,
+  Dialog,
   NumberKeyboard
 } from "vant";
 
@@ -155,6 +156,7 @@ export default {
     [Toast.name]: Toast,
     [Popup.name]: Popup,
     [Picker.name]: Picker,
+    [Dialog.name]: Dialog,
     [NumberKeyboard.name]: NumberKeyboard,
     TopMenu,
     DatetiemPicker,
@@ -233,19 +235,16 @@ export default {
         if (this.keyValue.length === 10) {
           if (this.validate3) {
             const licenseObj = {
-              tsrdPrctNo: this.$store.state.userInfo.bookNumber,
+              // tsrdPrctNo: this.$store.state.userInfo.bookNumber,
               licenseNo: this.value + this.keyValue,
-              residentName: this.$store.state.agreementInfo.userName,
-              residentDate: `${this.years.toString().slice(-2)}${this.month}${
-                this.day
-              }`,
-              licenseConCode: this.checked,
-              // country: "{{country}}",
-              // language: "{{language}}",
-              // terminal: "{{terminal}}"
-              country: "KR",
-              language: "ko",
-              terminal: "AM"
+              residentName: this.$store.state.userName,
+              residentDate: `${this.years.toString().slice(-2)}${
+                this.month < 10 ? `0${this.month}` : `${this.month}`
+              }${this.day < 10 ? `0${this.day}` : `${this.day}`}`,
+              licenseConCode: this.checked
+              // country: "KR",
+              // language: "ko",
+              // terminal: "AM"
             };
             this.$axios
               .post(
@@ -253,11 +252,16 @@ export default {
                 licenseObj
               )
               .then((res, req) => {
-                console.log(res);
-                this.$router.push("userPage");
+                if (res.data.resultMap.certLicense === "0") {
+                  this.$router.push("userPage");
+                } else {
+                  Dialog.alert({
+                    message: "올바른 면허정보를 입력해 주세요.",
+                    confirmButtonText: "확인"
+                  });
+                }
               })
               .catch(err => console.log(err));
-            this.$router.push("userPage");
           } else {
             this.alert3 = true;
           }

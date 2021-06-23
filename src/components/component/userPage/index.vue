@@ -5,7 +5,7 @@
       <div class="user-main-carbox">
         <div class="user-main-carbox-text">
           <h2>{{ this.userInfo.carName }}</h2>
-          <span>123허4567</span>
+          <span>{{ this.userInfo.carNumber }}</span>
         </div>
 
         <div class="user-main-carbox-img">
@@ -201,8 +201,7 @@ export default {
       this.loading = true;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
-        .then((res, req) => {
-          console.log(res);
+        .then(res => {
           setTimeout(() => {
             this.$axios
               .post(
@@ -229,7 +228,7 @@ export default {
                 console.log(err);
                 this.loading = false;
               });
-          }, 1500);
+          }, 2000);
         })
         .catch(err => {
           Dialog.alert({
@@ -277,7 +276,7 @@ export default {
                 console.log(err);
                 this.loading = false;
               });
-          }, 1500);
+          }, 2000);
         })
         .catch(err => {
           Dialog.alert({
@@ -326,7 +325,7 @@ export default {
                 });
                 this.loading = false;
               });
-          }, 1500);
+          }, 2000);
         })
         .catch(err => {
           Dialog.alert({
@@ -350,11 +349,17 @@ export default {
           returnObj
         )
         .then((res, req) => {
-          if (res.data.engine === "1") {
-            if (res.data.doorOpenStatus.keys.find(v => v === "0") === null) {
-              if (res.data.lampStatus.keys.find(v => v === "0") === null) {
-                if (res.data.windowStatus.keys.find(v => v === "0") === null) {
-                  if (res.data.trunk === "1") {
+          let doorObj = res.data.doorOpenStatus;
+          let lampObj = res.data.lampStatus;
+          let windowObj = res.data.windowStatus;
+
+          if (res.data.engine === "0") {
+            if (Object.values(doorObj).filter(v => v === "1").length === 0) {
+              if (Object.values(lampObj).filter(v => v === "1").length === 0) {
+                if (
+                  Object.values(windowObj).filter(v => v === "1").length === 0
+                ) {
+                  if (res.data.trunk === "0") {
                     this.$axios
                       .post(
                         "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
@@ -365,11 +370,11 @@ export default {
                         this.$router.push("returnPage");
                       })
                       .catch(err => {
+                        this.loading = false;
                         Dialog.alert({
                           message: err,
                           confirmButtonText: "확인"
                         });
-                        this.loading = false;
                       });
                   } else {
                     this.show[3] = false;
@@ -410,7 +415,6 @@ export default {
               message: "시동이 꺼지지 않았습니다.",
               confirmButtonText: "확인"
             });
-            this.$router.push("returnPage");
           }
         });
     },

@@ -37,7 +37,7 @@ export default {
     }
   },
   created() {
-    this.currentDate = new Date(getDate().year, getDate().month, getDate().day);
+    this.currentDate = new Date(getDate().year - 21, 0, 1);
 
     this.minDate = new Date(getDate().year - 80, 0, 1);
     this.maxDate = new Date(getDate().year, 11, 25);

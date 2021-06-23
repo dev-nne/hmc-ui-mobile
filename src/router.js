@@ -5,7 +5,6 @@ import { store } from "./components/store/store";
 Vue.use(VueRouter);
 
 export const router = new VueRouter({
-  mode: "history",
   routes: [
     {
       path: "/",
@@ -60,7 +59,6 @@ router.beforeEach((to, from, next) => {
     }) &&
     store.state.auth !== true
   ) {
-    console.log("login plzzz");
     next("login");
   } else {
     next();
