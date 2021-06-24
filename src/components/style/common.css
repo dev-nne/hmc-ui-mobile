@@ -64,3 +64,20 @@ input {
 .van-popup--bottom.van-popup--round {
   border-radius: 0 !important;
 }
+
+.van-dialog {
+  border-radius: 0 !important;
+}
+
+.van-dialog [class*="van-hairline"]::after {
+  border: 1px solid #e4dcd3 !important;
+}
+.van-dialog .van-dialog__message {
+  font-size: 14px;
+}
+.van-dialog .van-button__content {
+  font-weight: 400;
+  font-family: "HyundaiSansHead";
+  font-size: 14px;
+  color: #e63312;
+}

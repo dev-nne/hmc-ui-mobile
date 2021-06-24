@@ -103,21 +103,6 @@
         <div class="cert-main-info-button" @click="sendFormAndMove">
           인증하기
         </div>
-
-        <van-popup v-model="alert" class="alert">
-          <p>발급 지역을 선택하세요.</p>
-          <button @click="closeAlert">확인</button>
-        </van-popup>
-
-        <van-popup v-model="alert2" class="alert"
-          ><p>면허번호 10자리를 입력하세요.</p>
-          <button @click="closeAlert2">확인</button></van-popup
-        >
-
-        <van-popup v-model="alert3" class="alert"
-          ><p>생년월일을 입력하세요.</p>
-          <button @click="closeAlert3">확인</button></van-popup
-        >
       </div>
     </div>
 
@@ -197,10 +182,7 @@ export default {
       keyValue: "",
       validate1: false,
       validate2: false,
-      validate3: false,
-      alert: false,
-      alert2: false,
-      alert3: false
+      validate3: false
     };
   },
   created() {
@@ -263,13 +245,22 @@ export default {
               })
               .catch(err => console.log(err));
           } else {
-            this.alert3 = true;
+            Dialog.alert({
+              message: "생년월일을 입력하세요.",
+              confirmButtonText: "확인"
+            });
           }
         } else {
-          this.alert2 = true;
+          Dialog.alert({
+            message: "면허번호 10자리를 입력하세요.",
+            confirmButtonText: "확인"
+          });
         }
       } else {
-        this.alert = true;
+        Dialog.alert({
+          message: "발급 지역을 선택하세요.",
+          confirmButtonText: "확인"
+        });
       }
     },
     onConfirm(value) {
@@ -278,15 +269,7 @@ export default {
       this.showPicker = false;
       this.validate1 = true;
     },
-    closeAlert() {
-      this.alert = false;
-    },
-    closeAlert2() {
-      this.alert2 = false;
-    },
-    closeAlert3() {
-      this.alert3 = false;
-    },
+
     maxLengthCheck(object) {
       if (object.value.length > object.maxLength) {
         object.value = object.value.slice(0, object.maxLength);

@@ -60,7 +60,7 @@
           </van-button>
         </div>
 
-        <van-popup v-model="alert1" class="alert"
+        <!-- <van-popup v-model="alert1" class="alert"
           ><p>
             예약 내역을 확인 할 수 없습니다.
             <br />예약하신 드라이빙 라운지에 문의해 주세요.
@@ -79,7 +79,7 @@
             이름을 입력하세요.
           </p>
           <button @click="closeAlert3">확인</button></van-popup
-        >
+        > -->
       </div>
     </div>
 
@@ -127,14 +127,16 @@ export default {
       active: 0,
       value: "",
       show: false,
-      alert1: false,
-      alert2: false,
-      alert3: false,
+      // alert1: false,
+      // alert2: false,
+      // alert3: false,
       param: ""
     };
   },
+  created() {},
   mounted() {
     window.scrollTo(0, 0);
+
     // let paramInfo = window.location.search;
     this.param = this.$route.query.id;
     // if (paramInfo !== "") {
@@ -146,6 +148,46 @@ export default {
     //   .catch(() => {}); // 파라미터값 입력
     // this.param = this.$route.query.id; // 파라미터값 받아오기
     // console.log(this.$route.query.id);
+    let savedUserInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+    if (sessionStorage.getItem("userInfo") !== null) {
+      this.$axios
+        .post(
+          "https://hyundai-driving.mocean.com/mobile/login.do",
+          savedUserInfo
+        )
+        .then(res => {
+          if (res.data.infoResponse.rsp_CD === "200") {
+            const payload = {
+              resData: res.data,
+              booking: savedUserInfo.tsrdPrctNo
+            };
+            this.$store.commit("userInfoSetting", payload);
+            const userCheckObj = {
+              tsrdPrctNo: savedUserInfo.tsrdPrctNo
+            };
+
+            this.$axios
+              .post(
+                "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
+                userCheckObj
+              )
+              .then(res => {
+                this.$store.state.auth = true;
+                this.$store.state.userName = savedUserInfo.userName;
+                this.$store.state.userNumber = savedUserInfo.phone;
+                if (res.data.prctInfoAgrYn === "Y") {
+                  if (res.data.prctInfoCjgtAgrYn === "Y") {
+                    this.$router.push("userPage"); // userPage
+                  } else {
+                    this.$router.push("certification"); // certification
+                  }
+                } else {
+                  this.$router.push("provision");
+                }
+              });
+          }
+        });
+    }
   },
   methods: {
     submit() {
@@ -184,11 +226,17 @@ export default {
                     userCheckObj
                   )
                   .then(res => {
+                    // 세션저장
+                    sessionStorage.setItem(
+                      "userInfo",
+                      JSON.stringify(userInfo)
+                    );
+
                     this.$store.state.userName = this.username;
                     this.$store.state.userNumber = phoneNumber;
                     if (res.data.prctInfoAgrYn === "Y") {
                       if (res.data.prctInfoCjgtAgrYn === "Y") {
-                        this.$router.push("provision"); // userPage
+                        this.$router.push("userPage"); // userPage
                       } else {
                         this.$router.push("certification"); // certification
                       }
@@ -208,21 +256,27 @@ export default {
               });
             });
         } else {
-          this.alert2 = true;
+          Dialog.alert({
+            message: "올바른 전화번호를 입력하세요.",
+            confirmButtonText: "확인"
+          });
         }
       } else {
-        this.alert3 = true;
+        Dialog.alert({
+          message: "올바른 이름을 입력하세요.",
+          confirmButtonText: "확인"
+        });
       }
     },
-    closeAlert1() {
-      this.alert1 = false;
-    },
-    closeAlert2() {
-      this.alert2 = false;
-    },
-    closeAlert3() {
-      this.alert3 = false;
-    },
+    // closeAlert1() {
+    //   this.alert1 = false;
+    // },
+    // closeAlert2() {
+    //   this.alert2 = false;
+    // },
+    // closeAlert3() {
+    //   this.alert3 = false;
+    // },
     nextInput() {
       if (this.$refs.input.value.length === 3) {
         this.$refs.input2.focus();

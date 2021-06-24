@@ -107,16 +107,6 @@
         <div class="prov-main-info-button" @click="sendFormAndMove">
           다음
         </div>
-
-        <van-popup v-model="alert" class="alert">
-          <p>약관 동의 후 서비스 이용이 가능합니다.</p>
-          <button @click="closeAlert">확인</button>
-        </van-popup>
-
-        <van-popup v-model="alert2" class="alert"
-          ><p>서명 입력 후 서비스 이용이 가능합니다.</p>
-          <button @click="closeAlert2">확인</button></van-popup
-        >
       </div>
     </div>
 
@@ -142,7 +132,8 @@ import {
   Collapse,
   CollapseItem,
   Popup,
-  Notify
+  Notify,
+  Dialog
 } from "vant";
 
 export default {
@@ -151,6 +142,7 @@ export default {
     [Checkbox.name]: Checkbox,
     [CheckboxGroup.name]: CheckboxGroup,
     [Collapse.name]: Collapse,
+    [Dialog.name]: Dialog,
     [CollapseItem.name]: CollapseItem,
     [Popup.name]: Popup,
     [Notify.name]: Notify,
@@ -172,8 +164,6 @@ export default {
       show1: false,
       show2: false,
       show3: false,
-      alert: false,
-      alert2: false,
       drawing: false,
       drawingCode: ""
     };
@@ -252,10 +242,16 @@ export default {
           this.checked_3 = false;
           this.drawing = false;
         } else {
-          this.alert2 = true;
+          Dialog.alert({
+            message: "서명 입력 후 서비스 이용이 가능합니다.",
+            confirmButtonText: "확인"
+          });
         }
       } else {
-        this.alert = true;
+        Dialog.alert({
+          message: "약관 동의 후 서비스 이용이 가능합니다.",
+          confirmButtonText: "확인"
+        });
       }
     },
     showPopup1() {
@@ -284,12 +280,6 @@ export default {
       this.checked_3 = true;
       this.$refs.checkbox_3.toggle(true);
       this.toggle();
-    },
-    closeAlert() {
-      this.alert = false;
-    },
-    closeAlert2() {
-      this.alert2 = false;
     },
     drawingTrue(v) {
       this.drawing = v;

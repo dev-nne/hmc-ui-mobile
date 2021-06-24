@@ -9,7 +9,7 @@
 
     <div class="userInfo-box">
       <div class="userInfo-box-title">
-        {{ `${this.userInfo.centerName} ${this.userInfo.spaceName}` }}
+        {{ `드라이빙 라운지 ${this.userInfo.centerName}` }}
       </div>
 
       <div class="userInfo-box-content">
@@ -27,7 +27,16 @@
         </div>
         <div class="collapse" v-if="collapse">
           <p class="parking">주차장</p>
-          <p>서울 성동구 성수이로 134 현대자동차 동부서비스센터 지하 1층</p>
+          <p>
+            {{
+              ` ${centerName[0]} ${
+                centerName[1] !== undefined || null
+                  ? `/
+            ${centerName[1]}`
+                  : " "
+              } `
+            }}
+          </p>
         </div>
       </div>
     </div>
@@ -44,14 +53,22 @@ export default {
     return {
       collapse: false,
       icon: "arrow-down",
-      userInfo: {}
+      userInfo: {},
+      centerName: ""
     };
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
   },
   mounted() {
+    const centerName = this.userInfo.centerName;
     this.$refs.callNum.href = `tel:${this.userInfo.spaceNumber}`;
+    this.$axios
+      .get("./static/parkingAddress.json")
+      .then(res => {
+        this.centerName = res.data[centerName];
+      })
+      .catch(err => console.log(err));
   },
   methods: {
     clickCollapseBtn() {

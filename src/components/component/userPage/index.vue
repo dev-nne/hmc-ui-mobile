@@ -179,7 +179,8 @@ export default {
       fellow: false,
       show: [false, false, false, false],
       userInfo: {},
-      loading: false
+      loading: false,
+      res: ""
     };
   },
   mounted() {
@@ -189,6 +190,7 @@ export default {
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
+    console.log(this.$store.commit.getCookie);
   },
   methods: {
     confirm1() {
@@ -209,6 +211,7 @@ export default {
                 { commandID: res.data.commandID }
               )
               .then(res => {
+                console.log(res);
                 if (res.data.commandState === "DONE") {
                   this.loading = false;
                   Notify({
@@ -218,6 +221,7 @@ export default {
                   });
                 } else {
                   this.loading = false;
+
                   Dialog.alert({
                     message: "잠금해제에 실패하였습니다.",
                     confirmButtonText: "확인"
@@ -248,7 +252,7 @@ export default {
       this.loading = true;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
-        .then((res, req) => {
+        .then(res => {
           setTimeout(() => {
             this.$axios
               .post(
@@ -256,6 +260,7 @@ export default {
                 { commandID: res.data.commandID }
               )
               .then(res => {
+                console.log(res);
                 if (res.data.commandState === "DONE") {
                   this.loading = false;
                   Notify({
@@ -294,7 +299,7 @@ export default {
       this.loading = true;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/flasher.do", hornObj)
-        .then((res, req) => {
+        .then(res => {
           setTimeout(() => {
             this.$axios
               .post(
@@ -369,9 +374,17 @@ export default {
                           "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
                           returnObj
                         )
-                        .then((res, req) => {
-                          console.log(res);
-                          this.$router.push("returnPage");
+                        .then(res => {
+                          this.loading = false;
+                          if (res.data.resultMap.distance < 300) {
+                            sessionStorage.removeItem("userInfo");
+                            this.$router.push("returnPage");
+                          } else {
+                            Dialog.alert({
+                              message: "차량이 너무 멀리 있습니다.",
+                              confirmButtonText: "확인"
+                            });
+                          }
                         })
                         .catch(err => {
                           Dialog.alert({
