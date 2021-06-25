@@ -73,7 +73,7 @@
             display: -webkit-box;
             -webkit-box-orient: horizontal;
             align-items: center;
-            width: 38%;
+            width: 30%;
 
             .van-cell {
               width: 100%;
@@ -99,7 +99,7 @@
           }
 
           &-input {
-            width: 55%;
+            width: 60%;
             border: none;
             outline: none;
             background: none;
@@ -112,6 +112,29 @@
               outline: none;
               width: 100%;
               height: 100%;
+            }
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+
+            .line {
+              width: 5%;
+              height: 1px;
+              background: #c5c5c5;
+            }
+
+            .input,
+            .input2 {
+              padding: 10px 0;
+              border: none;
+              font-size: 14px;
+              background: none;
+            }
+            .input2 {
+              width: 35%;
+            }
+            .input {
+              width: 18%;
             }
           }
           ::placeholder {

@@ -62,15 +62,42 @@
 
             <div class="cert-main-info-type-num-input">
               <input
-                type="number"
+                ref="input"
+                type="tel"
                 class="input"
-                v-model="keyValue"
-                placeholder="면허번호 10자리"
-                pattern="\d*"
-                maxlength="10"
+                v-model="keyValue1"
+                pattern="[0-9]*"
+                maxlength="2"
                 oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                ref="numberKeyinput"
+                @keyup="nextInput"
+                @keydown="fullText(2)"
+              />
+              <div class="line"></div>
+              <input
+                ref="input2"
+                type="tel"
+                class="input2"
+                v-model="keyValue2"
+                pattern="\d*"
+                maxlength="6"
+                oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                @keyup="nextInput2"
+                @keydown="fullText(6)"
+              />
+              <div class="line"></div>
+              <input
+                ref="input3"
+                type="tel"
+                class="input"
+                v-model="keyValue3"
+                pattern="\d*"
+                maxlength="2"
+                oninput="javascript: if (this.value.length >
+              this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                @keyup="checkNumber"
+                @keydown="fullText(2)"
               />
             </div>
           </div>
@@ -149,7 +176,7 @@ export default {
   },
   data() {
     return {
-      checked: "32",
+      checked: "",
       years: "",
       month: "",
       day: "",
@@ -179,7 +206,9 @@ export default {
       show: false,
       selectDay: false,
       keypadShow: false,
-      keyValue: "",
+      keyValue1: "",
+      keyValue2: "",
+      keyValue3: "",
       validate1: false,
       validate2: false,
       validate3: false
@@ -213,52 +242,60 @@ export default {
       this.selectDay = true;
     },
     sendFormAndMove() {
-      if (this.validate1) {
-        if (this.keyValue.length === 10) {
-          if (this.validate3) {
-            const licenseObj = {
-              // tsrdPrctNo: this.$store.state.userInfo.bookNumber,
-              licenseNo: this.value + this.keyValue,
-              residentName: this.$store.state.userName,
-              residentDate: `${this.years.toString().slice(-2)}${
-                this.month < 10 ? `0${this.month}` : `${this.month}`
-              }${this.day < 10 ? `0${this.day}` : `${this.day}`}`,
-              licenseConCode: this.checked
-              // country: "KR",
-              // language: "ko",
-              // terminal: "AM"
-            };
-            this.$axios
-              .post(
-                "https://hyundai-driving.mocean.com/mobile/license.do",
-                licenseObj
-              )
-              .then((res, req) => {
-                if (res.data.resultMap.certLicense === "0") {
-                  this.$router.push("userPage");
-                } else {
-                  Dialog.alert({
-                    message: "올바른 면허정보를 입력해 주세요.",
-                    confirmButtonText: "확인"
-                  });
-                }
-              })
-              .catch(err => console.log(err));
+      let keyvalue = this.keyValue1 + this.keyValue2 + this.keyValue3;
+      if (this.checked !== "") {
+        if (this.validate1) {
+          if (keyvalue.length === 10) {
+            if (this.validate3) {
+              const licenseObj = {
+                // tsrdPrctNo: this.$store.state.userInfo.bookNumber,
+                licenseNo: this.value + this.keyValue,
+                residentName: this.$store.state.userName,
+                residentDate: `${this.years.toString().slice(-2)}${
+                  this.month < 10 ? `0${this.month}` : `${this.month}`
+                }${this.day < 10 ? `0${this.day}` : `${this.day}`}`,
+                licenseConCode: this.checked
+                // country: "KR",
+                // language: "ko",
+                // terminal: "AM"
+              };
+              this.$axios
+                .post(
+                  "https://hyundai-driving.mocean.com/mobile/license.do",
+                  licenseObj
+                )
+                .then((res, req) => {
+                  if (res.data.resultMap.certLicense === "0") {
+                    this.$router.push("userPage");
+                  } else {
+                    Dialog.alert({
+                      message: "올바른 면허정보를 입력해 주세요.",
+                      confirmButtonText: "확인"
+                    });
+                  }
+                })
+                .catch(err => console.log(err));
+            } else {
+              Dialog.alert({
+                message: "생년월일을 입력하세요.",
+                confirmButtonText: "확인"
+              });
+            }
           } else {
             Dialog.alert({
-              message: "생년월일을 입력하세요.",
+              message: "면허번호 10자리를 입력하세요.",
               confirmButtonText: "확인"
             });
           }
         } else {
           Dialog.alert({
-            message: "면허번호 10자리를 입력하세요.",
+            message: "발급 지역을 선택하세요.",
             confirmButtonText: "확인"
           });
         }
       } else {
         Dialog.alert({
-          message: "발급 지역을 선택하세요.",
+          message: "면허종별을 선택하세요.",
           confirmButtonText: "확인"
         });
       }
@@ -273,6 +310,44 @@ export default {
     maxLengthCheck(object) {
       if (object.value.length > object.maxLength) {
         object.value = object.value.slice(0, object.maxLength);
+      }
+    },
+    nextInput() {
+      this.checkNumber(event);
+      if (this.$refs.input.value.length === 2) {
+        this.checkNumber(event);
+        if (this.$refs.input.value.length === 2) {
+          event.returnValue = false;
+          this.$refs.input2.focus();
+        }
+      }
+    },
+    nextInput2() {
+      this.checkNumber(event);
+      if (this.$refs.input2.value.length === 6) {
+        this.checkNumber(event);
+        if (this.$refs.input2.value.length === 6) {
+          event.returnValue = false;
+          this.$refs.input3.focus();
+        }
+      }
+    },
+    checkKorean(e) {
+      e.target.value = e.target.value.replace(
+        /[^ㄱ-힣\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
+        ""
+      );
+    },
+    checkNumber(e) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    },
+    fullText(x) {
+      if (event.target.value.length === x) {
+        if (event.keyCode === 8) {
+          event.returnValue = true;
+        } else {
+          event.returnValue = false;
+        }
       }
     }
   }

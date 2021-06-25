@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const userInfoSetting = (state, data) => {
   const infoData = data.resData.DisplayResponse;
 
@@ -32,4 +34,85 @@ const agreementRes = (state, data) => {
 const felloInfoSetting = (state, res, req) => {
   console.log(res, req);
 };
-export { userInfoSetting, felloInfoSetting, agreementRes };
+
+const handleDoorOpen = (state, res) => {
+  if (!state.doorOpen && state.openCount > 0) {
+    setTimeout(() => {
+      if (!state.doorOpen) {
+        axios
+          .post(
+            "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
+            res
+          )
+          .then(res => {
+            if (res.data.commandState === "DONE") {
+              state.doorOpen = true;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      state.openCount--;
+
+      handleDoorOpen(state, res);
+    }, 2000);
+  }
+};
+
+const handleDoorClose = (state, res) => {
+  if (!state.doorClose && state.closeCount > 0) {
+    setTimeout(() => {
+      if (!state.doorClose) {
+        axios
+          .post(
+            "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
+            res
+          )
+          .then(res => {
+            if (res.data.commandState === "DONE") {
+              state.doorClose = true;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      state.closeCount--;
+      handleDoorClose(state, res);
+    }, 2000);
+  }
+};
+
+const handleLightOnOff = (state, res) => {
+  if (!state.light && state.lightCount > 0) {
+    setTimeout(() => {
+      if (!state.light) {
+        axios
+          .post(
+            "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
+            res
+          )
+          .then(res => {
+            if (res.data.commandState === "DONE") {
+              state.light = true;
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      }
+      state.lightCount--;
+      handleLightOnOff(state, res);
+    }, 2000);
+  }
+};
+
+export {
+  userInfoSetting,
+  felloInfoSetting,
+  agreementRes,
+  handleDoorOpen,
+  handleDoorClose,
+  handleLightOnOff
+};

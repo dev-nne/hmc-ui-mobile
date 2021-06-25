@@ -6,25 +6,33 @@
       <div class="login-main-title">현대자동차 시승서비스</div>
 
       <div class="login-main-form-box">
-        <input class="input" v-model="username" placeholder="이름" />
+        <input
+          type="text"
+          class="input"
+          v-model="username"
+          placeholder="이름"
+          pattern="[^ㄱ-힣]*"
+          @keyup="checkKorean"
+        />
 
         <div class="inputBox">
           <input
             ref="input"
-            type="number"
+            type="tel"
             class="inputBox-input"
             placeholder="010"
             v-model="phoneNum1"
-            pattern="\d*"
+            pattern="[0-9]*"
             maxlength="3"
             oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-            @keyup="nextInput()"
+            @keyup="nextInput"
+            @keydown="fullText(3)"
           />
           <div class="line"></div>
           <input
             ref="input2"
-            type="number"
+            type="tel"
             class="inputBox-input"
             v-model="phoneNum2"
             placeholder="0000"
@@ -32,12 +40,13 @@
             maxlength="4"
             oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-            @keyup="nextInput2()"
+            @keyup="nextInput2"
+            @keydown="fullText(4)"
           />
           <div class="line"></div>
           <input
             ref="input3"
-            type="number"
+            type="tel"
             class="inputBox-input"
             v-model="phoneNum3"
             placeholder="0000"
@@ -45,6 +54,8 @@
             maxlength="4"
             oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+            @keyup="checkNumber"
+            @keydown="fullText(4)"
           />
         </div>
 
@@ -133,21 +144,7 @@ export default {
       param: ""
     };
   },
-  created() {},
-  mounted() {
-    window.scrollTo(0, 0);
-
-    // let paramInfo = window.location.search;
-    this.param = this.$route.query.id;
-    // if (paramInfo !== "") {
-    //   let paramArr = paramInfo.split("=");
-    //   this.$store.state.userInfo.bookNumber = paramArr[1];
-    // }
-    // this.$router
-    // .push({ name: "login", query: { id: "2018072310011" } })
-    //   .catch(() => {}); // 파라미터값 입력
-    // this.param = this.$route.query.id; // 파라미터값 받아오기
-    // console.log(this.$route.query.id);
+  created() {
     let savedUserInfo = JSON.parse(sessionStorage.getItem("userInfo"));
     if (sessionStorage.getItem("userInfo") !== null) {
       this.$axios
@@ -189,6 +186,21 @@ export default {
         });
     }
   },
+  mounted() {
+    window.scrollTo(0, 0);
+
+    // let paramInfo = window.location.search;
+    this.param = this.$route.query.id;
+    // if (paramInfo !== "") {
+    //   let paramArr = paramInfo.split("=");
+    //   this.$store.state.userInfo.bookNumber = paramArr[1];
+    // }
+    // this.$router
+    // .push({ name: "login", query: { id: "2018072310011" } })
+    //   .catch(() => {}); // 파라미터값 입력
+    // this.param = this.$route.query.id; // 파라미터값 받아오기
+    // console.log(this.$route.query.id);
+  },
   methods: {
     submit() {
       const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
@@ -200,7 +212,7 @@ export default {
       };
 
       if (this.username.length > 1) {
-        if (phoneNumber.length > 10) {
+        if (phoneNumber.length > 12) {
           this.$axios
             .post(
               "https://hyundai-driving.mocean.com/mobile/login.do",
@@ -278,13 +290,41 @@ export default {
     //   this.alert3 = false;
     // },
     nextInput() {
+      this.checkNumber(event);
       if (this.$refs.input.value.length === 3) {
-        this.$refs.input2.focus();
+        this.checkNumber(event);
+        if (this.$refs.input.value.length === 3) {
+          event.returnValue = false;
+          this.$refs.input2.focus();
+        }
       }
     },
     nextInput2() {
+      this.checkNumber(event);
       if (this.$refs.input2.value.length === 4) {
-        this.$refs.input3.focus();
+        this.checkNumber(event);
+        if (this.$refs.input2.value.length === 4) {
+          event.returnValue = false;
+          this.$refs.input3.focus();
+        }
+      }
+    },
+    checkKorean(e) {
+      e.target.value = e.target.value.replace(
+        /[^ㄱ-힣\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
+        ""
+      );
+    },
+    checkNumber(e) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    },
+    fullText(x) {
+      if (event.target.value.length === x) {
+        if (event.keyCode === 8) {
+          event.returnValue = true;
+        } else {
+          event.returnValue = false;
+        }
       }
     }
   }

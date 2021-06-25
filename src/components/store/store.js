@@ -1,6 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import * as actions from "./modules/actions.js";
+import * as getters from "./modules/getters.js";
 import * as mutations from "./modules/mutations.js";
 
 Vue.use(Vuex);
@@ -24,9 +24,15 @@ export const store = new Vuex.Store({
       spaceNumber: ""
     },
     agreementInfo: {},
-    fellow: false
+    fellow: false,
+    doorOpen: false,
+    doorClose: false,
+    light: false,
+    openCount: 15,
+    closeCount: 15,
+    lightCount: 15
   },
-  actions: actions,
+  getters: getters,
   mutations: mutations
 });
 

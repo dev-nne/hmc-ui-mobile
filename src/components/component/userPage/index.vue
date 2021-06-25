@@ -71,7 +71,7 @@
         @click-overlay="cancel(0)"
       >
         <h1>[문 열기]</h1>
-        <p>차량 반납 후에는 차량 이용이 불가능합니다.</p>
+        <p>차량의 문을 엽니다.</p>
         <div class="button-box">
           <button class="returnBtn" @click="confirm1">확인</button>
           <button @click="cancel(0)">취소</button>
@@ -86,7 +86,7 @@
         @click-overlay="cancel(1)"
       >
         <h1>[문 잠금]</h1>
-        <p>차량 반납 후에는 차량 이용이 불가능합니다.</p>
+        <p>차량의 문을 잠급니다.</p>
         <div class="button-box">
           <button class="returnBtn" @click="confirm2">확인</button>
           <button @click="cancel(1)">취소</button>
@@ -147,11 +147,13 @@
     </div>
     <van-loading
       type="spinner"
-      color="#1989fa"
+      color="white"
       vertical
       v-if="loading"
       class="loading"
-    />
+      text-color="white"
+      >최대 30초의 시간이 걸릴 수 있습니다.</van-loading
+    >
     <FooterBar />
   </div>
 </template>
@@ -180,17 +182,65 @@ export default {
       show: [false, false, false, false],
       userInfo: {},
       loading: false,
-      res: ""
+      res: "",
+      countDown: 150
     };
   },
   mounted() {
     window.scrollTo(0, 0);
     // this.$refs.callNum.href = `tel:${this.contactNumber}`;
     this.$refs.callNum.href = "tel:1833-2654";
+    this.timer();
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
-    console.log(this.$store.commit.getCookie);
+    // 2시간 30분후 이용종료
+  },
+  computed: {
+    checkDoorOpen() {
+      return this.$store.state.doorOpen;
+    },
+    checkDoorClose() {
+      return this.$store.state.doorClose;
+    },
+    checkLightOnOff() {
+      return this.$store.state.light;
+    }
+  },
+  watch: {
+    checkDoorOpen(v) {
+      if (v) {
+        this.loading = false;
+
+        Notify({
+          type: "primary",
+          message: "잠금이 해제되었습니다.",
+          duration: 1500
+        });
+      }
+    },
+    checkDoorClose(v) {
+      if (v) {
+        this.loading = false;
+
+        Notify({
+          type: "primary",
+          message: "잠금이 설정되었습니다.",
+          duration: 1500
+        });
+      }
+    },
+    checkLightOnOff(v) {
+      if (v) {
+        this.loading = false;
+
+        Notify({
+          type: "primary",
+          message: "비상등을 켭니다.",
+          duration: 1500
+        });
+      }
+    }
   },
   methods: {
     confirm1() {
@@ -203,43 +253,19 @@ export default {
       this.loading = true;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
-        .then(res => {
-          setTimeout(() => {
-            this.$axios
-              .post(
-                "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
-                { commandID: res.data.commandID }
-              )
-              .then(res => {
-                console.log(res);
-                if (res.data.commandState === "DONE") {
-                  this.loading = false;
-                  Notify({
-                    type: "primary",
-                    message: "잠금이 해제되었습니다.",
-                    duration: 1500
-                  });
-                } else {
-                  this.loading = false;
-
-                  Dialog.alert({
-                    message: "잠금해제에 실패하였습니다.",
-                    confirmButtonText: "확인"
-                  });
-                }
-              })
-              .catch(err => {
-                console.log(err);
-                this.loading = false;
-              });
-          }, 2000);
+        .then(async res => {
+          this.$store.state.openCount = 15;
+          this.$store.state.doorOpen = false;
+          await this.$store.commit("handleDoorOpen", {
+            commandID: res.data.commandID
+          });
         })
         .catch(err => {
+          this.loading = false;
           Dialog.alert({
             message: err,
             confirmButtonText: "확인"
           });
-          this.loading = false;
         });
     },
     confirm2() {
@@ -250,45 +276,22 @@ export default {
         action: "close" // open, close
       };
       this.loading = true;
+
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
-        .then(res => {
-          setTimeout(() => {
-            this.$axios
-              .post(
-                "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
-                { commandID: res.data.commandID }
-              )
-              .then(res => {
-                console.log(res);
-                if (res.data.commandState === "DONE") {
-                  this.loading = false;
-                  Notify({
-                    type: "primary",
-                    message: "잠금이 설정되었습니다.",
-                    duration: 1500
-                  });
-                } else {
-                  this.loading = false;
-
-                  Dialog.alert({
-                    message: "잠금설정에 실패하였습니다.",
-                    confirmButtonText: "확인"
-                  });
-                }
-              })
-              .catch(err => {
-                console.log(err);
-                this.loading = false;
-              });
-          }, 2000);
+        .then(async res => {
+          this.$store.state.closeCount = 15;
+          this.$store.state.doorClose = false;
+          await this.$store.commit("handleDoorClose", {
+            commandID: res.data.commandID
+          });
         })
         .catch(err => {
+          this.loading = false;
           Dialog.alert({
             message: err,
             confirmButtonText: "확인"
           });
-          this.loading = false;
         });
     },
     confirm3() {
@@ -299,51 +302,22 @@ export default {
       this.loading = true;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/flasher.do", hornObj)
-        .then(res => {
-          setTimeout(() => {
-            this.$axios
-              .post(
-                "https://hyundai-driving.mocean.com/controls/checkControlResponse.do ",
-                { commandID: res.data.commandID }
-              )
-              .then(res => {
-                if (res.data.commandState === "DONE") {
-                  this.loading = false;
-                  Notify({
-                    type: "primary",
-                    message: "비상등을 켭니다.",
-                    duration: 1500
-                  });
-                } else {
-                  this.loading = false;
-
-                  Dialog.alert({
-                    message: "비상등켜기에 실패하였습니다.",
-                    confirmButtonText: "확인"
-                  });
-                }
-              })
-              .catch(err => {
-                Dialog.alert({
-                  message: err,
-                  confirmButtonText: "확인"
-                });
-                this.loading = false;
-              });
-          }, 2000);
+        .then(async res => {
+          this.$store.state.lightCount = 15;
+          this.$store.state.light = false;
+          await this.$store.commit("handleLightOnOff", {
+            commandID: res.data.commandID
+          });
         })
         .catch(err => {
+          this.loading = false;
           Dialog.alert({
             message: err,
             confirmButtonText: "확인"
           });
-          this.loading = false;
         });
     },
     clickCarReturn() {
-      // this.$store.state.auth = false;
-      // this.$store.state.fellow = false;
-
       let returnObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
       };
@@ -444,6 +418,31 @@ export default {
     },
     canclePop(v) {
       this.fellow = v;
+    },
+    timer() {
+      let bookT = this.$store.state.userInfo.bookTime;
+      let returnT = bookT.split("-")[1];
+      let returnH = parseInt(returnT.split(":")[0]);
+      let returnM = parseInt(returnT.split(":")[1]);
+      const date = new Date();
+
+      setTimeout(() => {
+        if (date.getHours() === returnH && date.getMinutes() === returnM) {
+          Dialog.alert({
+            message: "반납시간이 다 되었습니다. 30분 후에 운행이 종료됩니다.",
+            confirmButtonText: "확인"
+          });
+        }
+        if (date.getHours() === returnH && date.getMinutes() === returnM + 30) {
+          Dialog.alert({
+            message: "운행이 종료됩니다. 라운지에 문의해주세요.",
+            confirmButtonText: "확인"
+          });
+          sessionStorage.removeItem("userInfo");
+          this.$router.push("returnPage");
+        }
+        this.timer();
+      }, 60000);
     }
   }
 };
