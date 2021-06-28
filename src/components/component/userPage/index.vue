@@ -468,6 +468,16 @@ export default {
         });
     },
     handlePopup(x) {
+      let savedUserInfo = Number(sessionStorage.getItem("expireTime"));
+      if (new Date().getTime() > savedUserInfo) {
+        Dialog.alert({
+          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+          confirmButtonText: "확인"
+        });
+        sessionStorage.removeItem("userInfo");
+        sessionStorage.removeItem("expireTime");
+        this.$router.push("login");
+      }
       this.show = [...this.show];
       this.show[x] = true;
     },
