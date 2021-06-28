@@ -224,7 +224,6 @@ export default {
       if (this.checked_1 && this.checked_2) {
         if (this.drawing) {
           userChecking.signImg = this.$refs.canvas.sendImgCode();
-          console.log(userChecking);
           if (!this.$store.state.isLocal) {
             this.$axios
               .post(

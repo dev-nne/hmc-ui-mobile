@@ -12,7 +12,9 @@
           v-model="username"
           placeholder="이름"
           pattern="[^ㄱ-힣]*"
-          @keyup="checkKorean"
+          @keydown="checkKorean"
+          ref="nameInput"
+          @input="inputTarget"
         />
 
         <div class="inputBox">
@@ -172,14 +174,19 @@ export default {
                 this.$store.state.auth = true;
                 this.$store.state.userName = savedUserInfo.userName;
                 this.$store.state.userNumber = savedUserInfo.phone;
-                if (res.data.prctInfoAgrYn === "Y") {
-                  if (res.data.prctInfoCjgtAgrYn === "Y") {
-                    this.$router.push("userPage"); // userPage
+                if (res.data.returnYn === "N") {
+                  if (
+                    res.data.prctInfoAgrYn === "Y" &&
+                    res.data.prctInfoCjgtAgrYn === "Y"
+                  ) {
+                    if (res.data.prctLicenseYn === "Y") {
+                      this.$router.push("provision"); // userPage
+                    } else {
+                      this.$router.push("certification"); // certification
+                    }
                   } else {
-                    this.$router.push("certification"); // certification
+                    this.$router.push("provision");
                   }
-                } else {
-                  this.$router.push("provision");
                 }
               });
           }
@@ -246,14 +253,24 @@ export default {
 
                     this.$store.state.userName = this.username;
                     this.$store.state.userNumber = phoneNumber;
-                    if (res.data.prctInfoAgrYn === "Y") {
-                      if (res.data.prctInfoCjgtAgrYn === "Y") {
-                        this.$router.push("userPage"); // userPage
+                    if (res.data.returnYn === "N") {
+                      if (
+                        res.data.prctInfoAgrYn === "Y" &&
+                        res.data.prctInfoCjgtAgrYn === "Y"
+                      ) {
+                        if (res.data.prctLicenseYn === "Y") {
+                          this.$router.push("userPage"); // userPage
+                        } else {
+                          this.$router.push("certification"); // certification
+                        }
                       } else {
-                        this.$router.push("certification"); // certification
+                        this.$router.push("provision");
                       }
                     } else {
-                      this.$router.push("provision");
+                      Dialog.alert({
+                        message: "반납이후에는 다시 이용하실 수 없습니다.",
+                        confirmButtonText: "확인"
+                      });
                     }
                   });
               } else {
@@ -295,7 +312,7 @@ export default {
         this.checkNumber(event);
         if (this.$refs.input.value.length === 3) {
           event.returnValue = false;
-          this.$refs.input2.focus();
+          if (this.$refs.input2.value.length !== 4) this.$refs.input2.focus();
         }
       }
     },
@@ -305,7 +322,7 @@ export default {
         this.checkNumber(event);
         if (this.$refs.input2.value.length === 4) {
           event.returnValue = false;
-          this.$refs.input3.focus();
+          if (this.$refs.input3.value.length !== 4) this.$refs.input3.focus();
         }
       }
     },
@@ -326,6 +343,10 @@ export default {
           event.returnValue = false;
         }
       }
+    },
+    inputTarget(e) {
+      let start = e.target.selectionStart;
+      e.target.selectionEnd = start;
     }
   }
 };

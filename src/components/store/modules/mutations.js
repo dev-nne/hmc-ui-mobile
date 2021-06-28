@@ -56,7 +56,7 @@ const handleDoorOpen = (state, res) => {
       state.openCount--;
 
       handleDoorOpen(state, res);
-    }, 2000);
+    }, 3000);
   }
 };
 
@@ -80,14 +80,14 @@ const handleDoorClose = (state, res) => {
       }
       state.closeCount--;
       handleDoorClose(state, res);
-    }, 2000);
+    }, 3000);
   }
 };
 
 const handleLightOnOff = (state, res) => {
-  if (!state.light && state.lightCount > 0) {
+  if (!state.light) {
     setTimeout(() => {
-      if (!state.light) {
+      if (!state.light && state.lightCount > 0) {
         axios
           .post(
             "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
@@ -104,7 +104,7 @@ const handleLightOnOff = (state, res) => {
       }
       state.lightCount--;
       handleLightOnOff(state, res);
-    }, 2000);
+    }, 3000);
   }
 };
 

@@ -51,7 +51,7 @@
                 title="발급지역"
                 show-toolbar
                 :columns="columns"
-                default-index="1"
+                default-index="0"
                 item-height="36px"
                 @cancel="showPicker = false"
                 @confirm="onConfirm"
@@ -223,9 +223,7 @@ export default {
     window.scrollTo(0, 0);
   },
   methods: {
-    onSubmit(values) {
-      console.log("submit", values);
-    },
+    onSubmit(values) {},
     showPop() {
       this.show = true;
     },
@@ -248,33 +246,116 @@ export default {
           if (keyvalue.length === 10) {
             if (this.validate3) {
               const licenseObj = {
-                // tsrdPrctNo: this.$store.state.userInfo.bookNumber,
-                licenseNo: this.value + this.keyValue,
+                licenseNo: this.value + keyvalue,
                 residentName: this.$store.state.userName,
                 residentDate: `${this.years.toString().slice(-2)}${
                   this.month < 10 ? `0${this.month}` : `${this.month}`
                 }${this.day < 10 ? `0${this.day}` : `${this.day}`}`,
-                licenseConCode: this.checked
-                // country: "KR",
-                // language: "ko",
-                // terminal: "AM"
+                licenseConCode: this.checked,
+                tsrdPrctNo: this.$store.state.userInfo.bookNumber
               };
+              console.log(licenseObj);
               this.$axios
                 .post(
                   "https://hyundai-driving.mocean.com/mobile/license.do",
                   licenseObj
                 )
-                .then((res, req) => {
+                .then(res => {
                   if (res.data.resultMap.certLicense === "0") {
                     this.$router.push("userPage");
                   } else {
-                    Dialog.alert({
-                      message: "올바른 면허정보를 입력해 주세요.",
-                      confirmButtonText: "확인"
-                    });
+                    console.log(res.data.resultMap.errCode);
+                    switch (res.data.resultMap.errCode) {
+                      case "910770":
+                        Dialog.alert({
+                          message: "운전면허증 번호 에러",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910771":
+                        Dialog.alert({
+                          message: "재발행이 필요한 운전면허증",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910772":
+                        Dialog.alert({
+                          message: "분실된 운전면허증",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910773":
+                        Dialog.alert({
+                          message: "취소된 운전면허증",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910774":
+                        Dialog.alert({
+                          message: "취소된 운전면허증",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910775":
+                        Dialog.alert({
+                          message: "정지된 운전면허증",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910776":
+                        Dialog.alert({
+                          message: "해당 기간동안 취소된 운전면허증",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910777":
+                        Dialog.alert({
+                          message: "해당 기간동안 정지된 운전면허증",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910778":
+                        Dialog.alert({
+                          message: "운전면허증 정보가 올바르지 않음 - 이름",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910779":
+                        Dialog.alert({
+                          message: "운전면허증 정보가 올바르지 않음 - 생년월일",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910780":
+                        Dialog.alert({
+                          message:
+                            "운전면허증 정보가 올바르지 않음 -운전면허 정보",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      case "910781":
+                        Dialog.alert({
+                          message:
+                            "운전면허증 정보가 올바르지 않음 -운전면허 지역",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                      default:
+                        Dialog.alert({
+                          message: "운전면허증 번호 에러",
+                          confirmButtonText: "확인"
+                        });
+                        break;
+                    }
                   }
                 })
-                .catch(err => console.log(err));
+                .catch(err => {
+                  console.log(err);
+                  Dialog.alert({
+                    message: "실행할 수 없습니다.",
+                    confirmButtonText: "확인"
+                  });
+                });
             } else {
               Dialog.alert({
                 message: "생년월일을 입력하세요.",

@@ -93,13 +93,17 @@ const methods = {
 
   // 모바일 터치 이벤트
   handleTouchStart(event) {
+    this.drawing = true;
     const touch = event.touches[0];
     const rect = this.ref.getBoundingClientRect();
     this.ctx.beginPath();
     this.ctx.moveTo(touch.clientX - rect.x, touch.clientY - rect.y);
   },
   handleTouchMove(event) {
-    event.preventDefault();
+    if (this.drawing) {
+      event.preventDefault();
+    }
+    this.drawing = true;
     const touch = event.touches[0];
     const rect = this.ref.getBoundingClientRect();
     this.ctx.lineTo(touch.clientX - rect.x, touch.clientY - rect.y);
@@ -107,6 +111,7 @@ const methods = {
     this.$emit("drawingTrue", true);
   },
   handleTouchEnd(event) {
+    this.drawing = false;
     this.ctx.closePath();
     this.ctx.save();
   },

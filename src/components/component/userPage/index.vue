@@ -205,6 +205,15 @@ export default {
     },
     checkLightOnOff() {
       return this.$store.state.light;
+    },
+    checkOpenErr() {
+      return this.$store.state.openCount;
+    },
+    checkCloseErr() {
+      return this.$store.state.closeCount;
+    },
+    checkLightErr() {
+      return this.$store.state.lightCount;
     }
   },
   watch: {
@@ -231,6 +240,7 @@ export default {
       }
     },
     checkLightOnOff(v) {
+      console.log(v);
       if (v) {
         this.loading = false;
 
@@ -238,6 +248,33 @@ export default {
           type: "primary",
           message: "비상등을 켭니다.",
           duration: 1500
+        });
+      }
+    },
+    checkOpenErr(v) {
+      if (v === 0) {
+        this.loading = false;
+        Dialog.alert({
+          message: "차량제어에 실패하였습니다. 잠시후 다시 시도해주세요.",
+          confirmButtonText: "확인"
+        });
+      }
+    },
+    checkCloseErr(v) {
+      if (v === 0) {
+        this.loading = false;
+        Dialog.alert({
+          message: "차량제어에 실패하였습니다. 잠시후 다시 시도해주세요.",
+          confirmButtonText: "확인"
+        });
+      }
+    },
+    checkLightErr(v) {
+      if (v === 0) {
+        this.loading = false;
+        Dialog.alert({
+          message: "차량제어에 실패하였습니다. 잠시후 다시 시도해주세요.",
+          confirmButtonText: "확인"
         });
       }
     }
@@ -254,11 +291,19 @@ export default {
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
         .then(async res => {
-          this.$store.state.openCount = 15;
-          this.$store.state.doorOpen = false;
-          await this.$store.commit("handleDoorOpen", {
-            commandID: res.data.commandID
-          });
+          if (res.data.ERR_CODE === "OUT_OF_TIME") {
+            Dialog.alert({
+              message: "예약한 시간에 다시 시도해 주세요.",
+              confirmButtonText: "확인"
+            });
+            this.loading = false;
+          } else {
+            this.$store.state.openCount = 15;
+            this.$store.state.doorOpen = false;
+            await this.$store.commit("handleDoorOpen", {
+              commandID: res.data.commandID
+            });
+          }
         })
         .catch(err => {
           this.loading = false;
@@ -280,11 +325,19 @@ export default {
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
         .then(async res => {
-          this.$store.state.closeCount = 15;
-          this.$store.state.doorClose = false;
-          await this.$store.commit("handleDoorClose", {
-            commandID: res.data.commandID
-          });
+          if (res.data.ERR_CODE === "OUT_OF_TIME") {
+            Dialog.alert({
+              message: "예약 시간 이후 제어가 가능합니다.",
+              confirmButtonText: "확인"
+            });
+            this.loading = false;
+          } else {
+            this.$store.state.closeCount = 15;
+            this.$store.state.doorClose = false;
+            await this.$store.commit("handleDoorClose", {
+              commandID: res.data.commandID
+            });
+          }
         })
         .catch(err => {
           this.loading = false;
@@ -303,11 +356,19 @@ export default {
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/flasher.do", hornObj)
         .then(async res => {
-          this.$store.state.lightCount = 15;
-          this.$store.state.light = false;
-          await this.$store.commit("handleLightOnOff", {
-            commandID: res.data.commandID
-          });
+          if (res.data.ERR_CODE === "OUT_OF_TIME") {
+            Dialog.alert({
+              message: "예약한 시간에 다시 시도해 주세요.",
+              confirmButtonText: "확인"
+            });
+            this.loading = false;
+          } else {
+            this.$store.state.lightCount = 15;
+            this.$store.state.light = false;
+            await this.$store.commit("handleLightOnOff", {
+              commandID: res.data.commandID
+            });
+          }
         })
         .catch(err => {
           this.loading = false;

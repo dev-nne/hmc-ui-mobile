@@ -64,7 +64,7 @@ export default {
     const centerName = this.userInfo.centerName;
     this.$refs.callNum.href = `tel:${this.userInfo.spaceNumber}`;
     this.$axios
-      .get("./static/parkingAddress.json")
+      .get("static/parkingAddress.json")
       .then(res => {
         this.centerName = res.data[centerName];
       })

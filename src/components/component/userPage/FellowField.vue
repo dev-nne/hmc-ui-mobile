@@ -4,7 +4,14 @@
 
     <van-form>
       <div class="nameInput">
-        <input class="input" v-model="fellowname" placeholder="이름" />
+        <input
+          type="text"
+          class="input"
+          v-model="fellowname"
+          placeholder="이름"
+          pattern="[^ㄱ-힣]*"
+          @keyup="checkKorean"
+        />
         <div class="rules" :class="{ ruleAdd: nameRule }">
           올바른 이름을 입력해 주세요.
         </div>
@@ -13,40 +20,44 @@
       <div class="inputBox">
         <input
           ref="input"
-          type="number"
+          type="tel"
           class="inputBox-input"
           placeholder="010"
           v-model="phoneNum1"
-          pattern="\d*"
+          pattern="[0-9]*"
           maxlength="3"
           oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @keyup="nextInput()"
+          @keyup="nextInput"
+          @keydown="fullText(3)"
         />
         <div class="line"></div>
         <input
           ref="input2"
-          type="number"
+          type="tel"
           class="inputBox-input"
           v-model="phoneNum2"
           placeholder="0000"
-          pattern="\d*"
+          pattern="[0-9]*"
           maxlength="4"
           oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @keyup="nextInput2()"
+          @keyup="nextInput2"
+          @keydown="fullText(4)"
         />
         <div class="line"></div>
         <input
           ref="input3"
-          type="number"
+          type="tel"
           class="inputBox-input"
           v-model="phoneNum3"
           placeholder="0000"
-          pattern="\d*"
+          pattern="[0-9]*"
           maxlength="4"
           oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+          @keyup="checkNumber"
+          @keydown="fullText(4)"
         />
         <div class="rules" :class="{ ruleAdd: numRule }">
           올바른 전화번호를 입력해 주세요.
@@ -93,6 +104,8 @@ export default {
   methods: {
     submitFellow() {
       const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
+      this.nameRule = false;
+      this.numRule = false;
       const fellowInfo = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber,
         passengerName: this.fellowname,
@@ -120,17 +133,22 @@ export default {
               fellowInfo
             )
             .then(res => {
-              if (res.data.infoResponse.rsp_CD === JSON.stringify(1)) {
+              if (res.data.infoResponse.rsp_CD === "200") {
                 this.$store.commit("felloInfoSetting", res.data);
-                Toast("동승자가 추가되었습니다.");
+                Toast(res.data.CheckResponse.msg);
               } else {
                 Dialog.alert({
-                  message: res.data.infoResponse.infoResponse,
+                  message: res.data.CheckResponse.msg,
                   confirmButtonText: "확인"
                 });
               }
             })
-            .catch(err => console.log(err));
+            .catch(() => {
+              Dialog.alert({
+                message: "동승자 추가에 실패하였습니다.",
+                confirmButtonText: "확인"
+              });
+            });
           this.$emit("cancelPop", false);
           this.fellowname = "";
           this.phoneNum1 = "";
@@ -149,15 +167,45 @@ export default {
       this.phoneNum2 = "";
       this.phoneNum3 = "";
       this.$emit("cancelPop", false);
+      this.nameRule = false;
+      this.numRule = false;
     },
     nextInput() {
+      this.checkNumber(event);
       if (this.$refs.input.value.length === 3) {
-        this.$refs.input2.focus();
+        this.checkNumber(event);
+        if (this.$refs.input.value.length === 3) {
+          event.returnValue = false;
+          if (this.$refs.input2.value.length !== 4) this.$refs.input2.focus();
+        }
       }
     },
     nextInput2() {
+      this.checkNumber(event);
       if (this.$refs.input2.value.length === 4) {
-        this.$refs.input3.focus();
+        this.checkNumber(event);
+        if (this.$refs.input2.value.length === 4) {
+          event.returnValue = false;
+          if (this.$refs.input3.value.length !== 4) this.$refs.input3.focus();
+        }
+      }
+    },
+    checkKorean(e) {
+      e.target.value = e.target.value.replace(
+        /[^ㄱ-힣\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
+        ""
+      );
+    },
+    checkNumber(e) {
+      e.target.value = e.target.value.replace(/[^0-9]/g, "");
+    },
+    fullText(x) {
+      if (event.target.value.length === x) {
+        if (event.keyCode === 8) {
+          event.returnValue = true;
+        } else {
+          event.returnValue = false;
+        }
       }
     }
   }
