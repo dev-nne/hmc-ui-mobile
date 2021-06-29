@@ -11,7 +11,7 @@
           class="input"
           v-model="username"
           placeholder="이름"
-          pattern="[^ㄱ-힣]*"
+          pattern="[^ㄱ-힣a-zA-Z]*"
           @keydown="checkKorean"
           ref="nameInput"
           @input="inputTarget"
@@ -180,7 +180,7 @@ export default {
                     res.data.prctInfoCjgtAgrYn === "Y"
                   ) {
                     if (res.data.prctLicenseYn === "Y") {
-                      this.$router.push("provision"); // userPage
+                      this.$router.push("userPage"); // userPage
                     } else {
                       this.$router.push("certification"); // certification
                     }
@@ -328,7 +328,7 @@ export default {
     },
     checkKorean(e) {
       e.target.value = e.target.value.replace(
-        /[^ㄱ-힣\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
+        /[^ㄱ-힣a-zA-Z\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
         ""
       );
     },
@@ -345,8 +345,9 @@ export default {
       }
     },
     inputTarget(e) {
-      let start = e.target.selectionStart;
-      e.target.selectionEnd = start;
+      // let start = e.target.selectionStart;
+      let start = this.$refs.nameInput.getSelectionStart;
+      this.$refs.nameInput.setCursorPosition(start, start);
     }
   }
 };

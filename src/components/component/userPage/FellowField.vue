@@ -9,7 +9,7 @@
           class="input"
           v-model="fellowname"
           placeholder="이름"
-          pattern="[^ㄱ-힣]*"
+          pattern="[^ㄱ-힣a-zA-Z]*"
           @keyup="checkKorean"
         />
         <div class="rules" :class="{ ruleAdd: nameRule }">
@@ -135,10 +135,13 @@ export default {
             .then(res => {
               if (res.data.infoResponse.rsp_CD === "200") {
                 this.$store.commit("felloInfoSetting", res.data);
-                Toast(res.data.CheckResponse.msg);
+                Dialog.alert({
+                  message: res.data.infoResponse.tsrd_PHB_RSON_SBC,
+                  confirmButtonText: "확인"
+                });
               } else {
                 Dialog.alert({
-                  message: res.data.CheckResponse.msg,
+                  message: res.data.infoResponse.tsrd_PHB_RSON_SBC,
                   confirmButtonText: "확인"
                 });
               }
@@ -192,7 +195,7 @@ export default {
     },
     checkKorean(e) {
       e.target.value = e.target.value.replace(
-        /[^ㄱ-힣\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
+        /[^ㄱ-힣a-zA-Z\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
         ""
       );
     },
