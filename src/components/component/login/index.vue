@@ -148,6 +148,7 @@ export default {
   },
   created() {
     let savedUserInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+
     if (sessionStorage.getItem("userInfo") !== null) {
       this.$axios
         .post(
@@ -188,6 +189,7 @@ export default {
                     this.$router.push("provision");
                   }
                 }
+                // this.$router.push("provision");
               });
           }
         });
@@ -251,27 +253,33 @@ export default {
                       JSON.stringify(userInfo)
                     );
 
+                    sessionStorage.setItem(
+                      "expireTime",
+                      new Date().getTime() + 15 * 60 * 1000
+                    );
+
                     this.$store.state.userName = this.username;
                     this.$store.state.userNumber = phoneNumber;
-                    if (res.data.returnYn === "N") {
-                      if (
-                        res.data.prctInfoAgrYn === "Y" &&
-                        res.data.prctInfoCjgtAgrYn === "Y"
-                      ) {
-                        if (res.data.prctLicenseYn === "Y") {
-                          this.$router.push("userPage"); // userPage
-                        } else {
-                          this.$router.push("certification"); // certification
-                        }
-                      } else {
-                        this.$router.push("provision");
-                      }
-                    } else {
-                      Dialog.alert({
-                        message: "반납이후에는 다시 이용하실 수 없습니다.",
-                        confirmButtonText: "확인"
-                      });
-                    }
+                    // if (res.data.returnYn === "N") {
+                    //   if (
+                    //     res.data.prctInfoAgrYn === "Y" &&
+                    //     res.data.prctInfoCjgtAgrYn === "Y"
+                    //   ) {
+                    //     if (res.data.prctLicenseYn === "Y") {
+                    //       this.$router.push("userPage"); // userPage
+                    //     } else {
+                    //       this.$router.push("certification"); // certification
+                    //     }
+                    //   } else {
+                    //     this.$router.push("provision");
+                    //   }
+                    // } else {
+                    //   Dialog.alert({
+                    //     message: "반납이후에는 다시 이용하실 수 없습니다.",
+                    //     confirmButtonText: "확인"
+                    //   });
+                    // }
+                    this.$router.push("provision");
                   });
               } else {
                 this.alert1 = true;
