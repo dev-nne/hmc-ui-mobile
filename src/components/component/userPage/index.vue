@@ -23,7 +23,7 @@
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @touchstart.prevent="handlePopup(0)"
+              @click="handlePopup(0)"
               :class="{ clicked: show[0] }"
             >
               <img src="@/assets/icon1.svg" />
@@ -33,7 +33,7 @@
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @touchstart.prevent="handlePopup(1)"
+              @click="handlePopup(1)"
               :class="{ clicked: show[1] }"
             >
               <img src="@/assets/icon2.svg" />
@@ -43,7 +43,7 @@
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @touchstart.prevent="handlePopup(2)"
+              @click="handlePopup(2)"
               :class="{ clicked: show[2] }"
             >
               <img src="@/assets/icon3.svg" />
@@ -53,7 +53,7 @@
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @touchstart.prevent="handlePopup(3)"
+              @click="handlePopup(3)"
               :class="{ clicked: show[3] }"
             >
               <img src="@/assets/icon4.svg" />
@@ -73,8 +73,8 @@
         <h1>[문 열기]</h1>
         <p>차량의 문을 엽니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @touchstart.prevent="confirm1">확인</button>
-          <button @touchstart.prevent="cancel(0)">취소</button>
+          <button class="returnBtn" @click="confirm1">확인</button>
+          <button @click="cancel(0)">취소</button>
         </div>
       </van-popup>
 
@@ -88,8 +88,8 @@
         <h1>[문 잠금]</h1>
         <p>차량의 문을 잠급니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @touchstart.prevent="confirm2">확인</button>
-          <button @touchstart.prevent="cancel(1)">취소</button>
+          <button class="returnBtn" @click="confirm2">확인</button>
+          <button @click="cancel(1)">취소</button>
         </div>
       </van-popup>
 
@@ -103,8 +103,8 @@
         <h1>[비상등]</h1>
         <p>차량 위치 확인을 위해 비상등을 켭니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @touchstart.prevent="confirm3">확인</button>
-          <button @touchstart.prevent="cancel(2)">취소</button>
+          <button class="returnBtn" @click="confirm3">확인</button>
+          <button @click="cancel(2)">취소</button>
         </div>
       </van-popup>
 
@@ -118,10 +118,10 @@
         <h1>[차량 반납]</h1>
         <p>차량 반납 후에는 차량 이용이 불가능합니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @touchstart.prevent="clickCarReturn">
+          <button class="returnBtn" @click="clickCarReturn">
             반납
           </button>
-          <button @touchstart.prevent="cancel(3)">취소</button>
+          <button @click="cancel(3)">취소</button>
         </div>
       </van-popup>
 
@@ -219,6 +219,7 @@ export default {
         message: this.$store.state.checkcarMsg,
         duration: 1500
       });
+      this.loading = false;
       this.$store.state.checkcar = false;
     },
     sessionEnd(v) {
@@ -236,7 +237,6 @@ export default {
     checkDoorOpen(v) {
       if (v) {
         this.loading = false;
-
         Notify({
           type: "primary",
           message: "잠금이 해제되었습니다.",
@@ -256,7 +256,6 @@ export default {
       }
     },
     checkLightOnOff(v) {
-      console.log(v);
       if (v) {
         this.loading = false;
 
@@ -279,6 +278,7 @@ export default {
     checkCloseErr(v) {
       if (v === 0) {
         this.loading = false;
+
         Dialog.alert({
           message: "차량 제어에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
           confirmButtonText: "확인"
@@ -288,6 +288,7 @@ export default {
     checkLightErr(v) {
       if (v === 0) {
         this.loading = false;
+
         Dialog.alert({
           message: "차량 제어에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
           confirmButtonText: "확인"
@@ -310,17 +311,16 @@ export default {
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
         .then(async res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
+            this.loading = false;
             Dialog.alert({
               message: "예약한 시간에 다시 시도해 주세요.",
               confirmButtonText: "확인"
             });
-            this.loading = false;
           } else {
             this.$store.state.doorOpen = false;
             await this.$store.commit("handleDoorOpen", {
               commandID: res.data.commandID
             });
-            this.loading = false;
           }
         })
         .catch(err => {
@@ -341,21 +341,21 @@ export default {
       };
       this.loading = true;
       this.$store.state.closeCount = 10;
+      this.$store.state.doorCloseChecked = false;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
         .then(async res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
+            this.loading = false;
             Dialog.alert({
               message: "예약 시간 이후 제어가 가능합니다.",
               confirmButtonText: "확인"
             });
-            this.loading = false;
           } else {
             this.$store.state.doorClose = false;
             await this.$store.commit("handleDoorClose", {
               commandID: res.data.commandID
             });
-            this.loading = false;
           }
         })
         .catch(err => {
@@ -378,17 +378,16 @@ export default {
         .post("https://hyundai-driving.mocean.com/controls/horn.do", hornObj)
         .then(async res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
+            this.loading = false;
             Dialog.alert({
               message: "예약한 시간에 다시 시도해 주세요.",
               confirmButtonText: "확인"
             });
-            this.loading = false;
           } else {
             this.$store.state.light = false;
             await this.$store.commit("handleLightOnOff", {
               commandID: res.data.commandID
             });
-            this.loading = false;
           }
         })
         .catch(err => {
@@ -412,6 +411,7 @@ export default {
           returnObj
         )
         .then(res => {
+          this.loading = false;
           if (res.data.resultMap.distance < 300) {
             this.$axios
               .post(
@@ -420,14 +420,13 @@ export default {
               )
               .then(res => {
                 if (res.data.ERR_CODE === "OUT_OF_TIME") {
+                  this.loading = false;
                   Dialog.alert({
                     message: "예약한 시간에 다시 시도해 주세요.",
                     confirmButtonText: "확인"
                   });
-                  this.loading = false;
                 } else {
                   let doorObj = res.data.doorOpenStatus;
-                  let lampObj = res.data.lampStatus;
                   let windowObj = res.data.windowStatus;
 
                   setTimeout(() => {
@@ -437,27 +436,24 @@ export default {
                         0
                       ) {
                         if (
-                          Object.values(lampObj).filter(v => v === "1")
+                          Object.values(windowObj).filter(v => v === "1")
                             .length === 0
                         ) {
-                          if (
-                            Object.values(windowObj).filter(v => v === "1")
-                              .length === 0
-                          ) {
+                          if (res.data.trunk === "0") {
                             this.loading = false;
                             sessionStorage.removeItem("userInfo");
                             this.$router.push("returnPage");
                           } else {
                             this.loading = false;
                             Dialog.alert({
-                              message: "창문을 확인해주세요",
+                              message: "트렁크를 닫은 후 반납해 주세요.",
                               confirmButtonText: "확인"
                             });
                           }
                         } else {
                           this.loading = false;
                           Dialog.alert({
-                            message: "비상등을 확인해주세요",
+                            message: "창문을 닫은 후 반납해 주세요.",
                             confirmButtonText: "확인"
                           });
                         }
@@ -465,7 +461,7 @@ export default {
                         this.show[3] = false;
                         this.loading = false;
                         Dialog.alert({
-                          message: "닫히지 않은 문이 있습니다",
+                          message: "차량 문을 닫은 후 반납해 주세요.",
                           confirmButtonText: "확인"
                         });
                       }
@@ -473,7 +469,7 @@ export default {
                       this.show[3] = false;
                       this.loading = false;
                       Dialog.alert({
-                        message: "시동이 꺼지지 않았습니다.",
+                        message: "차량 시동을 끈 후 반납해 주세요.",
                         confirmButtonText: "확인"
                       });
                     }
@@ -481,19 +477,22 @@ export default {
                 }
               })
               .catch(err => {
+                this.loading = false;
                 Dialog.alert({
                   message: err,
                   confirmButtonText: "확인"
                 });
               });
           } else {
+            this.loading = false;
             Dialog.alert({
-              message: "차량이 너무 멀리 있습니다.",
+              message: "차량을 대여한 곳에 주차후 반납해주세요.",
               confirmButtonText: "확인"
             });
           }
         })
         .catch(err => {
+          this.loading = false;
           Dialog.alert({
             message: err,
             confirmButtonText: "확인"
@@ -501,7 +500,6 @@ export default {
         });
     },
     handlePopup(x) {
-      event.preventDefault();
       this.$store.commit("sessionEnd");
       this.show = [...this.show];
       this.show[x] = true;

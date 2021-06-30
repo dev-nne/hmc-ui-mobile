@@ -33,7 +33,10 @@ export const store = new Vuex.Store({
     light: false,
     openCount: 10,
     closeCount: 10,
-    lightCount: 10
+    lightCount: 10,
+    doorOpenChecked: false,
+    doorCloseChecked: false,
+    doorLightChecked: false
   },
   getters: getters,
   mutations: mutations

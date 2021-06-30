@@ -41,8 +41,7 @@
               <div class="checkbox-content">
                 <span class="choice">(필수)</span>
                 <div class="title">
-                  시승차 이용 및 서비스 이용에 따른 주요 고지사항 및 이용약관
-                  안내
+                  위치정보 수집장치 부착사실 고지
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup1" />
@@ -54,22 +53,22 @@
             <div class="prov-main-info-box-checkbox-select">
               <van-checkbox
                 ref="checkbox_2"
+                shape="squre"
                 name="b"
                 icon-size="14px"
-                shape="squre"
                 v-model="checked_2"
                 @click="toggle('b')"
-              >
-              </van-checkbox>
+              ></van-checkbox>
               <div class="checkbox-content">
                 <span class="choice">(필수)</span>
                 <div class="title">
-                  개인정보 수집 및 이용안내
+                  시승차 이용 및 서비스 이용에 따른 주요 고지사항 및 이용약관
+                  안내
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup2" />
               <van-popup v-model="show2" closeable class="consent-popup"
-                ><Consent2 @sentToAgreement="getAgreement2"
+                ><Consent @sentToAgreement="getAgreement2"
               /></van-popup>
             </div>
 
@@ -81,6 +80,28 @@
                 shape="squre"
                 v-model="checked_3"
                 @click="toggle('c')"
+              >
+              </van-checkbox>
+              <div class="checkbox-content">
+                <span class="choice">(필수)</span>
+                <div class="title">
+                  개인정보 수집 및 이용안내
+                </div>
+              </div>
+              <van-icon name="arrow" class="goProv" @click="showPopup3" />
+              <van-popup v-model="show3" closeable class="consent-popup"
+                ><Consent3 @sentToAgreement="getAgreement3"
+              /></van-popup>
+            </div>
+
+            <div class="prov-main-info-box-checkbox-select">
+              <van-checkbox
+                ref="checkbox_4"
+                name="d"
+                icon-size="14px"
+                shape="squre"
+                v-model="checked_4"
+                @click="toggle('d')"
               ></van-checkbox>
               <div class="checkbox-content">
                 <span class="choice">(선택)</span>
@@ -91,9 +112,9 @@
                   >
                 </div>
               </div>
-              <van-icon name="arrow" class="goProv" @click="showPopup3" />
-              <van-popup v-model="show3" closeable class="consent-popup"
-                ><Consent3 @sentToAgreement="getAgreement3"
+              <van-icon name="arrow" class="goProv" @click="showPopup4" />
+              <van-popup v-model="show4" closeable class="consent-popup"
+                ><Consent4 @sentToAgreement="getAgreement4"
               /></van-popup>
             </div>
           </van-checkbox-group>
@@ -124,6 +145,7 @@ import UserInfo from "./UserInfo";
 import Consent from "./consent/Consent";
 import Consent2 from "./consent/Consent2";
 import Consent3 from "./consent/Consent3";
+import Consent4 from "./consent/Consent4";
 
 import {
   Icon,
@@ -152,7 +174,8 @@ export default {
     UserInfo,
     Consent,
     Consent2,
-    Consent3
+    Consent3,
+    Consent4
   },
   data() {
     return {
@@ -161,9 +184,11 @@ export default {
       checked_1: false,
       checked_2: false,
       checked_3: false,
+      checked_4: false,
       show1: false,
       show2: false,
       show3: false,
+      show4: false,
       drawing: false,
       drawingCode: ""
     };
@@ -205,8 +230,17 @@ export default {
         !this.checked_3 ? (this.checked_3 = true) : (this.checked_3 = false);
         this.$refs.checkbox_3.toggle(this.checked_3);
       }
+      if (name === "d") {
+        !this.checked_4 ? (this.checked_4 = true) : (this.checked_4 = false);
+        this.$refs.checkbox_4.toggle(this.checked_4);
+      }
 
-      if (this.checked_1 && this.checked_2 && this.checked_3) {
+      if (
+        this.checked_1 &&
+        this.checked_2 &&
+        this.checked_3 &&
+        this.checked_4
+      ) {
         this.allChecked = true;
         this.$refs.checkbox_all.toggle(this.allChecked);
       } else {
@@ -221,11 +255,13 @@ export default {
         this.checked_1 = true;
         this.checked_2 = true;
         this.checked_3 = true;
+        this.checked_4 = true;
       } else {
         this.allChecked = false;
         this.checked_1 = false;
         this.checked_2 = false;
         this.checked_3 = false;
+        this.checked_4 = false;
       }
       this.$refs.checkboxGroup.toggleAll({
         checked: this.allChecked,
@@ -242,25 +278,20 @@ export default {
         signImg: ""
       };
 
-      if (this.checked_1 && this.checked_2) {
+      if (this.checked_1 && this.checked_2 && this.checked_3) {
         if (this.drawing) {
           userChecking.signImg = this.$refs.canvas.sendImgCode();
-          if (!this.$store.state.isLocal) {
-            this.$axios
-              .post(
-                "https://hyundai-driving.mocean.com/mobile/agreement.do",
-                userChecking
-              )
-              .then((res, req) => {
-                console.log(res);
-                this.$router.push("certification");
-                this.$store.commit("agreementRes", res.data);
-              });
-          }
-          this.checked_1 = false;
-          this.checked_2 = false;
-          this.checked_3 = false;
-          this.drawing = false;
+
+          this.$axios
+            .post(
+              "https://hyundai-driving.mocean.com/mobile/agreement.do",
+              userChecking
+            )
+            .then((res, req) => {
+              console.log(res);
+              this.$router.push("certification");
+              this.$store.commit("agreementRes", res.data);
+            });
         } else {
           Dialog.alert({
             message: "서명 입력 후 서비스 이용이 가능합니다.",
@@ -286,6 +317,10 @@ export default {
       this.$store.commit("sessionEnd");
       this.show3 = true;
     },
+    showPopup4() {
+      this.$store.commit("sessionEnd");
+      this.show4 = true;
+    },
     getAgreement1() {
       this.$store.commit("sessionEnd");
       this.show1 = false;
@@ -305,6 +340,13 @@ export default {
       this.show3 = false;
       this.checked_3 = true;
       this.$refs.checkbox_3.toggle(true);
+      this.toggle();
+    },
+    getAgreement4() {
+      this.$store.commit("sessionEnd");
+      this.show4 = false;
+      this.checked_4 = true;
+      this.$refs.checkbox_4.toggle(true);
       this.toggle();
     },
     drawingTrue(v) {

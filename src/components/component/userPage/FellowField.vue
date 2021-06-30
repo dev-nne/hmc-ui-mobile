@@ -81,10 +81,11 @@
 </template>
 
 <script>
-import { Form, Button, Toast, Dialog } from "vant";
+import { Form, Button, Toast, Dialog, Notify } from "vant";
 export default {
   components: {
     [Button.name]: Button,
+    [Notify.name]: Notify,
     [Form.name]: Form,
     [Toast.name]: Toast,
     [Dialog.name]: Dialog
@@ -101,8 +102,28 @@ export default {
       numRule: false
     };
   },
+  computed: {
+    sessionEnd() {
+      return this.$store.state.sessionEnd;
+    }
+  },
+  watch: {
+    sessionEnd(v) {
+      if (v) {
+        Notify({
+          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+          confirmButtonText: "확인"
+        });
+        this.$router.push({
+          path: "login",
+          query: { id: this.$store.state.userInfo.bookNumber }
+        });
+      }
+    }
+  },
   methods: {
     submitFellow() {
+      this.$store.commit("sessionEnd");
       const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
       this.nameRule = false;
       this.numRule = false;
@@ -166,6 +187,7 @@ export default {
       }
     },
     cancelFellow() {
+      this.$store.commit("sessionEnd");
       this.fellowname = "";
       this.phoneNum1 = "";
       this.phoneNum2 = "";

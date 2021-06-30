@@ -1,24 +1,25 @@
 <template>
   <div class="consent">
-    <div class="consent-title">
-      차량구입 관련 상담 및 각종 정보제공 안내 (마케팅 활용 및 광고성 정보 전송)
-    </div>
+    <div class="consent-title">개인정보 수집 및 이용안내</div>
     <div class="consent-box">
       <div class="consent-box-title">
-        수집목적
+        수집 목적
       </div>
       <div class="consent-box-content">
-        차량구입 안내 및 제품/서비스/이벤트 관련 정보 전송 등 마케팅∙홍보 목적
-        활용
+        시승서비스 제공 시승차량 사고 발생 시 보험처리 등 사고 대응, 시승차량
+        도난 방지 및 운행관리, 고객 불만 등 민원사항 처리, 분쟁 발생 시 대응,
+        소비자 의견 조사, 고객관리서비스 제공, 교통법규 미준수로 인한 벌금,
+        과태료처리
       </div>
     </div>
 
     <div class="consent-box">
       <div class="consent-box-title">
-        수집항목
+        수집 항목
       </div>
       <div class="consent-box-content">
-        고객성명, 휴대전화번호, 생년월일, 성별, 연계정보(CI), 주소(자택/직장)
+        고객성명, 휴대전화번호, 생년월일, 성별, 연계정보(CI), 주소(자택/직장),
+        시승정보(시승차종, 차량번호, 시승일시), 시승차량 위치 정보
       </div>
     </div>
 
@@ -30,12 +31,24 @@
         2년
       </div>
     </div>
+    <div class="consent-box-title">
+      개인정보 처리위탁 안내
+    </div>
+    <div class="consent-box-content">
+      현대자동차(주)는 전산시스템 운영 및 유지보수 등 서비스 제공을 위하여
+      필요한 경우 외부 전문업체에 개인정보 처리업무를 위탁하ㅏ여 운영하고
+      있습니다. <br />
+      개인정보 처리 업무와 관련한 자세한 내용과 변경사항은 당사
+      홈페이지(www.hyundai.com)에 게시된 '개인정보 처리방침'에서 확인하실 수
+      있습니다.
+    </div>
+
     <div class="consent-button">
       <h5>
-        ※ 고객님은 위의 마케팅 활용 및 광고성 정보 전송에 대한 동의를 거부하실
-        수 있습니다. 동의를 거부하시더라도 시승서비스 이용에는 제한이 없으나,
-        차량구입 정보 등의 안내∙제공이 제한됩니다.
+        ※ 고객님은 위의 개인정보 수집 이용에 대한 동의를 거부하실 수 있습니다.
+        그러나, 동의 거부 시 시승서비스 이용이 불가합니다.
       </h5>
+      <p>본인은 위와 같이 개인정보 수집·이용에 동의합니다.</p>
       <button @click="checkAgree">동의합니다</button>
     </div>
   </div>

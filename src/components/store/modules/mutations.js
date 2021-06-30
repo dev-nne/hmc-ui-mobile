@@ -38,7 +38,7 @@ const felloInfoSetting = (state, res, req) => {
 const handleDoorOpen = (state, res) => {
   if (!state.doorOpen && state.openCount > 0) {
     setTimeout(() => {
-      if (!state.doorOpen) {
+      if (!state.doorOpenChecked) {
         axios
           .post(
             "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
@@ -46,39 +46,49 @@ const handleDoorOpen = (state, res) => {
           )
           .then(res => {
             if (res.data.commandState === "DONE") {
-              switch (res.data.commandResultState) {
+              let command = res.data.commandResultState;
+              switch (command) {
                 case "OK":
-                  state.light = true;
+                  state.doorOpen = true;
+                  state.doorOpenChecked = true;
+                  break;
+                case "IGN_ON":
+                  state.state.checkcarMsg = "시동이 걸려있습니다.";
+                  state.checkcar = true;
+                  state.doorOpenChecked = true;
                   break;
                 case "DOOR_OPENED":
                   state.state.checkcarMsg = "차문이 개방되어 있습니다.";
                   state.checkcar = true;
+                  state.doorOpenChecked = true;
                   break;
                 case "HOOD_OPENED":
                   state.checkcarMsg = "후드가 열려 있습니다.";
                   state.checkcar = true;
+                  state.doorOpenChecked = true;
                   break;
                 case "IGN_PROHIBIT_OUT_OF_CONTROL":
                   state.checkcarMsg = "재시동방지장치 제어 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorOpenChecked = true;
                   break;
                 case "FOB_OUT_OF_CONTROL":
                   state.checkcarMsg = "FOB 제어 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorOpenChecked = true;
                   break;
                 case "TRUNK_OPENED":
                   state.checkcarMsg = "트렁크 열려 있습니다.";
                   state.checkcar = true;
+                  state.doorOpenChecked = true;
                   break;
                 default:
                   state.checkcarMsg = "차량 제어에 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorOpenChecked = true;
                   break;
               }
             }
-          })
-          .catch(err => {
-            console.log(err);
           });
       }
       state.openCount--;
@@ -99,37 +109,47 @@ const handleDoorClose = (state, res) => {
           )
           .then(res => {
             if (res.data.commandState === "DONE") {
-              switch (res.data.commandResultState) {
+              let command = res.data.commandResultState;
+              console.log(command);
+              switch (command) {
                 case "OK":
-                  state.light = true;
+                  state.doorClose = true;
+                  state.doorCloseChecked = true;
                   break;
                 case "IGN_ON":
                   state.state.checkcarMsg = "시동이 걸려있습니다.";
+                  state.doorCloseChecked = true;
                   state.checkcar = true;
                   break;
                 case "DOOR_OPENED":
                   state.state.checkcarMsg = "차문이 개방되어 있습니다.";
+                  state.doorCloseChecked = true;
                   state.checkcar = true;
                   break;
                 case "HOOD_OPENED":
                   state.checkcarMsg = "후드가 열려 있습니다.";
                   state.checkcar = true;
+                  state.doorCloseChecked = true;
                   break;
                 case "IGN_PROHIBIT_OUT_OF_CONTROL":
                   state.checkcarMsg = "재시동방지장치 제어 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorCloseChecked = true;
                   break;
                 case "FOB_OUT_OF_CONTROL":
                   state.checkcarMsg = "FOB 제어 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorCloseChecked = true;
                   break;
                 case "TRUNK_OPENED":
                   state.checkcarMsg = "트렁크 열려 있습니다.";
                   state.checkcar = true;
+                  state.doorCloseChecked = true;
                   break;
                 default:
                   state.checkcarMsg = "차량 제어에 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorCloseChecked = true;
                   break;
               }
             } else {
@@ -137,9 +157,6 @@ const handleDoorClose = (state, res) => {
                 "차량 제어에 실패하였습니다. 잠시 후 다시 시도해 주세요.";
               state.checkcar = true;
             }
-          })
-          .catch(err => {
-            console.log(err);
           });
       }
       state.closeCount--;
@@ -161,9 +178,9 @@ const sessionEnd = state => {
 };
 
 const handleLightOnOff = (state, res) => {
-  if (!state.light) {
+  if (!state.light && state.lightCount > 0) {
     setTimeout(() => {
-      if (!state.light && state.lightCount > 0) {
+      if (!state.doorLightChecked) {
         axios
           .post(
             "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
@@ -171,39 +188,50 @@ const handleLightOnOff = (state, res) => {
           )
           .then(res => {
             if (res.data.commandState === "DONE") {
-              switch (res.data.commandResultState) {
+              let command = res.data.commandResultState;
+
+              switch (command) {
                 case "OK":
                   state.light = true;
+                  state.doorLightChecked = true;
+                  break;
+                case "IGN_ON":
+                  state.state.checkcarMsg = "시동이 걸려있습니다.";
+                  state.checkcar = true;
+                  state.doorLightChecked = true;
                   break;
                 case "DOOR_OPENED":
                   state.state.checkcarMsg = "차문이 개방되어 있습니다.";
                   state.checkcar = true;
+                  state.doorLightChecked = true;
                   break;
                 case "HOOD_OPENED":
                   state.checkcarMsg = "후드가 열려 있습니다.";
                   state.checkcar = true;
+                  state.doorLightChecked = true;
                   break;
                 case "IGN_PROHIBIT_OUT_OF_CONTROL":
                   state.checkcarMsg = "재시동방지장치 제어 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorLightChecked = true;
                   break;
                 case "FOB_OUT_OF_CONTROL":
                   state.checkcarMsg = "FOB 제어 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorLightChecked = true;
                   break;
                 case "TRUNK_OPENED":
                   state.checkcarMsg = "트렁크 열려 있습니다.";
                   state.checkcar = true;
+                  state.doorLightChecked = true;
                   break;
                 default:
                   state.checkcarMsg = "차량 제어에 실패하였습니다.";
                   state.checkcar = true;
+                  state.doorLightChecked = true;
                   break;
               }
             }
-          })
-          .catch(err => {
-            console.log(err);
           });
       }
       state.lightCount--;

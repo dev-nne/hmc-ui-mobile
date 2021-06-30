@@ -1,7 +1,7 @@
 <template>
   <div class="nav">
     <div class="nav-navBar">
-      <div class="nav-navBar-logobox" @click="gohome">
+      <div class="nav-navBar-logobox">
         <img
           src="@/assets/logo.svg"
           alt=""
@@ -12,16 +12,6 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  methods: {
-    gohome() {
-      this.$router.push("login").catch(() => {});
-    }
-  }
-};
-</script>
 
 <style lang="less">
 .nav {
