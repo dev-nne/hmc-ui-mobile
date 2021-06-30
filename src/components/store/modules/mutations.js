@@ -47,23 +47,26 @@ const handleDoorOpen = (state, res) => {
           .then(res => {
             if (res.data.commandState === "DONE") {
               let command = res.data.commandResultState;
+
               switch (command) {
                 case "OK":
                   state.doorOpen = true;
                   state.doorOpenChecked = true;
                   break;
                 case "IGN_ON":
-                  state.state.checkcarMsg = "시동이 걸려있습니다.";
+                  state.checkcarMsg =
+                    "차량 시동이 걸려 있어 제어에 실패하였습니다.";
                   state.checkcar = true;
                   state.doorOpenChecked = true;
                   break;
                 case "DOOR_OPENED":
-                  state.state.checkcarMsg = "차문이 개방되어 있습니다.";
+                  state.checkcarMsg =
+                    "차량 문이 열려 있어 제어에 실패하였습니다.";
                   state.checkcar = true;
                   state.doorOpenChecked = true;
                   break;
                 case "HOOD_OPENED":
-                  state.checkcarMsg = "후드가 열려 있습니다.";
+                  state.checkcarMsg = "후드가 열려 있어 제어에 실패하였습니다.";
                   state.checkcar = true;
                   state.doorOpenChecked = true;
                   break;
@@ -78,7 +81,8 @@ const handleDoorOpen = (state, res) => {
                   state.doorOpenChecked = true;
                   break;
                 case "TRUNK_OPENED":
-                  state.checkcarMsg = "트렁크 열려 있습니다.";
+                  state.checkcarMsg =
+                    "트렁크가 열려 있어 제어에 실패하였습니다.";
                   state.checkcar = true;
                   state.doorOpenChecked = true;
                   break;
@@ -90,8 +94,8 @@ const handleDoorOpen = (state, res) => {
               }
             }
           });
+        state.openCount--;
       }
-      state.openCount--;
 
       handleDoorOpen(state, res);
     }, 3000);
@@ -101,7 +105,7 @@ const handleDoorOpen = (state, res) => {
 const handleDoorClose = (state, res) => {
   if (!state.doorClose && state.closeCount > 0) {
     setTimeout(() => {
-      if (!state.doorClose) {
+      if (!state.doorCloseChecked) {
         axios
           .post(
             "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
@@ -110,19 +114,18 @@ const handleDoorClose = (state, res) => {
           .then(res => {
             if (res.data.commandState === "DONE") {
               let command = res.data.commandResultState;
-              console.log(command);
               switch (command) {
                 case "OK":
                   state.doorClose = true;
                   state.doorCloseChecked = true;
                   break;
                 case "IGN_ON":
-                  state.state.checkcarMsg = "시동이 걸려있습니다.";
+                  state.checkcarMsg = "시동이 걸려있습니다.";
                   state.doorCloseChecked = true;
                   state.checkcar = true;
                   break;
                 case "DOOR_OPENED":
-                  state.state.checkcarMsg = "차문이 개방되어 있습니다.";
+                  state.checkcarMsg = "차문이 개방되어 있습니다.";
                   state.doorCloseChecked = true;
                   state.checkcar = true;
                   break;
@@ -152,14 +155,10 @@ const handleDoorClose = (state, res) => {
                   state.doorCloseChecked = true;
                   break;
               }
-            } else {
-              state.checkcarMsg =
-                "차량 제어에 실패하였습니다. 잠시 후 다시 시도해 주세요.";
-              state.checkcar = true;
             }
           });
+        state.closeCount--;
       }
-      state.closeCount--;
       handleDoorClose(state, res);
     }, 3000);
   }
@@ -196,12 +195,12 @@ const handleLightOnOff = (state, res) => {
                   state.doorLightChecked = true;
                   break;
                 case "IGN_ON":
-                  state.state.checkcarMsg = "시동이 걸려있습니다.";
+                  state.checkcarMsg = "시동이 걸려있습니다.";
                   state.checkcar = true;
                   state.doorLightChecked = true;
                   break;
                 case "DOOR_OPENED":
-                  state.state.checkcarMsg = "차문이 개방되어 있습니다.";
+                  state.checkcarMsg = "차문이 개방되어 있습니다.";
                   state.checkcar = true;
                   state.doorLightChecked = true;
                   break;
@@ -233,8 +232,8 @@ const handleLightOnOff = (state, res) => {
               }
             }
           });
+        state.lightCount--;
       }
-      state.lightCount--;
       handleLightOnOff(state, res);
     }, 3000);
   }

@@ -1,0 +1,15 @@
+{
+  "windowStatus": {
+    "frontLeft": "0",
+    "frontRight": "0",
+    "rearLeft": "0",
+    "rearRight": "0"
+  },
+  "doorOpenStatus": {
+    "frontLeft": "0",
+    "frontRight": "0",
+    "rearLeft": "0",
+    "rearRight": "0"
+  },
+  "engine": "0"
+}
