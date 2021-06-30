@@ -21,12 +21,16 @@
           <a ref="callNum" href="tel"> {{ this.userInfo.spaceNumber }}</a>
         </p>
 
-        <div class="userInfo-box-content-collapseBox" @click="clickCollapseBtn">
+        <div
+          class="userInfo-box-content-collapseBox"
+          @click="clickCollapseBtn"
+          :class="{ showPark }"
+        >
           <van-icon :name="icon" class="collapseBtn"> </van-icon>
           상세보기
         </div>
         <div class="collapse" v-if="collapse">
-          <p class="parking">주차장</p>
+          <p class="parking" :class="{ showPark }">주차장</p>
           <p>
             {{
               ` ${centerName[0]} ${
@@ -54,19 +58,27 @@ export default {
       collapse: false,
       icon: "arrow-down",
       userInfo: {},
-      centerName: ""
+      centerName: "",
+      showPark: false
     };
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
   },
   mounted() {
-    const centerName = this.userInfo.centerName;
+    const centerName = this.userInfo.centerName; // this.userInfo.centerName;
     this.$refs.callNum.href = `tel:${this.userInfo.spaceNumber}`;
     this.$axios
       .get("static/parkingAddress.json")
       .then(res => {
         this.centerName = res.data[centerName];
+        if (
+          this.centerName === undefined ||
+          this.centerName === "" ||
+          this.centerName === null
+        ) {
+          this.showPark = true;
+        }
       })
       .catch(err => console.log(err));
   },
@@ -127,5 +139,9 @@ export default {
       }
     }
   }
+}
+
+.showPark {
+  display: none;
 }
 </style>

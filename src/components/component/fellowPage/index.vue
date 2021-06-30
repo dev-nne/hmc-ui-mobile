@@ -14,12 +14,33 @@
 </template>
 
 <script>
+import { Notify } from "vant";
 import TopMenu from "../TopMenu";
 import FooterBar from "../FooterBar";
 export default {
   components: {
+    [Notify.name]: Notify,
     TopMenu,
     FooterBar
+  },
+  computed: {
+    sessionEnd() {
+      return this.$store.state.sessionEnd;
+    }
+  },
+  watch: {
+    sessionEnd(v) {
+      if (v) {
+        Notify({
+          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+          confirmButtonText: "확인"
+        });
+        this.$router.push({
+          path: "login",
+          query: { id: this.$store.state.userInfo.bookNumber }
+        });
+      }
+    }
   }
 };
 </script>

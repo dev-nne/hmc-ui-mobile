@@ -11,6 +11,7 @@ export const store = new Vuex.Store({
     auth: false,
     userName: "",
     userNumber: "",
+    sessionEnd: false,
     // 고객정보
     userInfo: {
       bookNumber: "",
@@ -23,6 +24,8 @@ export const store = new Vuex.Store({
       address: "",
       spaceNumber: ""
     },
+    checkcarMsg: "",
+    checkcar: false,
     agreementInfo: {},
     fellow: false,
     doorOpen: false,

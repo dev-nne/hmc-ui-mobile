@@ -150,6 +150,7 @@ import {
   Picker,
   Toast,
   Dialog,
+  Notify,
   NumberKeyboard
 } from "vant";
 
@@ -169,6 +170,7 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [Dialog.name]: Dialog,
+    [Notify.name]: Notify,
     [NumberKeyboard.name]: NumberKeyboard,
     TopMenu,
     DatetiemPicker,
@@ -222,9 +224,28 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
   },
+  computed: {
+    sessionEnd() {
+      return this.$store.state.sessionEnd;
+    }
+  },
+  watch: {
+    sessionEnd(v) {
+      if (v) {
+        Notify({
+          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+          confirmButtonText: "확인"
+        });
+        this.$router.push({
+          path: "login",
+          query: { id: this.$store.state.userInfo.bookNumber }
+        });
+      }
+    }
+  },
   methods: {
-    onSubmit(values) {},
     showPop() {
+      this.$store.commit("sessionEnd");
       this.show = true;
     },
     parents(data) {
@@ -240,6 +261,7 @@ export default {
       this.selectDay = true;
     },
     sendFormAndMove() {
+      this.$store.commit("sessionEnd");
       let keyvalue = this.keyValue1 + this.keyValue2 + this.keyValue3;
       if (this.checked !== "") {
         if (this.validate1) {
@@ -268,81 +290,88 @@ export default {
                     switch (res.data.resultMap.errCode) {
                       case "910770":
                         Dialog.alert({
-                          message: "운전면허증 번호 에러",
+                          message:
+                            "운전면허 발급 내역이 없습니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910771":
                         Dialog.alert({
-                          message: "재발행이 필요한 운전면허증",
+                          message:
+                            "만료된 운전면허 입니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910772":
                         Dialog.alert({
-                          message: "분실된 운전면허증",
+                          message:
+                            "만료된 운전면허 입니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910773":
                         Dialog.alert({
-                          message: "취소된 운전면허증",
+                          message:
+                            "취소된 운전면허 입니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910774":
                         Dialog.alert({
-                          message: "취소된 운전면허증",
+                          message:
+                            "취소된 운전면허 입니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910775":
                         Dialog.alert({
-                          message: "정지된 운전면허증",
+                          message:
+                            "정지된 운전면허 입니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910776":
                         Dialog.alert({
-                          message: "해당 기간동안 취소된 운전면허증",
+                          message:
+                            "취소된 운전면허 입니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910777":
                         Dialog.alert({
-                          message: "해당 기간동안 정지된 운전면허증",
+                          message:
+                            "정지된 운전면허 입니다. 입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910778":
                         Dialog.alert({
-                          message: "운전면허증 정보가 올바르지 않음 - 이름",
+                          message: "입력한 정보(이름)를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910779":
                         Dialog.alert({
-                          message: "운전면허증 정보가 올바르지 않음 - 생년월일",
+                          message: "입력한 정보(생년월일)를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910780":
                         Dialog.alert({
-                          message:
-                            "운전면허증 정보가 올바르지 않음 -운전면허 정보",
+                          message: "입력한 정보(면허종류)를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910781":
                         Dialog.alert({
                           message:
-                            "운전면허증 정보가 올바르지 않음 -운전면허 지역",
+                            "입력한 정보(운전면허 지역)를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       default:
                         Dialog.alert({
-                          message: "운전면허증 번호 에러",
+                          message: "입력한 정보를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
@@ -382,6 +411,7 @@ export default {
       }
     },
     onConfirm(value) {
+      this.$store.commit("sessionEnd");
       let v = value.replace(/[^0-9]/g, "");
       this.value = v;
       this.showPicker = false;

@@ -8,6 +8,7 @@ body {
   color: #333;
   font-family: "HyundaiSansText" !important;
   font-weight: 400;
+  height: calc(100vh - 50px);
 }
 
 * {

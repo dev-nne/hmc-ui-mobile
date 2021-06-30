@@ -171,9 +171,28 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
   },
-
+  computed: {
+    sessionEnd() {
+      return this.$store.state.sessionEnd;
+    }
+  },
+  watch: {
+    sessionEnd(v) {
+      if (v) {
+        Notify({
+          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+          confirmButtonText: "확인"
+        });
+        this.$router.push({
+          path: "login",
+          query: { id: this.$store.state.userInfo.bookNumber }
+        });
+      }
+    }
+  },
   methods: {
     toggle(name) {
+      this.$store.commit("sessionEnd");
       if (name === "a") {
         !this.checked_1 ? (this.checked_1 = true) : (this.checked_1 = false);
         this.$refs.checkbox_1.toggle(this.checked_1);
@@ -196,6 +215,7 @@ export default {
       }
     },
     toggleAll() {
+      this.$store.commit("sessionEnd");
       if (!this.allChecked) {
         this.allChecked = true;
         this.checked_1 = true;
@@ -213,6 +233,7 @@ export default {
       });
     },
     sendFormAndMove() {
+      this.$store.commit("sessionEnd");
       let userChecking = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
         prctInfoAgrYn: this.checked_1 === true ? "Y" : "N",
@@ -254,27 +275,33 @@ export default {
       }
     },
     showPopup1() {
+      this.$store.commit("sessionEnd");
       this.show1 = true;
     },
     showPopup2() {
+      this.$store.commit("sessionEnd");
       this.show2 = true;
     },
     showPopup3() {
+      this.$store.commit("sessionEnd");
       this.show3 = true;
     },
     getAgreement1() {
+      this.$store.commit("sessionEnd");
       this.show1 = false;
       this.checked_1 = true;
       this.$refs.checkbox_1.toggle(true);
       this.toggle();
     },
     getAgreement2() {
+      this.$store.commit("sessionEnd");
       this.show2 = false;
       this.checked_2 = true;
       this.$refs.checkbox_2.toggle(true);
       this.toggle();
     },
     getAgreement3() {
+      this.$store.commit("sessionEnd");
       this.show3 = false;
       this.checked_3 = true;
       this.$refs.checkbox_3.toggle(true);
@@ -282,6 +309,7 @@ export default {
     },
     drawingTrue(v) {
       this.drawing = v;
+      this.$store.commit("sessionEnd");
     }
   }
 };

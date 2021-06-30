@@ -136,19 +136,20 @@ export default {
               if (res.data.infoResponse.rsp_CD === "200") {
                 this.$store.commit("felloInfoSetting", res.data);
                 Dialog.alert({
-                  message: res.data.infoResponse.tsrd_PHB_RSON_SBC,
+                  message:
+                    "동승 고객 등록 신청이 완료되었습니다. 동승 고객에게 발송된 문자메세지를 참고하여 절차를 완료해주세요.",
                   confirmButtonText: "확인"
                 });
               } else {
                 Dialog.alert({
-                  message: res.data.infoResponse.tsrd_PHB_RSON_SBC,
+                  message: "동승 고객 등록에 실패하였습니다.",
                   confirmButtonText: "확인"
                 });
               }
             })
             .catch(() => {
               Dialog.alert({
-                message: "동승자 추가에 실패하였습니다.",
+                message: "동승 고객 등록에 실패하였습니다.",
                 confirmButtonText: "확인"
               });
             });
@@ -287,6 +288,7 @@ export default {
       border: none;
       border-bottom: 1px solid #ebedf0;
       font-size: 14px;
+      text-align: center;
     }
   }
 

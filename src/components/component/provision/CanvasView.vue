@@ -3,11 +3,9 @@
     <canvas
       ref="drawing-board"
       class="drawing-board__canvas"
-      @mousedown="handleMouseDown"
-      @mouseup="handleMouseUp"
-      @mousemove="handleMouseMove"
+      @touchcancel="handleTouchEnd"
       @touchstart="handleTouchStart"
-      @touchmove="handleTouchMove"
+      @touchmove.prevent="handleTouchMove"
       @touchend="handleTouchEnd"
       :width="`${WIDTH}px`"
       :height="`${height}px`"
@@ -63,34 +61,6 @@ const computed = {
   }
 };
 const methods = {
-  startDrawing() {
-    if (this.mouseDown) {
-      this.ctx.clearRect(0, 0, this.width, this.height);
-      this.ctx.lineTo(this.currentMouse.x, this.currentMouse.y);
-      this.ctx.strokeStyle = this.strokeColor;
-      this.ctx.lineWidth = this.strokeWidth;
-      this.ctx.stroke();
-    }
-  },
-  handleMouseMove(event) {
-    this.current = {
-      x: event.pageX,
-      y: event.pageY
-    };
-    this.startDrawing(event);
-  },
-  handleMouseDown(event) {
-    this.mouseDown = true;
-    this.current = {
-      x: event.pageX,
-      y: event.pageY
-    };
-    this.ctx.moveTo(this.currentMouse.x, this.currentMouse.y);
-  },
-  handleMouseUp() {
-    this.mouseDown = false;
-  },
-
   // 모바일 터치 이벤트
   handleTouchStart(event) {
     this.drawing = true;
@@ -100,9 +70,6 @@ const methods = {
     this.ctx.moveTo(touch.clientX - rect.x, touch.clientY - rect.y);
   },
   handleTouchMove(event) {
-    if (this.drawing) {
-      event.preventDefault();
-    }
     this.drawing = true;
     const touch = event.touches[0];
     const rect = this.ref.getBoundingClientRect();

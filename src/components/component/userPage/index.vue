@@ -23,37 +23,37 @@
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="handlePopup(0)"
+              @touchstart.prevent="handlePopup(0)"
               :class="{ clicked: show[0] }"
             >
-              <img src="@/assets/icon2.svg" />
+              <img src="@/assets/icon1.svg" />
               <span>문 열기</span>
             </div>
           </div>
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="handlePopup(1)"
+              @touchstart.prevent="handlePopup(1)"
               :class="{ clicked: show[1] }"
             >
-              <img src="@/assets/icon1.svg" />
+              <img src="@/assets/icon2.svg" />
               <span>문 잠금</span>
             </div>
           </div>
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="handlePopup(2)"
+              @touchstart.prevent="handlePopup(2)"
               :class="{ clicked: show[2] }"
             >
               <img src="@/assets/icon3.svg" />
-              <span>비상등</span>
+              <span>경적/비상등</span>
             </div>
           </div>
           <div class="user-main-smartkey-icon-box-circle">
             <div
               class="user-main-smartkey-icon-box-circle-box"
-              @click="handlePopup(3)"
+              @touchstart.prevent="handlePopup(3)"
               :class="{ clicked: show[3] }"
             >
               <img src="@/assets/icon4.svg" />
@@ -73,8 +73,8 @@
         <h1>[문 열기]</h1>
         <p>차량의 문을 엽니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @click="confirm1">확인</button>
-          <button @click="cancel(0)">취소</button>
+          <button class="returnBtn" @touchstart.prevent="confirm1">확인</button>
+          <button @touchstart.prevent="cancel(0)">취소</button>
         </div>
       </van-popup>
 
@@ -88,8 +88,8 @@
         <h1>[문 잠금]</h1>
         <p>차량의 문을 잠급니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @click="confirm2">확인</button>
-          <button @click="cancel(1)">취소</button>
+          <button class="returnBtn" @touchstart.prevent="confirm2">확인</button>
+          <button @touchstart.prevent="cancel(1)">취소</button>
         </div>
       </van-popup>
 
@@ -103,8 +103,8 @@
         <h1>[비상등]</h1>
         <p>차량 위치 확인을 위해 비상등을 켭니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @click="confirm3">확인</button>
-          <button @click="cancel(2)">취소</button>
+          <button class="returnBtn" @touchstart.prevent="confirm3">확인</button>
+          <button @touchstart.prevent="cancel(2)">취소</button>
         </div>
       </van-popup>
 
@@ -118,8 +118,10 @@
         <h1>[차량 반납]</h1>
         <p>차량 반납 후에는 차량 이용이 불가능합니다.</p>
         <div class="button-box">
-          <button class="returnBtn" @click="clickCarReturn">반납</button>
-          <button @click="cancel(3)">취소</button>
+          <button class="returnBtn" @touchstart.prevent="clickCarReturn">
+            반납
+          </button>
+          <button @touchstart.prevent="cancel(3)">취소</button>
         </div>
       </van-popup>
 
@@ -134,16 +136,6 @@
       >
         <FellowField @cancelPop="canclePop" />
       </van-popup>
-
-      <div class="user-main-contact">
-        <!-- {{ `${this.userInfo.centerName} ${this.userInfo.spaceName}` }} -->
-        고객센터 문의
-
-        <a ref="callNum" href="">
-          <!-- {{ this.userInfo.spaceNumber }} -->
-          1833-2654
-        </a>
-      </div>
     </div>
     <van-loading
       type="spinner"
@@ -188,8 +180,6 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    // this.$refs.callNum.href = `tel:${this.contactNumber}`;
-    this.$refs.callNum.href = "tel:1833-2654";
     this.timer();
   },
   created() {
@@ -214,9 +204,35 @@ export default {
     },
     checkLightErr() {
       return this.$store.state.lightCount;
+    },
+    sessionEnd() {
+      return this.$store.state.sessionEnd;
+    },
+    checkcar() {
+      return this.$store.state.checkcar;
     }
   },
   watch: {
+    checkcar(v) {
+      Notify({
+        type: "primary",
+        message: this.$store.state.checkcarMsg,
+        duration: 1500
+      });
+      this.$store.state.checkcar = false;
+    },
+    sessionEnd(v) {
+      if (v) {
+        Notify({
+          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+          confirmButtonText: "확인"
+        });
+        this.$router.push({
+          path: "login",
+          query: { id: this.$store.state.userInfo.bookNumber }
+        });
+      }
+    },
     checkDoorOpen(v) {
       if (v) {
         this.loading = false;
@@ -255,7 +271,7 @@ export default {
       if (v === 0) {
         this.loading = false;
         Dialog.alert({
-          message: "차량제어에 실패하였습니다. 잠시후 다시 시도해주세요.",
+          message: "차량 제어에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
           confirmButtonText: "확인"
         });
       }
@@ -264,7 +280,7 @@ export default {
       if (v === 0) {
         this.loading = false;
         Dialog.alert({
-          message: "차량제어에 실패하였습니다. 잠시후 다시 시도해주세요.",
+          message: "차량 제어에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
           confirmButtonText: "확인"
         });
       }
@@ -273,7 +289,7 @@ export default {
       if (v === 0) {
         this.loading = false;
         Dialog.alert({
-          message: "차량제어에 실패하였습니다. 잠시후 다시 시도해주세요.",
+          message: "차량 제어에 실패하였습니다. 잠시 후 다시 시도해 주세요.",
           confirmButtonText: "확인"
         });
       }
@@ -281,12 +297,14 @@ export default {
   },
   methods: {
     confirm1() {
+      this.$store.commit("sessionEnd");
       this.show = [...false];
 
       let doorObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
         action: "open" // open, close
       };
+      this.$store.state.openCount = 10;
       this.loading = true;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
@@ -298,11 +316,11 @@ export default {
             });
             this.loading = false;
           } else {
-            this.$store.state.openCount = 15;
             this.$store.state.doorOpen = false;
             await this.$store.commit("handleDoorOpen", {
               commandID: res.data.commandID
             });
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -314,6 +332,7 @@ export default {
         });
     },
     confirm2() {
+      this.$store.commit("sessionEnd");
       this.show = [...false];
 
       let doorObj = {
@@ -321,7 +340,7 @@ export default {
         action: "close" // open, close
       };
       this.loading = true;
-
+      this.$store.state.closeCount = 10;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
         .then(async res => {
@@ -332,11 +351,11 @@ export default {
             });
             this.loading = false;
           } else {
-            this.$store.state.closeCount = 15;
             this.$store.state.doorClose = false;
             await this.$store.commit("handleDoorClose", {
               commandID: res.data.commandID
             });
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -348,13 +367,15 @@ export default {
         });
     },
     confirm3() {
+      this.$store.commit("sessionEnd");
       this.show = [...false];
       let hornObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
       };
       this.loading = true;
+      this.$store.state.lightCount = 10;
       this.$axios
-        .post("https://hyundai-driving.mocean.com/controls/flasher.do", hornObj)
+        .post("https://hyundai-driving.mocean.com/controls/horn.do", hornObj)
         .then(async res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
             Dialog.alert({
@@ -363,11 +384,11 @@ export default {
             });
             this.loading = false;
           } else {
-            this.$store.state.lightCount = 15;
             this.$store.state.light = false;
             await this.$store.commit("handleLightOnOff", {
               commandID: res.data.commandID
             });
+            this.loading = false;
           }
         })
         .catch(err => {
@@ -379,6 +400,7 @@ export default {
         });
     },
     clickCarReturn() {
+      this.$store.commit("sessionEnd");
       let returnObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
       };
@@ -386,98 +408,101 @@ export default {
       this.loading = true;
       this.$axios
         .post(
-          "https://hyundai-driving.mocean.com/controls/checkCarStatus.do",
+          "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
           returnObj
         )
-        .then((res, req) => {
-          let doorObj = res.data.doorOpenStatus;
-          let lampObj = res.data.lampStatus;
-          let windowObj = res.data.windowStatus;
+        .then(res => {
+          if (res.data.resultMap.distance < 300) {
+            this.$axios
+              .post(
+                "https://hyundai-driving.mocean.com/controls/checkCarStatus.do",
+                returnObj
+              )
+              .then(res => {
+                if (res.data.ERR_CODE === "OUT_OF_TIME") {
+                  Dialog.alert({
+                    message: "예약한 시간에 다시 시도해 주세요.",
+                    confirmButtonText: "확인"
+                  });
+                  this.loading = false;
+                } else {
+                  let doorObj = res.data.doorOpenStatus;
+                  let lampObj = res.data.lampStatus;
+                  let windowObj = res.data.windowStatus;
 
-          setTimeout(() => {
-            if (res.data.engine === "0") {
-              if (Object.values(doorObj).filter(v => v === "1").length === 0) {
-                if (
-                  Object.values(lampObj).filter(v => v === "1").length === 0
-                ) {
-                  if (
-                    Object.values(windowObj).filter(v => v === "1").length === 0
-                  ) {
-                    if (res.data.trunk === "0") {
-                      this.$axios
-                        .post(
-                          "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
-                          returnObj
-                        )
-                        .then(res => {
-                          this.loading = false;
-                          if (res.data.resultMap.distance < 300) {
+                  setTimeout(() => {
+                    if (res.data.engine === "0") {
+                      if (
+                        Object.values(doorObj).filter(v => v === "1").length ===
+                        0
+                      ) {
+                        if (
+                          Object.values(lampObj).filter(v => v === "1")
+                            .length === 0
+                        ) {
+                          if (
+                            Object.values(windowObj).filter(v => v === "1")
+                              .length === 0
+                          ) {
+                            this.loading = false;
                             sessionStorage.removeItem("userInfo");
                             this.$router.push("returnPage");
                           } else {
+                            this.loading = false;
                             Dialog.alert({
-                              message: "차량이 너무 멀리 있습니다.",
+                              message: "창문을 확인해주세요",
                               confirmButtonText: "확인"
                             });
                           }
-                        })
-                        .catch(err => {
+                        } else {
+                          this.loading = false;
                           Dialog.alert({
-                            message: err,
+                            message: "비상등을 확인해주세요",
                             confirmButtonText: "확인"
                           });
+                        }
+                      } else {
+                        this.show[3] = false;
+                        this.loading = false;
+                        Dialog.alert({
+                          message: "닫히지 않은 문이 있습니다",
+                          confirmButtonText: "확인"
                         });
+                      }
                     } else {
+                      this.show[3] = false;
                       this.loading = false;
                       Dialog.alert({
-                        message: "트렁크를 확인해주세요",
+                        message: "시동이 꺼지지 않았습니다.",
                         confirmButtonText: "확인"
                       });
                     }
-                  } else {
-                    this.loading = false;
-                    Dialog.alert({
-                      message: "창문을 확인해주세요",
-                      confirmButtonText: "확인"
-                    });
-                  }
-                } else {
-                  this.loading = false;
-                  Dialog.alert({
-                    message: "비상등을 확인해주세요",
-                    confirmButtonText: "확인"
-                  });
+                  }, 2000);
                 }
-              } else {
-                this.show[3] = false;
-                this.loading = false;
+              })
+              .catch(err => {
                 Dialog.alert({
-                  message: "닫히지 않은 문이 있습니다",
+                  message: err,
                   confirmButtonText: "확인"
                 });
-              }
-            } else {
-              this.show[3] = false;
-              this.loading = false;
-              Dialog.alert({
-                message: "시동이 꺼지지 않았습니다.",
-                confirmButtonText: "확인"
               });
-            }
-          }, 2000);
+          } else {
+            Dialog.alert({
+              message: "차량이 너무 멀리 있습니다.",
+              confirmButtonText: "확인"
+            });
+          }
+        })
+        .catch(err => {
+          Dialog.alert({
+            message: err,
+            confirmButtonText: "확인"
+          });
         });
     },
     handlePopup(x) {
-      let savedUserInfo = Number(sessionStorage.getItem("expireTime"));
-      if (new Date().getTime() > savedUserInfo) {
-        Dialog.alert({
-          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
-          confirmButtonText: "확인"
-        });
-        sessionStorage.removeItem("userInfo");
-        sessionStorage.removeItem("expireTime");
-        this.$router.push("login");
-      }
+      event.preventDefault();
+      this.$store.commit("sessionEnd");
       this.show = [...this.show];
       this.show[x] = true;
     },
@@ -485,6 +510,7 @@ export default {
       this.show = [...false];
     },
     fellowAdd() {
+      this.$store.commit("sessionEnd");
       this.fellow = true;
     },
     canclePop(v) {
