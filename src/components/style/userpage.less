@@ -39,10 +39,10 @@
         justify-content: center;
 
         img {
-          width: 75%;
+          width: 100%;
           position: absolute;
-          bottom: 0;
-          right: 5%;
+          bottom: -8%;
+          right: -5%;
           display: block;
         }
       }
@@ -200,4 +200,39 @@
   justify-content: center;
   z-index: 1000;
   background: rgba(0, 0, 0, 0.4);
+}
+
+.POPUP {
+  width: 80%;
+  height: 80%;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  padding: 15px;
+  flex-direction: column;
+  justify-content: center;
+
+  &-content {
+    width: 100%;
+    flex: 1;
+  }
+  &-button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    button {
+      width: 49%;
+      padding: 10px;
+      background: #e2e2e2;
+      border: none;
+      font-size: 14px;
+    }
+
+    .blue {
+      background: #002c5e;
+      color: white;
+    }
+  }
 }

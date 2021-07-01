@@ -9,7 +9,7 @@
         </div>
 
         <div class="user-main-carbox-img">
-          <img src="/static/car.png" alt="" />
+          <img src="/static/carMap1.png" alt="" />
         </div>
       </div>
 
@@ -146,6 +146,15 @@
       text-color="white"
       >최대 30초의 시간이 걸릴 수 있습니다.</van-loading
     >
+    <van-popup v-model="popUpShow" :overlay="false" class="POPUP">
+      <div class="POPUP-content">
+        내용은 새로 받아야 합니다.
+      </div>
+      <div class="POPUP-button">
+        <button @click="setPopCloseLocal">그만보기</button>
+        <button class="blue" @click="popupComfirm">확인</button>
+      </div>
+    </van-popup>
     <FooterBar />
   </div>
 </template>
@@ -175,12 +184,19 @@ export default {
       userInfo: {},
       loading: false,
       res: "",
-      countDown: 150
+      countDown: 150,
+      popUp: true,
+      popUpShow: false
     };
   },
   mounted() {
     window.scrollTo(0, 0);
     this.timer();
+    this.getPopCloseLocalNum();
+
+    if (this.popUp) {
+      this.popUpShow = true;
+    }
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
@@ -314,7 +330,7 @@ export default {
       this.loading = true;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
-        .then(async res => {
+        .then(res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
             this.loading = false;
             Dialog.alert({
@@ -322,7 +338,7 @@ export default {
               confirmButtonText: "확인"
             });
           } else {
-            await this.$store.commit("handleDoorOpen", {
+            this.$store.commit("handleDoorOpen", {
               commandID: res.data.commandID
             });
           }
@@ -349,7 +365,7 @@ export default {
       this.$store.state.doorCloseChecked = false;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
-        .then(async res => {
+        .then(res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
             this.loading = false;
             Dialog.alert({
@@ -357,7 +373,7 @@ export default {
               confirmButtonText: "확인"
             });
           } else {
-            await this.$store.commit("handleDoorClose", {
+            this.$store.commit("handleDoorClose", {
               commandID: res.data.commandID
             });
           }
@@ -382,7 +398,7 @@ export default {
       this.$store.state.doorLightChecked = false;
       this.$axios
         .post("https://hyundai-driving.mocean.com/controls/horn.do", hornObj)
-        .then(async res => {
+        .then(res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
             this.loading = false;
             Dialog.alert({
@@ -390,7 +406,7 @@ export default {
               confirmButtonText: "확인"
             });
           } else {
-            await this.$store.commit("handleLightOnOff", {
+            this.$store.commit("handleLightOnOff", {
               commandID: res.data.commandID
             });
           }
@@ -417,7 +433,7 @@ export default {
         )
         .then(res => {
           this.loading = false;
-          if (res.data.resultMap.distance < 2000) {
+          if (res.data.resultMap.distance < 300) {
             this.$axios
               .post(
                 "https://hyundai-driving.mocean.com/controls/checkCarStatus.do",
@@ -593,9 +609,34 @@ export default {
       } else {
         return "0";
       }
+    },
+    setPopCloseLocal() {
+      const userInfo = {
+        bookNum: this.$store.state.userInfo.bookNumber,
+        notOpen: "Y"
+      };
+      localStorage.setItem("user", JSON.stringify(userInfo));
+      this.popupComfirm();
+    },
+    getPopCloseLocalNum() {
+      const getLocal = localStorage.getItem("user");
+      const localV = JSON.parse(getLocal);
+
+      if (localV === null) {
+        this.popUp = true;
+      } else {
+        if (this.$store.state.userInfo.bookNumber === localV.bookNum) {
+          if (localV.notOpen === "Y") {
+            this.popUp = false;
+          } else {
+            this.popUp = true;
+          }
+        }
+      }
+    },
+    popupComfirm() {
+      this.popUpShow = false;
     }
   }
 };
 </script>
-
-<style></style>

@@ -96,9 +96,8 @@ const handleDoorOpen = (state, res) => {
             }
           });
         state.openCount--;
+        handleDoorOpen(state, res);
       }
-
-      handleDoorOpen(state, res);
     }, 3000);
   }
 };
@@ -160,8 +159,8 @@ const handleDoorClose = (state, res) => {
             }
           });
         state.closeCount--;
+        handleDoorClose(state, res);
       }
-      handleDoorClose(state, res);
     }, 3000);
   }
 };
@@ -235,8 +234,8 @@ const handleLightOnOff = (state, res) => {
             }
           });
         state.lightCount--;
+        handleLightOnOff(state, res);
       }
-      handleLightOnOff(state, res);
     }, 3000);
   }
 };
