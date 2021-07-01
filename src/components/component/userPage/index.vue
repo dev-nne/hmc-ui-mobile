@@ -497,8 +497,24 @@ export default {
                   }
 
                   if (message === "") {
-                    sessionStorage.removeItem("userInfo");
-                    this.$router.push("returnPage");
+                    const returnInfo = {
+                      tsrdPrctNo: this.$store.state.userInfo.bookNumber
+                    };
+                    this.$axios
+                      .post(
+                        "https://hyundai-driving.mocean.com/mobile/removeUserInfoById.do",
+                        returnInfo
+                      )
+                      .then(res => {
+                        sessionStorage.removeItem("userInfo");
+                        this.$router.push("returnPage");
+                      })
+                      .catch(err =>
+                        Dialog.alert({
+                          message: err,
+                          confirmButtonText: "확인"
+                        })
+                      );
                   } else {
                     Dialog.alert({
                       message: message,

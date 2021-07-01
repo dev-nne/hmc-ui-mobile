@@ -1,7 +1,7 @@
 <template>
   <div class="consent">
     <div class="consent-title">
-      위치정보 수집장치 부착사실 고지
+      위치/영상정보 수집장치 부착사실 고지
     </div>
     <div class="consent-box">
       <div class="consent-box-title">

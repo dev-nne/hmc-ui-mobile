@@ -108,6 +108,7 @@ const handleDoorClose = (state, res) => {
     setTimeout(() => {
       if (!state.doorCloseChecked) {
         axios
+          // .get("static/control.json")
           .post(
             "https://hyundai-driving.mocean.com/controls/checkControlResponse.do",
             res

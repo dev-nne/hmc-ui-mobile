@@ -44,7 +44,8 @@ export const router = new VueRouter({
     {
       name: "fellowPage",
       path: "/fellowPage",
-      component: () => import("@/components/component/fellowPage")
+      component: () => import("@/components/component/fellowPage"),
+      meta: { authRequired: true }
     },
     {
       path: "*",

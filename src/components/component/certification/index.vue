@@ -223,6 +223,7 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
+    console.log(this.$store.state.userInfo.fellowNum);
   },
   computed: {
     sessionEnd() {
@@ -284,7 +285,6 @@ export default {
                 )
                 .then(res => {
                   if (res.data.resultMap.certLicense === "0") {
-                    console.log(this.$store.state.userInfo.fellowNum);
                     if (
                       this.$store.state.userInfo.fellowNum === undefined ||
                       this.$store.state.userInfo.fellowNum === ""

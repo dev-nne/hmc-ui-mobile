@@ -41,7 +41,7 @@
               <div class="checkbox-content">
                 <span class="choice">(필수)</span>
                 <div class="title">
-                  위치정보 수집장치 부착사실 고지
+                  위치/영상정보 수집장치 부착사실 고지
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup1" />
@@ -68,7 +68,7 @@
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup2" />
               <van-popup v-model="show2" closeable class="consent-popup"
-                ><Consent @sentToAgreement="getAgreement2"
+                ><Consent2 @sentToAgreement="getAgreement2"
               /></van-popup>
             </div>
 

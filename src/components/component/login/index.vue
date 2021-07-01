@@ -167,7 +167,6 @@ export default {
               tsrdPrctNo: savedUserInfo.tsrdPrctNo
             };
             if ("chanTsrdPrctNo" in res.data.DisplayResponse[0]) {
-              console.log("동승자!!!!");
               this.$axios
                 .post(
                   "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
