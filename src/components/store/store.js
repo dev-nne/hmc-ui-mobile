@@ -22,7 +22,8 @@ export const store = new Vuex.Store({
       bookDay: "",
       bookTime: "",
       address: "",
-      spaceNumber: ""
+      spaceNumber: "",
+      fellowNum: ""
     },
     checkcarMsg: "",
     checkcar: false,

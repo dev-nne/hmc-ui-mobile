@@ -22,7 +22,8 @@ const userInfoSetting = (state, data) => {
     )}일 `,
     bookTime: info.tsrdTim,
     address: info.tsrdAdr,
-    spaceNumber: info.tsrdTn
+    spaceNumber: info.tsrdTn,
+    fellowNum: info.chanTsrdPrctNo
   });
 };
 

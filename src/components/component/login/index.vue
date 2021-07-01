@@ -167,6 +167,7 @@ export default {
               tsrdPrctNo: savedUserInfo.tsrdPrctNo
             };
             if ("chanTsrdPrctNo" in res.data.DisplayResponse[0]) {
+              console.log("동승자!!!!");
               this.$axios
                 .post(
                   "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
@@ -186,7 +187,7 @@ export default {
                         res.data.prctInfoCjgtAgrYn === "Y"
                       ) {
                         if (res.data.prctLicenseYn === "Y") {
-                          this.$router.push("fellowPage"); // userPage
+                          this.$router.push("fellowPage");
                         } else {
                           this.$router.push("certification"); // certification
                         }
@@ -263,7 +264,6 @@ export default {
         // tsrdPrctNo: this.$store.state.userInfo.bookNumber
         tsrdPrctNo: this.param
       };
-
       if (this.username.length > 1) {
         if (phoneNumber.length > 12) {
           this.$axios
@@ -282,9 +282,7 @@ export default {
                 const userCheckObj = {
                   tsrdPrctNo: this.$store.state.userInfo.bookNumber
                 };
-                document.cookie = `app_info=${JSON.stringify(
-                  this.$store.state
-                )}`;
+
                 if ("chanTsrdPrctNo" in res.data.DisplayResponse[0]) {
                   this.$axios
                     .post(

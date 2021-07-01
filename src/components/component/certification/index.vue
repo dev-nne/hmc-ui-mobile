@@ -284,7 +284,15 @@ export default {
                 )
                 .then(res => {
                   if (res.data.resultMap.certLicense === "0") {
-                    this.$router.push("userPage");
+                    console.log(this.$store.state.userInfo.fellowNum);
+                    if (
+                      this.$store.state.userInfo.fellowNum === undefined ||
+                      this.$store.state.userInfo.fellowNum === ""
+                    ) {
+                      this.$router.push("userPage");
+                    } else {
+                      this.$router.push("fellowPage");
+                    }
                   } else {
                     console.log(res.data.resultMap.errCode);
                     switch (res.data.resultMap.errCode) {
