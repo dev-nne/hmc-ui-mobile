@@ -16,6 +16,7 @@
 
 <style lang="less">
 .footer {
+  transition: 0.2s;
   display: flex;
   flex-direction: column;
   justify-content: center;

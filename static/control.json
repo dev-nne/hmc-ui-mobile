@@ -3,5 +3,5 @@
   "finishedTime": "2021-07-01T09:56:03+09:00",
   "commandType": "DOOR_UNLOCK",
   "commandState": "DONE",
-  "commandResultState": "OK"
+  "commandResultState": "DOOR_OPENED"
 }

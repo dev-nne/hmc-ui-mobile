@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <!-- -->
     <TopMenu class="nav" />
     <!-- 메인 -->
     <div class="login-main">
@@ -12,11 +13,11 @@
           v-model="username"
           placeholder="이름"
           pattern="[^ㄱ-힣a-zA-Z]*"
-          @keydown="checkKorean"
           ref="nameInput"
-          @input="inputTarget"
+          @keyup="inputTarget"
+          @blur="focusOn"
         />
-
+        <!-- @keydown="checkKorean" -->
         <div class="inputBox">
           <input
             ref="input"
@@ -72,32 +73,12 @@
             로그인
           </van-button>
         </div>
-
-        <!-- <van-popup v-model="alert1" class="alert"
-          ><p>
-            예약 내역을 확인 할 수 없습니다.
-            <br />예약하신 드라이빙 라운지에 문의해 주세요.
-          </p>
-          <button @click="closeAlert1">확인</button></van-popup
-        >
-
-        <van-popup v-model="alert2" class="alert"
-          ><p>
-            올바른 전화번호를 입력하세요.
-          </p>
-          <button @click="closeAlert2">확인</button></van-popup
-        >
-        <van-popup v-model="alert3" class="alert"
-          ><p>
-            이름을 입력하세요.
-          </p>
-          <button @click="closeAlert3">확인</button></van-popup
-        > -->
       </div>
     </div>
 
     <div class="login-bottom">
-      <FooterBar :class="{ focusOn }" />
+      <FooterBar />
+      <!-- :class="{ focusOn }" -->
     </div>
   </div>
 </template>
@@ -110,7 +91,6 @@ import {
   Button,
   Tabbar,
   TabbarItem,
-  Notify,
   Popup,
   Dialog
 } from "vant";
@@ -120,7 +100,6 @@ import FooterBar from "../FooterBar";
 export default {
   components: {
     [TabbarItem.name]: TabbarItem,
-    [Notify.name]: Notify,
     [Dialog.name]: Dialog,
     [Popup.name]: Popup,
     [Tabbar.name]: Tabbar,
@@ -144,13 +123,14 @@ export default {
       // alert2: false,
       // alert3: false,
       param: "",
-      focusOn: false
+      data: "",
+      focus: false
     };
   },
   created() {
-    let savedUserInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-
-    if (sessionStorage.getItem("userInfo") !== null) {
+    let savedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
+    window.addEventListener("scroll", this.handleScroll);
+    if (localStorage.getItem("userInfo") !== null) {
       this.$axios
         .post(
           "https://hyundai-driving.mocean.com/mobile/login.do",
@@ -242,8 +222,8 @@ export default {
   watch: {
     sessionEnd(v) {
       if (v) {
-        Notify({
-          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+        Dialog.alert({
+          message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
         this.$router.push({
@@ -290,7 +270,7 @@ export default {
                     )
                     .then(res => {
                       // 세션저장
-                      sessionStorage.setItem(
+                      localStorage.setItem(
                         "userInfo",
                         JSON.stringify(userInfo)
                       );
@@ -325,7 +305,7 @@ export default {
                     )
                     .then(res => {
                       // 세션저장
-                      sessionStorage.setItem(
+                      localStorage.setItem(
                         "userInfo",
                         JSON.stringify(userInfo)
                       );
@@ -398,12 +378,6 @@ export default {
         }
       }
     },
-    checkKorean(e) {
-      e.target.value = e.target.value.replace(
-        /[^ㄱ-힣a-zA-Z\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
-        ""
-      );
-    },
     checkNumber(e) {
       e.target.value = e.target.value.replace(/[^0-9]/g, "");
     },
@@ -416,15 +390,52 @@ export default {
         }
       }
     },
-    inputTarget(e) {
-      let start = e.target.selectionStart;
-      this.$refs.nameInput.setSelectionRange(start, start);
+    inputTarget() {
+      let e = event.target;
+      this.username = e.value.replace(
+        /([\\.\\,\\/\\|\\-\\_\\;\\·\1-9\d\u002D\u005B\u0022\u0027\u005D\uFFE6\u0023\u002C\u007C\u02DA\u2022\u00B0\u005F]|[~!@#＃$%`^&*×÷–—-₩《》○◇♧♤€£¥¤•º¿¡,￠()□#■♡☆♥_※●+|<>=?:{}])/g,
+        ""
+      );
+      // /[^ㄱ-힣a-zA-Z,|\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
+    },
+    focusOn() {
+      this.focus = true;
+    },
+    handleScroll() {
+      console.log(this.focus);
+      const html = document.getElementsByTagName("html");
+
+      if (this.focus && html.focus) {
+        // setTimeout(() => {
+        //   this.$refs.nameInput.blur();
+        // }, 500);
+        this.focus = false;
+      }
     }
+    // resetFixed() {
+    //   let browser = navigator.userAgent.toLowerCase();
+    //   const html = document.getElementsByTagName("html");
+
+    //   if (browser.indexOf("crios") === -1 || browser.indexOf("chrome") === -1) {
+    //     if (browser.indexOf("safari") !== -1) {
+    //       // this.focusOn = true;
+    //       html[0].classList.value = "focusOn";
+    //     }
+    //   }
+    // },
+    // resetCss() {
+    //   // this.focusOn = false;
+    //   const html = document.getElementsByTagName("html");
+    //   html[0].classList.value = "";
+    // }
   }
 };
 </script>
 <style>
 .focusOn {
-  position: static;
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100vh;
 }
 </style>

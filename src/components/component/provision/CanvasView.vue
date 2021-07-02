@@ -99,6 +99,16 @@ export default {
     this.ctx.translate(0.5, 0.5);
     this.ctx.imageSmoothingEnabled = false;
     this.WIDTH = document.querySelector(".drawing-board").clientWidth;
+    this.$nextTick(() => {
+      this.ctx.strokeStyle = "#fff";
+      this.ctx.beginPath();
+      this.ctx.moveTo(0, 0);
+      this.ctx.lineTo(1, 1);
+      this.ctx.stroke();
+      this.ctx.closePath();
+      this.ctx.save();
+      this.ctx.strokeStyle = "#2c2c2c";
+    });
   }
 };
 </script>

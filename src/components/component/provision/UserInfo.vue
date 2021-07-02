@@ -5,6 +5,11 @@
       <div class="userInfo-box-time">
         {{ `${this.userInfo.bookDay} ${this.userInfo.bookTime}` }}
       </div>
+      <div class="userInfo-box-ment">
+        ※ 시승차 정비,이동시간 등이 모두 포함된 시간으로 실제 시승 가능 시간은
+        30~40분입니다. 다음 고객님을 위해 “시승 종료 시간 30분 전 반납”
+        부탁드립니다.
+      </div>
     </div>
 
     <div class="userInfo-box">
@@ -109,6 +114,11 @@ export default {
     &-time {
       font-size: 14px;
       margin-bottom: 5px;
+    }
+
+    &-ment {
+      font-size: 10px;
+      line-height: 12px;
     }
     &-content {
       font-size: 12px;

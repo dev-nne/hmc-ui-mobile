@@ -37,6 +37,7 @@
         position: relative;
         display: flex;
         justify-content: center;
+        overflow: hidden;
 
         img {
           width: 100%;
@@ -155,22 +156,30 @@
 }
 
 .returnPop {
-  padding: 30px;
-  width: 100%;
+  padding: 20px;
+  width: 90%;
   display: flex;
   flex-direction: column;
   justify-content: center;
 
-  h1 {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 600;
+  .textbox {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    h1 {
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    p {
+      padding: 10px 0;
+      font-size: 14px;
+      text-align: center;
+    }
   }
-  p {
-    padding: 10px 0;
-    font-size: 14px;
-    text-align: center;
-  }
+
   .button-box {
     display: flex;
     justify-content: space-between;

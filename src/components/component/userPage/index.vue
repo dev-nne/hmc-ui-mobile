@@ -65,13 +65,15 @@
 
       <van-popup
         v-model="show[0]"
-        position="bottom"
         :style="{ height: '25%' }"
         class="returnPop"
         @click-overlay="cancel(0)"
       >
-        <h1>[문 열기]</h1>
-        <p>차량의 문을 엽니다.</p>
+        <div class="textbox">
+          <h1>[문 열기]</h1>
+          <p>차량의 문을 엽니다.</p>
+        </div>
+
         <div class="button-box">
           <button class="returnBtn" @click="confirm1">확인</button>
           <button @click="cancel(0)">취소</button>
@@ -80,13 +82,14 @@
 
       <van-popup
         v-model="show[1]"
-        position="bottom"
         :style="{ height: '25%' }"
         class="returnPop"
         @click-overlay="cancel(1)"
-      >
-        <h1>[문 잠금]</h1>
-        <p>차량의 문을 잠급니다.</p>
+        ><div class="textbox">
+          <h1>[문 잠금]</h1>
+          <p>차량의 문을 잠급니다.</p>
+        </div>
+
         <div class="button-box">
           <button class="returnBtn" @click="confirm2">확인</button>
           <button @click="cancel(1)">취소</button>
@@ -95,13 +98,14 @@
 
       <van-popup
         v-model="show[2]"
-        position="bottom"
         :style="{ height: '25%' }"
         class="returnPop"
         @click-overlay="cancel(2)"
-      >
-        <h1>[비상등]</h1>
-        <p>차량 위치 확인을 위해 비상등을 켭니다.</p>
+        ><div class="textbox">
+          <h1>[비상등]</h1>
+          <p>차량 위치 확인을 위해 비상등을 켭니다.</p>
+        </div>
+
         <div class="button-box">
           <button class="returnBtn" @click="confirm3">확인</button>
           <button @click="cancel(2)">취소</button>
@@ -110,13 +114,14 @@
 
       <van-popup
         v-model="show[3]"
-        position="bottom"
         :style="{ height: '25%' }"
         class="returnPop"
         @click-overlay="cancel(3)"
-      >
-        <h1>[차량 반납]</h1>
-        <p>차량 반납 후에는 차량 이용이 불가능합니다.</p>
+        ><div class="textbox">
+          <h1>[차량 반납]</h1>
+          <p>차량 반납 후에는 차량 이용이 불가능합니다.</p>
+        </div>
+
         <div class="button-box">
           <button class="returnBtn" @click="clickCarReturn">
             반납
@@ -146,7 +151,7 @@
       text-color="white"
       >최대 30초의 시간이 걸릴 수 있습니다.</van-loading
     >
-    <van-popup v-model="popUpShow" :overlay="false" class="POPUP">
+    <!-- <van-popup v-model="popUpShow" :overlay="false" class="POPUP">
       <div class="POPUP-content">
         내용은 새로 받아야 합니다.
       </div>
@@ -154,13 +159,13 @@
         <button @click="setPopCloseLocal">그만보기</button>
         <button class="blue" @click="popupComfirm">확인</button>
       </div>
-    </van-popup>
+    </van-popup> -->
     <FooterBar />
   </div>
 </template>
 
 <script>
-import { Popup, Notify, Dialog, Loading } from "vant";
+import { Popup, Dialog, Loading, Toast } from "vant";
 import TopMenu from "../TopMenu";
 import FooterBar from "../FooterBar";
 import FellowField from "./FellowField.vue";
@@ -169,9 +174,9 @@ import UserInfo from "../provision/UserInfo";
 export default {
   components: {
     [Popup.name]: Popup,
-    [Notify.name]: Notify,
     [Dialog.name]: Dialog,
     [Loading.name]: Loading,
+    [Toast.name]: Toast,
     TopMenu,
     FooterBar,
     UserInfo,
@@ -184,19 +189,19 @@ export default {
       userInfo: {},
       loading: false,
       res: "",
-      countDown: 150,
-      popUp: true,
-      popUpShow: false
+      countDown: 150
+      // popUp: true,
+      // popUpShow: false
     };
   },
   mounted() {
     window.scrollTo(0, 0);
     this.timer();
-    this.getPopCloseLocalNum();
+    // this.getPopCloseLocalNum();
 
-    if (this.popUp) {
-      this.popUpShow = true;
-    }
+    // if (this.popUp) {
+    //   this.popUpShow = true;
+    // }
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
@@ -242,8 +247,8 @@ export default {
     },
     sessionEnd(v) {
       if (v) {
-        Notify({
-          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+        Dialog.alert({
+          message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
         this.$router.push({
@@ -257,32 +262,19 @@ export default {
     checkDoorOpen(v) {
       if (v) {
         this.loading = false;
-        Notify({
-          type: "primary",
-          message: "잠금이 해제되었습니다.",
-          duration: 1500
-        });
+        Toast("잠금이 해제되었습니다.");
       }
     },
     checkDoorClose(v) {
       if (v) {
         this.loading = false;
-        Notify({
-          type: "primary",
-          message: "잠금이 설정되었습니다.",
-          duration: 1500
-        });
+        Toast("잠금이 설정되었습니다.");
       }
     },
     checkLightOnOff(v) {
       if (v) {
         this.loading = false;
-
-        Notify({
-          type: "primary",
-          message: "비상등을 켭니다.",
-          duration: 1500
-        });
+        Toast("경적/비상등이 켜졌습니다.");
       }
     },
     checkOpenErr(v) {
@@ -343,10 +335,11 @@ export default {
             });
           }
         })
-        .catch(err => {
+        .catch(() => {
           this.loading = false;
           Dialog.alert({
-            message: err,
+            message:
+              "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
             confirmButtonText: "확인"
           });
         });
@@ -378,10 +371,11 @@ export default {
             });
           }
         })
-        .catch(err => {
+        .catch(() => {
           this.loading = false;
           Dialog.alert({
-            message: err,
+            message:
+              "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
             confirmButtonText: "확인"
           });
         });
@@ -411,10 +405,11 @@ export default {
             });
           }
         })
-        .catch(err => {
+        .catch(() => {
           this.loading = false;
           Dialog.alert({
-            message: err,
+            message:
+              "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
             confirmButtonText: "확인"
           });
         });
@@ -451,6 +446,7 @@ export default {
                   let dataObj = res.data;
                   const checkEngine = this.checkReturn(dataObj, "engine");
                   const checkTrunk = this.checkReturn(dataObj, "trunk");
+
                   const checkDoor1 = this.checkReturn(
                     dataObj.doorOpenStatus,
                     "frontLeft"
@@ -467,22 +463,6 @@ export default {
                     dataObj.doorOpenStatus,
                     "rearRight"
                   );
-                  const checkWindow1 = this.checkReturn(
-                    dataObj.windowStatus,
-                    "frontLeft"
-                  );
-                  const checkWindow2 = this.checkReturn(
-                    dataObj.windowStatus,
-                    "frontRight"
-                  );
-                  const checkWindow3 = this.checkReturn(
-                    dataObj.windowStatus,
-                    "rearLeft"
-                  );
-                  const checkWindow4 = this.checkReturn(
-                    dataObj.windowStatus,
-                    "rearRight"
-                  );
                   this.show[3] = false;
                   let message = "";
                   if (checkEngine === "1") {
@@ -493,20 +473,12 @@ export default {
                     this.loading = false;
                     message = "트렁크를 닫은 후 반납해 주세요.";
                   }
+
                   if (
                     checkDoor1 === "1" ||
                     checkDoor2 === "1" ||
                     checkDoor3 === "1" ||
                     checkDoor4 === "1"
-                  ) {
-                    this.loading = false;
-                    message = "창문을 닫은 후 반납해 주세요.";
-                  }
-                  if (
-                    checkWindow1 === "1" ||
-                    checkWindow2 === "1" ||
-                    checkWindow3 === "1" ||
-                    checkWindow4 === "1"
                   ) {
                     this.loading = false;
                     message = "차량 문을 닫은 후 반납해 주세요.";
@@ -522,12 +494,14 @@ export default {
                         returnInfo
                       )
                       .then(res => {
-                        sessionStorage.removeItem("userInfo");
+                        localStorage.removeItem("userInfo");
+                        // this.removeLocal();
                         this.$router.push("returnPage");
                       })
-                      .catch(err =>
+                      .catch(() =>
                         Dialog.alert({
-                          message: err,
+                          message:
+                            "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
                           confirmButtonText: "확인"
                         })
                       );
@@ -539,10 +513,11 @@ export default {
                   }
                 }
               })
-              .catch(err => {
+              .catch(() => {
                 this.loading = false;
                 Dialog.alert({
-                  message: err,
+                  message:
+                    "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
                   confirmButtonText: "확인"
                 });
               });
@@ -554,10 +529,11 @@ export default {
             });
           }
         })
-        .catch(err => {
+        .catch(() => {
           this.loading = false;
           Dialog.alert({
-            message: err,
+            message:
+              "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
             confirmButtonText: "확인"
           });
         });
@@ -569,6 +545,7 @@ export default {
     },
     cancel(x) {
       this.show = [...false];
+      this.$store.commit("sessionEnd");
     },
     fellowAdd() {
       this.$store.commit("sessionEnd");
@@ -576,6 +553,7 @@ export default {
     },
     canclePop(v) {
       this.fellow = v;
+      this.$store.commit("sessionEnd");
     },
     timer() {
       let bookT = this.$store.state.userInfo.bookTime;
@@ -596,7 +574,7 @@ export default {
             message: "운행이 종료됩니다. 라운지에 문의해주세요.",
             confirmButtonText: "확인"
           });
-          sessionStorage.removeItem("userInfo");
+          localStorage.removeItem("userInfo");
           this.$router.push("returnPage");
         }
         this.timer();
@@ -609,34 +587,37 @@ export default {
       } else {
         return "0";
       }
-    },
-    setPopCloseLocal() {
-      const userInfo = {
-        bookNum: this.$store.state.userInfo.bookNumber,
-        notOpen: "Y"
-      };
-      localStorage.setItem("user", JSON.stringify(userInfo));
-      this.popupComfirm();
-    },
-    getPopCloseLocalNum() {
-      const getLocal = localStorage.getItem("user");
-      const localV = JSON.parse(getLocal);
-
-      if (localV === null) {
-        this.popUp = true;
-      } else {
-        if (this.$store.state.userInfo.bookNumber === localV.bookNum) {
-          if (localV.notOpen === "Y") {
-            this.popUp = false;
-          } else {
-            this.popUp = true;
-          }
-        }
-      }
-    },
-    popupComfirm() {
-      this.popUpShow = false;
     }
+    // setPopCloseLocal() {
+    //   const userInfo = {
+    //     bookNum: this.$store.state.userInfo.bookNumber,
+    //     notOpen: "Y"
+    //   };
+    //   localStorage.setItem("user", JSON.stringify(userInfo));
+    //   this.popupComfirm();
+    // },
+    // getPopCloseLocalNum() {
+    //   const getLocal = localStorage.getItem("user");
+    //   const localV = JSON.parse(getLocal);
+
+    //   if (localV === null) {
+    //     this.popUp = true;
+    //   } else {
+    //     if (this.$store.state.userInfo.bookNumber === localV.bookNum) {
+    //       if (localV.notOpen === "Y") {
+    //         this.popUp = false;
+    //       } else {
+    //         this.popUp = true;
+    //       }
+    //     }
+    //   }
+    // },
+    // popupComfirm() {
+    //   this.popUpShow = false;
+    // },
+    // removeLocal() {
+    //   localStorage.removeItem("user");
+    // }
   }
 };
 </script>

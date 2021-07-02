@@ -81,11 +81,10 @@
 </template>
 
 <script>
-import { Form, Button, Toast, Dialog, Notify } from "vant";
+import { Form, Button, Toast, Dialog } from "vant";
 export default {
   components: {
     [Button.name]: Button,
-    [Notify.name]: Notify,
     [Form.name]: Form,
     [Toast.name]: Toast,
     [Dialog.name]: Dialog
@@ -110,7 +109,7 @@ export default {
   watch: {
     sessionEnd(v) {
       if (v) {
-        Notify({
+        Dialog.alert({
           message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
@@ -207,31 +206,32 @@ export default {
       }
     },
     nextInput2() {
-      this.checkNumber(event);
+      this.checkNumber();
       if (this.$refs.input2.value.length === 4) {
-        this.checkNumber(event);
+        this.checkNumber();
         if (this.$refs.input2.value.length === 4) {
           event.returnValue = false;
           if (this.$refs.input3.value.length !== 4) this.$refs.input3.focus();
         }
       }
     },
-    checkKorean(e) {
-      e.target.value = e.target.value.replace(
-        /[^ㄱ-힣a-zA-Z\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
+    checkKorean() {
+      let e = event.target;
+      this.fellowname = e.value.replace(
+        /([\\.\\,\\/\\|\\-\\_\\;\\·\1-9\d\u002D\u005B\u0022\u0027\u005D\uFFE6\u0023\u002C\u007C\u02DA\u2022\u00B0\u005F]|[~!@#＃$%`^&*×÷–—-₩《》○◇♧♤€£¥¤•º¿¡,￠()□#■♡☆♥_※●+|<>=?:{}])/g,
         ""
       );
-    },
-    checkNumber(e) {
-      e.target.value = e.target.value.replace(/[^0-9]/g, "");
-    },
-    fullText(x) {
-      if (event.target.value.length === x) {
-        if (event.keyCode === 8) {
-          event.returnValue = true;
-        } else {
-          event.returnValue = false;
-        }
+    }
+  },
+  checkNumber() {
+    event.target.value = event.target.value.replace(/[^0-9]/g, "");
+  },
+  fullText(x) {
+    if (event.target.value.length === x) {
+      if (event.keyCode === 8) {
+        event.returnValue = true;
+      } else {
+        event.returnValue = false;
       }
     }
   }

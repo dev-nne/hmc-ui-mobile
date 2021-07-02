@@ -150,7 +150,6 @@ import {
   Picker,
   Toast,
   Dialog,
-  Notify,
   NumberKeyboard
 } from "vant";
 
@@ -170,7 +169,6 @@ export default {
     [Popup.name]: Popup,
     [Picker.name]: Picker,
     [Dialog.name]: Dialog,
-    [Notify.name]: Notify,
     [NumberKeyboard.name]: NumberKeyboard,
     TopMenu,
     DatetiemPicker,
@@ -233,8 +231,8 @@ export default {
   watch: {
     sessionEnd(v) {
       if (v) {
-        Notify({
-          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+        Dialog.alert({
+          message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
         this.$router.push({

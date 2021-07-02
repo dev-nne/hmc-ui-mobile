@@ -154,7 +154,6 @@ import {
   Collapse,
   CollapseItem,
   Popup,
-  Notify,
   Dialog
 } from "vant";
 
@@ -167,7 +166,6 @@ export default {
     [Dialog.name]: Dialog,
     [CollapseItem.name]: CollapseItem,
     [Popup.name]: Popup,
-    [Notify.name]: Notify,
     TopMenu,
     FooterBar,
     CanvasView,
@@ -204,8 +202,8 @@ export default {
   watch: {
     sessionEnd(v) {
       if (v) {
-        Notify({
-          message: "세션이 만료되었습니다. 로그인페이지로 이동합니다.",
+        Dialog.alert({
+          message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
         this.$router.push({
@@ -360,8 +358,11 @@ export default {
 <style>
 .consent-popup {
   width: 85%;
-  height: 90%;
+  /* height: 90%; */
   padding: 20px;
   overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  max-height: 80vh;
 }
 </style>

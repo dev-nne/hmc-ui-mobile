@@ -7,7 +7,7 @@
         <span>이용해 주셔서 감사합니다.</span>
       </div>
       <div class="return-main-img">
-        <img src="@/assets/car2.png" alt="" />
+        <img src="/static/carMap1.png" alt="" />
       </div>
     </div>
     <FooterBar />
