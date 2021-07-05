@@ -16,6 +16,7 @@
           ref="nameInput"
           @keydown="keyCodeEvent"
           @blur="blurstart"
+          @click="windowEvent"
         />
         <!-- @keydown="checkKorean" -->
         <div class="inputBox">
@@ -31,6 +32,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput"
             @keydown="fullText(3)"
+            @blur="blurstart"
+            @click="clickFocus1"
           />
           <div class="line"></div>
           <input
@@ -45,6 +48,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput2"
             @keydown="fullText(4)"
+            @blur="blurstart"
+            @click="clickFocus2"
           />
           <div class="line"></div>
           <input
@@ -58,7 +63,9 @@
             oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="checkNumber"
+            @blur="blurstart"
             @keydown="fullText(4)"
+            @click="clickFocus3"
           />
         </div>
 
@@ -113,7 +120,7 @@ export default {
   data() {
     return {
       username: "",
-      phoneNum1: "",
+      phoneNum1: "010",
       phoneNum2: "",
       phoneNum3: "",
       active: 0,
@@ -130,7 +137,7 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
     this.param = this.$route.query.id;
-    window.addEventListener("touchstart", this.touchWindows);
+
     let savedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
     if (localStorage.getItem("userInfo") !== null) {
       this.$axios
@@ -160,7 +167,6 @@ export default {
                   this.$store.state.auth = true;
                   this.$store.state.userName = savedUserInfo.userName;
                   this.$store.state.userNumber = savedUserInfo.phone;
-                  window.removeEventListener("touchstart", this.touchWindows);
                   if (!this.$store.state.sessionEnd) {
                     if (res.data.returnYn === "N") {
                       if (
@@ -189,7 +195,7 @@ export default {
                   this.$store.state.auth = true;
                   this.$store.state.userName = savedUserInfo.userName;
                   this.$store.state.userNumber = savedUserInfo.phone;
-                  window.removeEventListener("touchstart", this.touchWindows);
+
                   if (!this.$store.state.sessionEnd) {
                     if (res.data.returnYn === "N") {
                       if (
@@ -275,10 +281,7 @@ export default {
                       this.$store.commit("sessionEnd");
                       this.$store.state.userName = this.username;
                       this.$store.state.userNumber = phoneNumber;
-                      window.removeEventListener(
-                        "touchstart",
-                        this.touchWindows
-                      );
+
                       if (res.data.returnYn === "N") {
                         if (
                           res.data.prctInfoAgrYn === "Y" &&
@@ -314,10 +317,7 @@ export default {
                       this.$store.commit("sessionEnd");
                       this.$store.state.userName = this.username;
                       this.$store.state.userNumber = phoneNumber;
-                      window.removeEventListener(
-                        "touchstart",
-                        this.touchWindows
-                      );
+
                       if (res.data.returnYn === "N") {
                         if (
                           res.data.prctInfoAgrYn === "Y" &&
@@ -413,15 +413,31 @@ export default {
     },
 
     touchWindows() {
+      event.stopPropagation();
       let e = event.target.className;
-      if (e === "input") {
-        // 제외
-      } else {
+      if (e !== "input") {
         this.$refs.nameInput.blur();
       }
     },
     blurstart() {
-      console.log("");
+      window.removeEventListener("touchstart", this.touchWindows);
+    },
+    windowEvent() {
+      event.stopPropagation();
+      event.preventDefault();
+      window.addEventListener("touchstart", this.touchWindows);
+    },
+    clickFocus1() {
+      window.removeEventListener("touchstart", this.touchWindows);
+      this.$refs.input.focus();
+    },
+    clickFocus2() {
+      window.removeEventListener("touchstart", this.touchWindows);
+      this.$refs.input2.focus();
+    },
+    clickFocus3() {
+      window.removeEventListener("touchstart", this.touchWindows);
+      this.$refs.input3.focus();
     }
     // resetFixed() {
     //   let browser = navigator.userAgent.toLowerCase();

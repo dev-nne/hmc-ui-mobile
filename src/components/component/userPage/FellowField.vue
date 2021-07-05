@@ -188,7 +188,7 @@ export default {
     cancelFellow() {
       this.$store.commit("sessionEnd");
       this.fellowname = "";
-      this.phoneNum1 = "";
+      this.phoneNum1 = "010";
       this.phoneNum2 = "";
       this.phoneNum3 = "";
       this.$emit("cancelPop", false);

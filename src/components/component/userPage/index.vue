@@ -131,7 +131,7 @@
       </van-popup>
 
       <div class="user-main-fellow" @click="fellowAdd">
-        동승자 교대 시승하기
+        운전자 교대하기
       </div>
 
       <van-popup
@@ -197,6 +197,7 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
     this.timer();
+    // this.getLocation();
     // this.getPopCloseLocalNum();
 
     // if (this.popUp) {
@@ -618,6 +619,24 @@ export default {
       } else {
         return "0";
       }
+    },
+    getLocation() {
+      navigator.geolocation.watchPosition(
+        position => {
+          alert(position.coords.latitude + " " + position.coords.longitude);
+        },
+        () => {
+          Dialog.alert({
+            message: "위치값을 불러올 수 없습니다.",
+            confirmButtonText: "확인"
+          });
+        },
+        {
+          enableHighAccuracy: false,
+          maximumAge: 0,
+          timeout: Infinity
+        }
+      );
     }
     // setPopCloseLocal() {
     //   const userInfo = {
