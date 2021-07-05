@@ -196,7 +196,10 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    this.timer();
+    // if (localStorage.getItem("userInfo") !== null) {
+    //   this.$router.push("returnPage");
+    // }
+    // this.timer();
     // this.getLocation();
     // this.getPopCloseLocalNum();
 
@@ -465,26 +468,50 @@ export default {
                     dataObj.doorOpenStatus,
                     "rearRight"
                   );
-                  const checkWindow1 = this.checkReturn(
-                    dataObj.windowStatus,
+                  const checkLock1 = this.checkReturn(
+                    dataObj.doorLockStatus,
                     "frontLeft"
                   );
-                  const checkWindow2 = this.checkReturn(
-                    dataObj.windowStatus,
+                  const checkLock2 = this.checkReturn(
+                    dataObj.doorLockStatus,
                     "frontRight"
                   );
-                  const checkWindow3 = this.checkReturn(
-                    dataObj.windowStatus,
+                  const checkLock3 = this.checkReturn(
+                    dataObj.doorLockStatus,
                     "rearLeft"
                   );
-                  const checkWindow4 = this.checkReturn(
-                    dataObj.windowStatus,
+                  const checkLock4 = this.checkReturn(
+                    dataObj.doorLockStatus,
                     "rearRight"
                   );
+                  // const checkWindow1 = this.checkReturn(
+                  //   dataObj.windowStatus,
+                  //   "frontLeft"
+                  // );
+                  // const checkWindow2 = this.checkReturn(
+                  //   dataObj.windowStatus,
+                  //   "frontRight"
+                  // );
+                  // const checkWindow3 = this.checkReturn(
+                  //   dataObj.windowStatus,
+                  //   "rearLeft"
+                  // );
+                  // const checkWindow4 = this.checkReturn(
+                  //   dataObj.windowStatus,
+                  //   "rearRight"
+                  // );
 
                   this.show[3] = false;
                   let message = "";
-
+                  if (
+                    checkLock1 === "1" ||
+                    checkLock2 === "1" ||
+                    checkLock3 === "1" ||
+                    checkLock4 === "1"
+                  ) {
+                    this.loading = false;
+                    message = "차량 문을 잠근 후 반납해 주세요.";
+                  }
                   if (checkBonnet === "1") {
                     this.loading = false;
                     message = "본넷을 닫은 후 반납해 주세요.";
@@ -494,15 +521,15 @@ export default {
                     message = "트렁크를 닫은 후 반납해 주세요.";
                   }
 
-                  if (
-                    checkWindow1 === "1" ||
-                    checkWindow2 === "1" ||
-                    checkWindow3 === "1" ||
-                    checkWindow4 === "1"
-                  ) {
-                    this.loading = false;
-                    message = "창문을 닫은 후 반납해 주세요.";
-                  }
+                  // if (
+                  //   checkWindow1 === "1" ||
+                  //   checkWindow2 === "1" ||
+                  //   checkWindow3 === "1" ||
+                  //   checkWindow4 === "1"
+                  // ) {
+                  //   this.loading = false;
+                  //   message = "창문을 닫은 후 반납해 주세요.";
+                  // }
                   if (
                     checkDoor1 === "1" ||
                     checkDoor2 === "1" ||
@@ -512,6 +539,7 @@ export default {
                     this.loading = false;
                     message = "차량 문을 닫은 후 반납해 주세요.";
                   }
+
                   if (checkEngine === "1") {
                     this.loading = false;
                     message = "차량 시동을 끈 후 반납해 주세요.";
@@ -588,29 +616,28 @@ export default {
       this.$store.commit("sessionEnd");
     },
     timer() {
-      let bookT = this.$store.state.userInfo.bookTime;
-      let returnT = bookT.split("-")[1];
-      let returnH = parseInt(returnT.split(":")[0]);
-      let returnM = parseInt(returnT.split(":")[1]);
-      const date = new Date();
-
-      setTimeout(() => {
-        if (date.getHours() === returnH && date.getMinutes() === returnM) {
-          Dialog.alert({
-            message: "반납시간이 다 되었습니다. 30분 후에 운행이 종료됩니다.",
-            confirmButtonText: "확인"
-          });
-        }
-        if (date.getHours() === returnH && date.getMinutes() === returnM + 30) {
-          Dialog.alert({
-            message: "운행이 종료됩니다. 라운지에 문의해주세요.",
-            confirmButtonText: "확인"
-          });
-          localStorage.removeItem("userInfo");
-          this.$router.push("returnPage");
-        }
-        this.timer();
-      }, 60000);
+      // let bookT = this.$store.state.userInfo.bookTime;
+      // let returnT = bookT.split("-")[1];
+      // let returnH = parseInt(returnT.split(":")[0]);
+      // let returnM = parseInt(returnT.split(":")[1]);
+      // const date = new Date();
+      // setTimeout(() => {
+      //   if (date.getHours() === returnH && date.getMinutes() === returnM) {
+      //     Dialog.alert({
+      //       message: "반납시간이 다 되었습니다. 30분 후에 운행이 종료됩니다.",
+      //       confirmButtonText: "확인"
+      //     });
+      //   }
+      //   if (date.getHours() === returnH && date.getMinutes() === returnM + 30) {
+      //     Dialog.alert({
+      //       message: "운행이 종료됩니다. 라운지에 문의해주세요.",
+      //       confirmButtonText: "확인"
+      //     });
+      //     localStorage.removeItem("userInfo");
+      //     this.$router.push("returnPage");
+      //   }
+      //   this.timer();
+      // }, 60000);
     },
     checkReturn(obj, key) {
       let bool = obj.hasOwnProperty(key);
