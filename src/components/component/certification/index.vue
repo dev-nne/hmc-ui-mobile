@@ -64,7 +64,7 @@
               <input
                 ref="input"
                 type="tel"
-                class="input"
+                class="input inputTouch1"
                 v-model="keyValue1"
                 pattern="[0-9]*"
                 maxlength="2"
@@ -72,12 +72,13 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput"
                 @keydown="fullText(2)"
+                @blur="blurstart"
               />
               <div class="line"></div>
               <input
                 ref="input2"
                 type="tel"
-                class="input2"
+                class="input2 inputTouch2"
                 v-model="keyValue2"
                 pattern="\d*"
                 maxlength="6"
@@ -85,12 +86,13 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput2"
                 @keydown="fullText(6)"
+                @blur="blurstart"
               />
               <div class="line"></div>
               <input
                 ref="input3"
                 type="tel"
-                class="input"
+                class="input inputTouch3"
                 v-model="keyValue3"
                 pattern="\d*"
                 maxlength="2"
@@ -98,6 +100,7 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="checkNumber"
                 @keydown="fullText(2)"
+                @blur="blurstart"
               />
             </div>
           </div>
@@ -221,7 +224,7 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    console.log(this.$store.state.userInfo.fellowNum);
+    window.addEventListener("touchstart", this.touchWindows);
   },
   computed: {
     sessionEnd() {
@@ -364,14 +367,15 @@ export default {
                         break;
                       case "910780":
                         Dialog.alert({
-                          message: "입력한 정보(면허종류)를 확인해 주세요.",
+                          message:
+                            "입력한 정보(운전면허 정보)를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
                       case "910781":
                         Dialog.alert({
                           message:
-                            "입력한 정보(운전면허 지역)를 확인해 주세요.",
+                            "입력한 정보(운전면허 종별)를 확인해 주세요.",
                           confirmButtonText: "확인"
                         });
                         break;
@@ -449,12 +453,6 @@ export default {
         }
       }
     },
-    checkKorean(e) {
-      e.target.value = e.target.value.replace(
-        /[^ㄱ-힣\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
-        ""
-      );
-    },
     checkNumber(e) {
       e.target.value = e.target.value.replace(/[^0-9]/g, "");
     },
@@ -466,6 +464,21 @@ export default {
           event.returnValue = false;
         }
       }
+    },
+    touchWindows() {
+      let e = event.target.className;
+      if (e !== "inputTouch1") {
+        this.$refs.input.blur();
+      }
+      if (e !== "inputTouch2") {
+        this.$refs.input2.blur();
+      }
+      if (e !== "inputTouch3") {
+        this.$refs.input3.blur();
+      }
+    },
+    blurstart() {
+      console.log("");
     }
   }
 };

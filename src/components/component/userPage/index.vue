@@ -446,6 +446,7 @@ export default {
                   let dataObj = res.data;
                   const checkEngine = this.checkReturn(dataObj, "engine");
                   const checkTrunk = this.checkReturn(dataObj, "trunk");
+                  const checkBonnet = this.checkReturn(dataObj, "bonnet");
 
                   const checkDoor1 = this.checkReturn(
                     dataObj.doorOpenStatus,
@@ -463,17 +464,44 @@ export default {
                     dataObj.doorOpenStatus,
                     "rearRight"
                   );
+                  const checkWindow1 = this.checkReturn(
+                    dataObj.windowStatus,
+                    "frontLeft"
+                  );
+                  const checkWindow2 = this.checkReturn(
+                    dataObj.windowStatus,
+                    "frontRight"
+                  );
+                  const checkWindow3 = this.checkReturn(
+                    dataObj.windowStatus,
+                    "rearLeft"
+                  );
+                  const checkWindow4 = this.checkReturn(
+                    dataObj.windowStatus,
+                    "rearRight"
+                  );
+
                   this.show[3] = false;
                   let message = "";
-                  if (checkEngine === "1") {
+
+                  if (checkBonnet === "1") {
                     this.loading = false;
-                    message = "차량 시동을 끈 후 반납해 주세요.";
+                    message = "본넷을 닫은 후 반납해 주세요.";
                   }
                   if (checkTrunk === "1") {
                     this.loading = false;
                     message = "트렁크를 닫은 후 반납해 주세요.";
                   }
 
+                  if (
+                    checkWindow1 === "1" ||
+                    checkWindow2 === "1" ||
+                    checkWindow3 === "1" ||
+                    checkWindow4 === "1"
+                  ) {
+                    this.loading = false;
+                    message = "창문을 닫은 후 반납해 주세요.";
+                  }
                   if (
                     checkDoor1 === "1" ||
                     checkDoor2 === "1" ||
@@ -483,7 +511,10 @@ export default {
                     this.loading = false;
                     message = "차량 문을 닫은 후 반납해 주세요.";
                   }
-
+                  if (checkEngine === "1") {
+                    this.loading = false;
+                    message = "차량 시동을 끈 후 반납해 주세요.";
+                  }
                   if (message === "") {
                     const returnInfo = {
                       tsrdPrctNo: this.$store.state.userInfo.bookNumber

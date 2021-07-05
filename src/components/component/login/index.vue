@@ -9,20 +9,20 @@
       <div class="login-main-form-box">
         <input
           type="text"
-          class="input"
+          class="input nameInput"
           v-model="username"
           placeholder="이름"
           pattern="[^ㄱ-힣a-zA-Z]*"
           ref="nameInput"
-          @keyup="inputTarget"
-          @blur="focusOn"
+          @keydown="keyCodeEvent"
+          @blur="blurstart"
         />
         <!-- @keydown="checkKorean" -->
         <div class="inputBox">
           <input
             ref="input"
             type="tel"
-            class="inputBox-input"
+            class="inputBox-input input"
             placeholder="010"
             v-model="phoneNum1"
             pattern="[0-9]*"
@@ -36,7 +36,7 @@
           <input
             ref="input2"
             type="tel"
-            class="inputBox-input"
+            class="inputBox-input input"
             v-model="phoneNum2"
             placeholder="0000"
             pattern="\d*"
@@ -50,7 +50,7 @@
           <input
             ref="input3"
             type="tel"
-            class="inputBox-input"
+            class="inputBox-input input"
             v-model="phoneNum3"
             placeholder="0000"
             pattern="\d*"
@@ -123,13 +123,15 @@ export default {
       // alert2: false,
       // alert3: false,
       param: "",
-      data: "",
-      focus: false
+      data: ""
     };
   },
-  created() {
+
+  mounted() {
+    window.scrollTo(0, 0);
+    this.param = this.$route.query.id;
+    window.addEventListener("touchstart", this.touchWindows);
     let savedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
-    window.addEventListener("scroll", this.handleScroll);
     if (localStorage.getItem("userInfo") !== null) {
       this.$axios
         .post(
@@ -158,7 +160,7 @@ export default {
                   this.$store.state.auth = true;
                   this.$store.state.userName = savedUserInfo.userName;
                   this.$store.state.userNumber = savedUserInfo.phone;
-
+                  window.removeEventListener("touchstart", this.touchWindows);
                   if (!this.$store.state.sessionEnd) {
                     if (res.data.returnYn === "N") {
                       if (
@@ -187,7 +189,7 @@ export default {
                   this.$store.state.auth = true;
                   this.$store.state.userName = savedUserInfo.userName;
                   this.$store.state.userNumber = savedUserInfo.phone;
-
+                  window.removeEventListener("touchstart", this.touchWindows);
                   if (!this.$store.state.sessionEnd) {
                     if (res.data.returnYn === "N") {
                       if (
@@ -209,10 +211,6 @@ export default {
           }
         });
     }
-  },
-  mounted() {
-    window.scrollTo(0, 0);
-    this.param = this.$route.query.id;
   },
   computed: {
     sessionEnd() {
@@ -277,6 +275,10 @@ export default {
                       this.$store.commit("sessionEnd");
                       this.$store.state.userName = this.username;
                       this.$store.state.userNumber = phoneNumber;
+                      window.removeEventListener(
+                        "touchstart",
+                        this.touchWindows
+                      );
                       if (res.data.returnYn === "N") {
                         if (
                           res.data.prctInfoAgrYn === "Y" &&
@@ -312,6 +314,10 @@ export default {
                       this.$store.commit("sessionEnd");
                       this.$store.state.userName = this.username;
                       this.$store.state.userNumber = phoneNumber;
+                      window.removeEventListener(
+                        "touchstart",
+                        this.touchWindows
+                      );
                       if (res.data.returnYn === "N") {
                         if (
                           res.data.prctInfoAgrYn === "Y" &&
@@ -393,24 +399,29 @@ export default {
     inputTarget() {
       let e = event.target;
       this.username = e.value.replace(
-        /([\\.\\,\\/\\|\\-\\_\\;\\·\1-9\d\u002D\u005B\u0022\u0027\u005D\uFFE6\u0023\u002C\u007C\u02DA\u2022\u00B0\u005F]|[~!@#＃$%`^&*×÷–—-₩《》○◇♧♤€£¥¤•º¿¡,￠()□#■♡☆♥_※●+|<>=?:{}])/g,
+        /([\\|\\-\\_\\;\\·\1-9\d\u002D\u005B\u0022\u0027\u005D\uFFE6\u0023\u002C\u007C\u02DA\u2022\u00B0\u002F]|[~@#＃$%`^&*×÷–—-₩《,.?!》○◇♧♤€£¥¤•º¿¡￠()□#■♡☆♥_※●+|<>=:{}])/g,
         ""
       );
-      // /[^ㄱ-힣a-zA-Z,|\u318D\u119E\u11A2\u2022\u2025\u00B7\uFE55\u4E10]/g,
     },
-    focusOn() {
-      this.focus = true;
-    },
-    handleScroll() {
-      console.log(this.focus);
-      const html = document.getElementsByTagName("html");
 
-      if (this.focus && html.focus) {
-        // setTimeout(() => {
-        //   this.$refs.nameInput.blur();
-        // }, 500);
-        this.focus = false;
+    keyCodeEvent() {
+      let key = event.keyCode;
+      if (key === 190 || key === 188 || key === 49 || key === 191) {
+        event.preventDefault();
       }
+      this.inputTarget();
+    },
+
+    touchWindows() {
+      let e = event.target.className;
+      if (e === "input") {
+        // 제외
+      } else {
+        this.$refs.nameInput.blur();
+      }
+    },
+    blurstart() {
+      console.log("");
     }
     // resetFixed() {
     //   let browser = navigator.userAgent.toLowerCase();

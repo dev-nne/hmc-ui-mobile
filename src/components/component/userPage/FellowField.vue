@@ -10,7 +10,7 @@
           v-model="fellowname"
           placeholder="이름"
           pattern="[^ㄱ-힣a-zA-Z]*"
-          @keyup="checkKorean"
+          @keydown="keyCodeEvent"
         />
         <div class="rules" :class="{ ruleAdd: nameRule }">
           올바른 이름을 입력해 주세요.
@@ -56,8 +56,8 @@
           maxlength="4"
           oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-          @keyup="checkNumber"
-          @keydown="fullText(4)"
+          @keydown="checkNumber"
+          @keyup="fullText(4)"
         />
         <div class="rules" :class="{ ruleAdd: numRule }">
           올바른 전화번호를 입력해 주세요.
@@ -196,9 +196,9 @@ export default {
       this.numRule = false;
     },
     nextInput() {
-      this.checkNumber(event);
+      this.checkNumber();
       if (this.$refs.input.value.length === 3) {
-        this.checkNumber(event);
+        this.checkNumber();
         if (this.$refs.input.value.length === 3) {
           event.returnValue = false;
           if (this.$refs.input2.value.length !== 4) this.$refs.input2.focus();
@@ -215,23 +215,33 @@ export default {
         }
       }
     },
-    checkKorean() {
+    inputTarget() {
       let e = event.target;
       this.fellowname = e.value.replace(
-        /([\\.\\,\\/\\|\\-\\_\\;\\·\1-9\d\u002D\u005B\u0022\u0027\u005D\uFFE6\u0023\u002C\u007C\u02DA\u2022\u00B0\u005F]|[~!@#＃$%`^&*×÷–—-₩《》○◇♧♤€£¥¤•º¿¡,￠()□#■♡☆♥_※●+|<>=?:{}])/g,
+        /([\\|\\-\\_\\;\\·\1-9\d\u002D\u005B\u0022\u0027\u005D\uFFE6\u0023\u002C\u007C\u02DA\u2022\u00B0\u002F]|[~@#＃$%`^&*×÷–—-₩《,.?!》○◇♧♤€£¥¤•º¿¡￠()□#■♡☆♥_※●+|<>=:{}])/g,
         ""
       );
-    }
-  },
-  checkNumber() {
-    event.target.value = event.target.value.replace(/[^0-9]/g, "");
-  },
-  fullText(x) {
-    if (event.target.value.length === x) {
-      if (event.keyCode === 8) {
-        event.returnValue = true;
-      } else {
-        event.returnValue = false;
+    },
+
+    keyCodeEvent() {
+      let key = event.keyCode;
+      if (key === 190 || key === 188 || key === 49 || key === 191) {
+        event.preventDefault();
+      }
+      this.inputTarget();
+    },
+
+    checkNumber() {
+      event.target.value = event.target.value.replace(/[^0-9]/g, "");
+    },
+    fullText(x) {
+      let v = event.target.value;
+      if (v.length === x) {
+        if (event.keyCode === 8) {
+          event.returnValue = true;
+        } else {
+          event.returnValue = false;
+        }
       }
     }
   }
