@@ -130,6 +130,7 @@ export default {
     this.param = this.$route.query.id;
     let resId = localStorage.getItem("bookingId");
     if (resId === this.param || resId === null) {
+      localStorage.setItem("bookingId", this.param);
       let login = localStorage.getItem("site");
       if (login === null) {
         this.$router
@@ -145,6 +146,7 @@ export default {
       localStorage.removeItem("userInfo");
       localStorage.setItem("bookingId", this.param);
     }
+    this.CreateWindowEvent();
   },
   computed: {
     sessionEnd() {
@@ -186,16 +188,15 @@ export default {
       }
     },
     axiosLogin() {
-      // const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
-      // const userInfo = {
-      //   userName: this.username,
-      //   phone: phoneNumber,
-      //   // tsrdPrctNo: this.$store.state.userInfo.bookNumber
-      //   tsrdPrctNo: this.param
-      // };
+      const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
+      const userInfo = {
+        userName: this.username,
+        phone: phoneNumber,
+        // tsrdPrctNo: this.$store.state.userInfo.bookNumber
+        tsrdPrctNo: this.param
+      };
       this.$axios
-        // .post("https://hyundai-driving.mocean.com/mobile/login.do", userInfo)
-        .get("static/login.json")
+        .post("https://hyundai-driving.mocean.com/mobile/login.do", userInfo)
         .then(res => {
           if (res.data.infoResponse.rsp_CD === "200") {
             localStorage.setItem("userInfo", JSON.stringify(res.data));
@@ -222,28 +223,26 @@ export default {
         tsrdPrctNo: this.param
       };
       const payload = {
-        // resData: data.data,
         resData: data.data,
         booking: userInfo.tsrdPrctNo
       };
       this.$store.state.auth = true;
       this.$store.commit("userInfoSetting", payload);
-      // const userCheckObj = {
-      //   tsrdPrctNo: this.$store.state.userInfo.bookNumber
-      // };
+      const userCheckObj = {
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber
+      };
       this.$axios
-        // .post(
-        //   "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do",
-        //   userCheckObj
-        // )
-        .get("static/getUserInfoById.json")
+        .post(
+          "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do",
+          userCheckObj
+        )
         .then(res => {
           // 세션저장
           // localStorage.setItem("userInfo", JSON.stringify(userInfo));
           this.$store.commit("sessionEnd");
           this.$store.state.userName = this.username;
           this.$store.state.userNumber = phoneNumber;
-
+          this.removeWindowEvent();
           if (res.data.returnYn === "N") {
             if (
               res.data.prctInfoAgrYn === "Y" &&
@@ -264,8 +263,8 @@ export default {
                 this.$router.replace("certification"); // certification
               }
             } else {
-              this.$store.commit("sessionSavedPage", "fellowPage");
-              this.$router.replace("fellowPage");
+              this.$store.commit("sessionSavedPage", "provision");
+              this.$router.replace("provision");
             }
           } else {
             Dialog.alert({
