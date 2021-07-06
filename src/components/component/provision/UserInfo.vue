@@ -67,11 +67,17 @@ export default {
       showPark: false
     };
   },
-  created() {
-    this.userInfo = this.$store.state.userInfo;
-  },
   mounted() {
-    const centerName = this.userInfo.centerName; // this.userInfo.centerName;
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let bookingId = localStorage.getItem("bookingId");
+
+    const payload = {
+      resData: userInfo,
+      booking: bookingId
+    };
+    this.$store.commit("userInfoSetting", payload);
+    const centerName = this.userInfo.centerName;
+    this.userInfo = this.$store.state.userInfo;
     this.$refs.callNum.href = `tel:${this.userInfo.spaceNumber}`;
     this.$axios
       .get("static/parkingAddress.json")

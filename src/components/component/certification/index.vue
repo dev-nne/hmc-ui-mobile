@@ -222,7 +222,6 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
     this.CreateWindowEvent();
-    this.$store.commit("sessionSavedPage", "certification");
     this.$store.commit("sessionReload");
   },
   computed: {
@@ -290,8 +289,10 @@ export default {
                       this.$store.state.userInfo.fellowNum === undefined ||
                       this.$store.state.userInfo.fellowNum === ""
                     ) {
+                      this.$store.commit("sessionSavedPage", "userPage");
                       this.$router.replace("userPage");
                     } else {
+                      this.$store.commit("sessionSavedPage", "fellowPage");
                       this.$router.replace("fellowPage");
                     }
                   } else {

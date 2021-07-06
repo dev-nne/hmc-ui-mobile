@@ -21,7 +21,8 @@ export default {
   components: {
     TopMenu,
     FooterBar
-  }
+  },
+  mounted() {}
 };
 </script>
 

@@ -4,7 +4,7 @@ import axios from "axios";
 const sessionReload = state => {
   let savedUserInfo = localStorage.getItem("site");
   if (savedUserInfo === "provision") {
-    router.replace("/provision").catch(() => {});
+    router.replace("provision").catch(() => {});
   } else if (savedUserInfo === "certification") {
     router.replace("/certification").catch(() => {});
   } else if (savedUserInfo === "userPage") {

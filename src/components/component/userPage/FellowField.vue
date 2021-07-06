@@ -102,8 +102,8 @@ export default {
     };
   },
   mounted() {
-    this.$store.commit("sessionSavedPage", "fellowPage");
     this.$store.commit("sessionReload");
+    this.$store.commit("getUserInfoLocalStorage");
   },
   computed: {
     sessionEnd() {
