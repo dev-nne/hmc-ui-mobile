@@ -131,7 +131,7 @@
       </van-popup>
 
       <div class="user-main-fellow" @click="fellowAdd">
-        운전자 교대하기
+        동승자 교대 시승하기
       </div>
 
       <van-popup
@@ -196,22 +196,18 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    this.$nextTick(() => {
-      if (localStorage.getItem("userInfo") !== null) {
-        let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-        let bookingId = localStorage.getItem("bookingId");
-        const payload = {
-          resData: userInfo,
-          booking: bookingId
-        };
-        this.$store.commit("userInfoSetting", payload);
-        //   this.$router.push("returnPage");
-      }
-    });
-  },
-  created() {
+    this.$store.commit("sessionReload");
+    // store 정보저장하기
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+
+    let bookingId = localStorage.getItem("bookingId");
+
+    const payload = {
+      resData: userInfo,
+      booking: bookingId
+    };
+    this.$store.commit("userInfoSetting", payload);
     this.userInfo = this.$store.state.userInfo;
-    // 2시간 30분후 이용종료
   },
   computed: {
     checkDoorOpen() {
@@ -553,6 +549,7 @@ export default {
                 )
                 .then(res => {
                   localStorage.removeItem("userInfo");
+                  localStorage.removeItem("site");
                   // this.removeLocal();
                   this.$router.replace("returnPage");
 

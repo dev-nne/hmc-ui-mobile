@@ -64,7 +64,7 @@
               <input
                 ref="input"
                 type="tel"
-                class="input inputTouch1"
+                class="input inputTouch1 "
                 v-model="keyValue1"
                 pattern="[0-9]*"
                 maxlength="2"
@@ -72,13 +72,12 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput"
                 @keydown="fullText(2)"
-                @blur="blurstart"
               />
               <div class="line"></div>
               <input
                 ref="input2"
                 type="tel"
-                class="input2 inputTouch2"
+                class="input2 inputTouch2 input"
                 v-model="keyValue2"
                 pattern="\d*"
                 maxlength="6"
@@ -86,13 +85,12 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput2"
                 @keydown="fullText(6)"
-                @blur="blurstart"
               />
               <div class="line"></div>
               <input
                 ref="input3"
                 type="tel"
-                class="input inputTouch3"
+                class="input inputTouch3 input"
                 v-model="keyValue3"
                 pattern="\d*"
                 maxlength="2"
@@ -100,7 +98,6 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="checkNumber"
                 @keydown="fullText(2)"
-                @blur="blurstart"
               />
             </div>
           </div>
@@ -224,7 +221,8 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    window.addEventListener("touchstart", this.touchWindows);
+    this.CreateWindowEvent();
+    this.$store.commit("sessionReload");
   },
   computed: {
     sessionEnd() {
@@ -286,12 +284,15 @@ export default {
                 )
                 .then(res => {
                   if (res.data.resultMap.certLicense === "0") {
+                    this.removeWindowEvent();
                     if (
                       this.$store.state.userInfo.fellowNum === undefined ||
                       this.$store.state.userInfo.fellowNum === ""
                     ) {
+                      this.$store.commit("sessionSavedPage", "userPage");
                       this.$router.replace("userPage");
                     } else {
+                      this.$store.commit("sessionSavedPage", "fellowPage");
                       this.$router.replace("fellowPage");
                     }
                   } else {
@@ -466,19 +467,19 @@ export default {
       }
     },
     touchWindows() {
+      event.stopPropagation();
       let e = event.target.className;
-      if (e !== "inputTouch1") {
+      if (e !== "input") {
         this.$refs.input.blur();
-      }
-      if (e !== "inputTouch2") {
         this.$refs.input2.blur();
-      }
-      if (e !== "inputTouch3") {
         this.$refs.input3.blur();
       }
     },
-    blurstart() {
-      console.log("");
+    CreateWindowEvent() {
+      window.addEventListener("touchmove", this.touchWindows);
+    },
+    removeWindowEvent() {
+      window.removeEventListener("touchmove", this.touchWindows);
     }
   }
 };

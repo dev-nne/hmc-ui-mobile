@@ -101,6 +101,10 @@ export default {
       numRule: false
     };
   },
+  mounted() {
+    this.$store.commit("sessionReload");
+    this.$store.commit("getUserInfoLocalStorage");
+  },
   computed: {
     sessionEnd() {
       return this.$store.state.sessionEnd;

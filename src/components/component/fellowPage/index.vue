@@ -28,11 +28,14 @@ export default {
       return this.$store.state.sessionEnd;
     }
   },
+  mounted() {
+    this.$store.commit("sessionReload");
+  },
   watch: {
     sessionEnd(v) {
       if (v) {
         Dialog.alert({
-          message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
+          message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다 .",
           confirmButtonText: "확인"
         });
         this.$router.push({

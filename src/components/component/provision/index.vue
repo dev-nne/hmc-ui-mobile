@@ -13,7 +13,7 @@
         <div class="prov-main-info-box">
           <div class="prov-main-info-box-title">이용약관</div>
 
-          <div class="prov-main-info-box-checkbox-all" @click="toggleAll">
+          <!-- <div class="prov-main-info-box-checkbox-all" @click="toggleAll">
             <van-checkbox
               ref="checkbox_all"
               name="d"
@@ -22,13 +22,13 @@
               shape="squre"
             ></van-checkbox>
             전체약관동의
-          </div>
+          </div> -->
           <van-checkbox-group
             v-model="result"
             ref="checkboxGroup"
             class="prov-main-info-box-checkboxGroup"
           >
-            <div class="line"></div>
+            <!-- <div class="line"></div> -->
             <div class="prov-main-info-box-checkbox-select">
               <van-checkbox
                 ref="checkbox_1"
@@ -191,8 +191,19 @@ export default {
       drawingCode: ""
     };
   },
+  created() {},
   mounted() {
     window.scrollTo(0, 0);
+    this.$store.commit("sessionReload");
+    // store 정보저장하기
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let bookingId = localStorage.getItem("bookingId");
+
+    const payload = {
+      resData: userInfo,
+      booking: bookingId
+    };
+    this.$store.commit("userInfoSetting", payload);
   },
   computed: {
     sessionEnd() {
@@ -219,53 +230,57 @@ export default {
       if (name === "a") {
         !this.checked_1 ? (this.checked_1 = true) : (this.checked_1 = false);
         this.$refs.checkbox_1.toggle(this.checked_1);
+        this.checked_1 ? (this.show1 = true) : (this.show1 = false);
       }
       if (name === "b") {
         !this.checked_2 ? (this.checked_2 = true) : (this.checked_2 = false);
         this.$refs.checkbox_2.toggle(this.checked_2);
+        this.checked_2 ? (this.show2 = true) : (this.show2 = false);
       }
       if (name === "c") {
         !this.checked_3 ? (this.checked_3 = true) : (this.checked_3 = false);
         this.$refs.checkbox_3.toggle(this.checked_3);
+        this.checked_3 ? (this.show3 = true) : (this.show3 = false);
       }
       if (name === "d") {
         !this.checked_4 ? (this.checked_4 = true) : (this.checked_4 = false);
         this.$refs.checkbox_4.toggle(this.checked_4);
+        this.checked_4 ? (this.show4 = true) : (this.show4 = false);
       }
 
-      if (
-        this.checked_1 &&
-        this.checked_2 &&
-        this.checked_3 &&
-        this.checked_4
-      ) {
-        this.allChecked = true;
-        this.$refs.checkbox_all.toggle(this.allChecked);
-      } else {
-        this.allChecked = false;
-        this.$refs.checkbox_all.toggle(this.allChecked);
-      }
+      // if (
+      //   this.checked_1 &&
+      //   this.checked_2 &&
+      //   this.checked_3 &&
+      //   this.checked_4
+      // ) {
+      //   this.allChecked = true;
+      //   this.$refs.checkbox_all.toggle(this.allChecked);
+      // } else {
+      //   this.allChecked = false;
+      //   this.$refs.checkbox_all.toggle(this.allChecked);
+      // }
     },
-    toggleAll() {
-      this.$store.commit("sessionEnd");
-      if (!this.allChecked) {
-        this.allChecked = true;
-        this.checked_1 = true;
-        this.checked_2 = true;
-        this.checked_3 = true;
-        this.checked_4 = true;
-      } else {
-        this.allChecked = false;
-        this.checked_1 = false;
-        this.checked_2 = false;
-        this.checked_3 = false;
-        this.checked_4 = false;
-      }
-      this.$refs.checkboxGroup.toggleAll({
-        checked: this.allChecked,
-        skipDisabled: true
-      });
-    },
+    // toggleAll() {
+    //   this.$store.commit("sessionEnd");
+    //   if (!this.allChecked) {
+    //     this.allChecked = true;
+    //     this.checked_1 = true;
+    //     this.checked_2 = true;
+    //     this.checked_3 = true;
+    //     this.checked_4 = true;
+    //   } else {
+    //     this.allChecked = false;
+    //     this.checked_1 = false;
+    //     this.checked_2 = false;
+    //     this.checked_3 = false;
+    //     this.checked_4 = false;
+    //   }
+    //   this.$refs.checkboxGroup.toggleAll({
+    //     checked: this.allChecked,
+    //     skipDisabled: true
+    //   });
+    // },
     sendFormAndMove() {
       this.$store.commit("sessionEnd");
       let userChecking = {
@@ -288,6 +303,8 @@ export default {
             )
             .then((res, req) => {
               console.log(res);
+              this.$store.commit("sessionSavedPage", "certification");
+
               this.$router.replace("certification");
               this.$store.commit("agreementRes", res.data);
             });

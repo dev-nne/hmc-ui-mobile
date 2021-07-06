@@ -1,5 +1,25 @@
+import { router } from "@/router";
 import axios from "axios";
 
+const sessionReload = state => {
+  let savedUserInfo = localStorage.getItem("site");
+  if (savedUserInfo === "provision") {
+    router.replace("provision").catch(() => {});
+  } else if (savedUserInfo === "certification") {
+    router.replace("/certification").catch(() => {});
+  } else if (savedUserInfo === "userPage") {
+    router.replace("/userPage").catch(() => {});
+  } else if (savedUserInfo === "fellowPage") {
+    router.replace("/fellowPage").catch(() => {});
+  } else {
+    router.replace("/login").catch(() => {});
+  }
+};
+
+const sessionSavedPage = (state, payload) => {
+  localStorage.setItem("site", payload);
+  state.siteName = payload;
+};
 const userInfoSetting = (state, data) => {
   const infoData = data.resData.DisplayResponse;
 
@@ -186,6 +206,7 @@ const sessionEnd = state => {
   if (new Date().getTime() > sesstionTime && sesstionTime !== 0) {
     localStorage.removeItem("userInfo");
     localStorage.removeItem("expireTime");
+    localStorage.removeItem("site");
     state.sessionEnd = true;
     console.log(state.sessionEnd);
   }
@@ -267,5 +288,7 @@ export {
   handleDoorOpen,
   handleDoorClose,
   handleLightOnOff,
-  sessionEnd
+  sessionEnd,
+  sessionSavedPage,
+  sessionReload
 };
