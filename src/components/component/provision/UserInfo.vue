@@ -76,7 +76,9 @@ export default {
     this.$axios
       .get("static/parkingAddress.json")
       .then(res => {
-        this.centerName = res.data[centerName];
+        this.centerName = res.data[centerName].address;
+        this.$store.state.latitude = res.data[centerName].latitude;
+        this.$store.state.longitude = res.data[centerName].longitude;
         if (
           this.centerName === undefined ||
           this.centerName === "" ||

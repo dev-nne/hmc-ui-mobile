@@ -54,6 +54,13 @@ const handleDoorOpen = (state, res) => {
                 case "OK":
                   state.doorOpen = true;
                   state.doorOpenChecked = true;
+                  axios.post(
+                    "https://hyundai-driving.mocean.com/controls/controls/immobilizer.do",
+                    {
+                      tsrdPrctNo: this.$store.userInfo.bookNumber,
+                      action: "unlock"
+                    }
+                  );
                   break;
                 case "IGN_ON":
                   state.checkcarMsg =
@@ -119,6 +126,13 @@ const handleDoorClose = (state, res) => {
                 case "OK":
                   state.doorClose = true;
                   state.doorCloseChecked = true;
+                  axios.post(
+                    "https://hyundai-driving.mocean.com/controls/controls/immobilizer.do",
+                    {
+                      tsrdPrctNo: this.$store.userInfo.bookNumber,
+                      action: "lock"
+                    }
+                  );
                   break;
                 case "IGN_ON":
                   state.checkcarMsg =

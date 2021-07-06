@@ -75,7 +75,7 @@
         </div>
 
         <div class="button-box">
-          <button class="returnBtn" @click="confirm1">확인</button>
+          <button class="returnBtn" @click="posCheck('open')">확인</button>
           <button @click="cancel(0)">취소</button>
         </div>
       </van-popup>
@@ -91,7 +91,7 @@
         </div>
 
         <div class="button-box">
-          <button class="returnBtn" @click="confirm2">확인</button>
+          <button class="returnBtn" @click="posCheck('close')">확인</button>
           <button @click="cancel(1)">취소</button>
         </div>
       </van-popup>
@@ -107,7 +107,7 @@
         </div>
 
         <div class="button-box">
-          <button class="returnBtn" @click="confirm3">확인</button>
+          <button class="returnBtn" @click="posCheck('horn')">확인</button>
           <button @click="cancel(2)">취소</button>
         </div>
       </van-popup>
@@ -123,7 +123,7 @@
         </div>
 
         <div class="button-box">
-          <button class="returnBtn" @click="clickCarReturn">
+          <button class="returnBtn" @click="posCheck('return')">
             반납
           </button>
           <button @click="cancel(3)">취소</button>
@@ -208,13 +208,6 @@ export default {
         //   this.$router.push("returnPage");
       }
     });
-    // this.timer();
-    // this.getLocation();
-    // this.getPopCloseLocalNum();
-
-    // if (this.popUp) {
-    //   this.popUpShow = true;
-    // }
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
@@ -321,30 +314,36 @@ export default {
     }
   },
   methods: {
-    confirm1() {
-      this.$store.commit("sessionEnd");
-      this.show = [...false];
-
-      let doorObj = {
+    posCheck(type) {
+      let distanceObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
-        action: "open" // open, close
+        destLongitude: this.$store.state.userInfo.longitude,
+        destLatitude: this.$store.state.userInfo.latitude
       };
-      this.$store.state.openCount = 10;
-      this.$store.state.doorOpen = false;
-      this.$store.state.doorOpenChecked = false;
+      this.show[3] = false;
       this.loading = true;
       this.$axios
-        .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
+        .post(
+          "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
+          distanceObj
+        )
         .then(res => {
-          if (res.data.ERR_CODE === "OUT_OF_TIME") {
-            this.loading = false;
-            Dialog.alert({
-              message: "예약한 시간에 다시 시도해 주세요.",
-              confirmButtonText: "확인"
-            });
+          this.loading = false;
+          if (res.data.resultMap.distance < 300) {
+            if (type === "open") this.confirm1();
+            if (type === "close") this.confirm2();
+            if (type === "horn") this.confirm3();
+            if (type === "return") this.returnObj();
           } else {
-            this.$store.commit("handleDoorOpen", {
-              commandID: res.data.commandID
+            let alertMessage = "";
+            if (type === "return") {
+              alertMessage = "차량을 대여한 곳에 주차후 반납해주세요.";
+            } else {
+              alertMessage = "차량 멀리 떨어져 있습니다.";
+            }
+            Dialog.alert({
+              message: alertMessage,
+              confirmButtonText: "확인"
             });
           }
         })
@@ -357,20 +356,12 @@ export default {
           });
         });
     },
-    confirm2() {
-      this.$store.commit("sessionEnd");
-      this.show = [...false];
-
-      let doorObj = {
-        tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
-        action: "close" // open, close
-      };
-      this.loading = true;
-      this.$store.state.closeCount = 10;
-      this.$store.state.doorClose = false;
-      this.$store.state.doorCloseChecked = false;
+    axiosCall(obj, type) {
       this.$axios
-        .post("https://hyundai-driving.mocean.com/controls/door.do", doorObj)
+        .post(
+          "https://hyundai-driving.mocean.com/controls/" + type + ".do",
+          obj
+        )
         .then(res => {
           if (res.data.ERR_CODE === "OUT_OF_TIME") {
             this.loading = false;
@@ -393,6 +384,34 @@ export default {
           });
         });
     },
+    confirm1() {
+      this.$store.commit("sessionEnd");
+      this.show = [...false];
+
+      let doorObj = {
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
+        action: "open" // open, close
+      };
+      this.$store.state.openCount = 10;
+      this.$store.state.doorOpen = false;
+      this.$store.state.doorOpenChecked = false;
+      this.loading = true;
+      this.axiosCall(doorObj, "door");
+    },
+    confirm2() {
+      this.$store.commit("sessionEnd");
+      this.show = [...false];
+
+      let doorObj = {
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
+        action: "close" // open, close
+      };
+      this.loading = true;
+      this.$store.state.closeCount = 10;
+      this.$store.state.doorClose = false;
+      this.$store.state.doorCloseChecked = false;
+      this.axiosCall(doorObj, "door");
+    },
     confirm3() {
       this.$store.commit("sessionEnd");
       this.show = [...false];
@@ -403,29 +422,7 @@ export default {
       this.$store.state.lightCount = 10;
       this.$store.state.light = false;
       this.$store.state.doorLightChecked = false;
-      this.$axios
-        .post("https://hyundai-driving.mocean.com/controls/horn.do", hornObj)
-        .then(res => {
-          if (res.data.ERR_CODE === "OUT_OF_TIME") {
-            this.loading = false;
-            Dialog.alert({
-              message: "예약한 시간에 다시 시도해 주세요.",
-              confirmButtonText: "확인"
-            });
-          } else {
-            this.$store.commit("handleLightOnOff", {
-              commandID: res.data.commandID
-            });
-          }
-        })
-        .catch(() => {
-          this.loading = false;
-          Dialog.alert({
-            message:
-              "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
-            confirmButtonText: "확인"
-          });
-        });
+      this.axiosCall(hornObj, "horn");
     },
     clickCarReturn() {
       this.$store.commit("sessionEnd");
@@ -436,166 +433,150 @@ export default {
       this.loading = true;
       this.$axios
         .post(
-          "https://hyundai-driving.mocean.com/controls/checkDistanceToOrg.do",
+          "https://hyundai-driving.mocean.com/controls/checkCarStatus.do",
           returnObj
         )
         .then(res => {
-          this.loading = false;
-          if (res.data.resultMap.distance < 300) {
-            this.$axios
-              .post(
-                "https://hyundai-driving.mocean.com/controls/checkCarStatus.do",
-                returnObj
-              )
-              .then(res => {
-                console.log(res);
-                if (res.data.ERR_CODE === "OUT_OF_TIME") {
-                  this.loading = false;
-                  Dialog.alert({
-                    message: "예약한 시간에 다시 시도해 주세요.",
-                    confirmButtonText: "확인"
-                  });
-                } else {
-                  let dataObj = res.data;
-                  const checkEngine = this.checkReturn(dataObj, "engine");
-                  const checkTrunk = this.checkReturn(dataObj, "trunk");
-                  const checkBonnet = this.checkReturn(dataObj, "bonnet");
-
-                  const checkDoor1 = this.checkReturn(
-                    dataObj.doorOpenStatus,
-                    "frontLeft"
-                  );
-                  const checkDoor2 = this.checkReturn(
-                    dataObj.doorOpenStatus,
-                    "frontRight"
-                  );
-                  const checkDoor3 = this.checkReturn(
-                    dataObj.doorOpenStatus,
-                    "rearLeft"
-                  );
-                  const checkDoor4 = this.checkReturn(
-                    dataObj.doorOpenStatus,
-                    "rearRight"
-                  );
-                  const checkLock1 = this.checkReturn(
-                    dataObj.doorLockStatus,
-                    "frontLeft"
-                  );
-                  const checkLock2 = this.checkReturn(
-                    dataObj.doorLockStatus,
-                    "frontRight"
-                  );
-                  const checkLock3 = this.checkReturn(
-                    dataObj.doorLockStatus,
-                    "rearLeft"
-                  );
-                  const checkLock4 = this.checkReturn(
-                    dataObj.doorLockStatus,
-                    "rearRight"
-                  );
-                  // const checkWindow1 = this.checkReturn(
-                  //   dataObj.windowStatus,
-                  //   "frontLeft"
-                  // );
-                  // const checkWindow2 = this.checkReturn(
-                  //   dataObj.windowStatus,
-                  //   "frontRight"
-                  // );
-                  // const checkWindow3 = this.checkReturn(
-                  //   dataObj.windowStatus,
-                  //   "rearLeft"
-                  // );
-                  // const checkWindow4 = this.checkReturn(
-                  //   dataObj.windowStatus,
-                  //   "rearRight"
-                  // );
-
-                  this.show[3] = false;
-                  let message = "";
-                  if (
-                    checkLock1 === "1" ||
-                    checkLock2 === "1" ||
-                    checkLock3 === "1" ||
-                    checkLock4 === "1"
-                  ) {
-                    this.loading = false;
-                    message = "차량 문을 잠근 후 반납해 주세요.";
-                  }
-                  if (checkBonnet === "1") {
-                    this.loading = false;
-                    message = "본넷을 닫은 후 반납해 주세요.";
-                  }
-                  if (checkTrunk === "1") {
-                    this.loading = false;
-                    message = "트렁크를 닫은 후 반납해 주세요.";
-                  }
-
-                  // if (
-                  //   checkWindow1 === "1" ||
-                  //   checkWindow2 === "1" ||
-                  //   checkWindow3 === "1" ||
-                  //   checkWindow4 === "1"
-                  // ) {
-                  //   this.loading = false;
-                  //   message = "창문을 닫은 후 반납해 주세요.";
-                  // }
-                  if (
-                    checkDoor1 === "1" ||
-                    checkDoor2 === "1" ||
-                    checkDoor3 === "1" ||
-                    checkDoor4 === "1"
-                  ) {
-                    this.loading = false;
-                    message = "차량 문을 닫은 후 반납해 주세요.";
-                  }
-
-                  if (checkEngine === "1") {
-                    this.loading = false;
-                    message = "차량 시동을 끈 후 반납해 주세요.";
-                  }
-                  if (message === "") {
-                    const returnInfo = {
-                      tsrdPrctNo: this.$store.state.userInfo.bookNumber
-                    };
-                    this.$axios
-                      .post(
-                        "https://hyundai-driving.mocean.com/mobile/removeUserInfoById.do",
-                        returnInfo
-                      )
-                      .then(res => {
-                        localStorage.removeItem("userInfo");
-                        // this.removeLocal();
-                        this.$router.replace("returnPage");
-                      })
-                      .catch(() =>
-                        Dialog.alert({
-                          message:
-                            "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
-                          confirmButtonText: "확인"
-                        })
-                      );
-                  } else {
-                    Dialog.alert({
-                      message: message,
-                      confirmButtonText: "확인"
-                    });
-                  }
-                }
-              })
-              .catch(() => {
-                this.loading = false;
-                Dialog.alert({
-                  message:
-                    "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
-                  confirmButtonText: "확인"
-                });
-              });
-          } else {
+          console.log(res);
+          if (res.data.ERR_CODE === "OUT_OF_TIME") {
             this.loading = false;
             Dialog.alert({
-              message: "차량을 대여한 곳에 주차후 반납해주세요.",
+              message: "예약한 시간에 다시 시도해 주세요.",
               confirmButtonText: "확인"
             });
+          } else {
+            let dataObj = res.data;
+            const checkEngine = this.checkReturn(dataObj, "engine");
+            const checkTrunk = this.checkReturn(dataObj, "trunk");
+            const checkBonnet = this.checkReturn(dataObj, "bonnet");
+
+            const checkDoor1 = this.checkReturn(
+              dataObj.doorOpenStatus,
+              "frontLeft"
+            );
+            const checkDoor2 = this.checkReturn(
+              dataObj.doorOpenStatus,
+              "frontRight"
+            );
+            const checkDoor3 = this.checkReturn(
+              dataObj.doorOpenStatus,
+              "rearLeft"
+            );
+            const checkDoor4 = this.checkReturn(
+              dataObj.doorOpenStatus,
+              "rearRight"
+            );
+            const checkLock1 = this.checkReturn(
+              dataObj.doorLockStatus,
+              "frontLeft"
+            );
+            const checkLock2 = this.checkReturn(
+              dataObj.doorLockStatus,
+              "frontRight"
+            );
+            const checkLock3 = this.checkReturn(
+              dataObj.doorLockStatus,
+              "rearLeft"
+            );
+            const checkLock4 = this.checkReturn(
+              dataObj.doorLockStatus,
+              "rearRight"
+            );
+            // const checkWindow1 = this.checkReturn(
+            //   dataObj.windowStatus,
+            //   "frontLeft"
+            // );
+            // const checkWindow2 = this.checkReturn(
+            //   dataObj.windowStatus,
+            //   "frontRight"
+            // );
+            // const checkWindow3 = this.checkReturn(
+            //   dataObj.windowStatus,
+            //   "rearLeft"
+            // );
+            // const checkWindow4 = this.checkReturn(
+            //   dataObj.windowStatus,
+            //   "rearRight"
+            // );
+
+            this.show[3] = false;
+            let message = "";
+            if (
+              checkLock1 === "1" ||
+              checkLock2 === "1" ||
+              checkLock3 === "1" ||
+              checkLock4 === "1"
+            ) {
+              this.loading = false;
+              message = "차량 문을 잠근 후 반납해 주세요.";
+            }
+            if (checkBonnet === "1") {
+              this.loading = false;
+              message = "본넷을 닫은 후 반납해 주세요.";
+            }
+            if (checkTrunk === "1") {
+              this.loading = false;
+              message = "트렁크를 닫은 후 반납해 주세요.";
+            }
+
+            // if (
+            //   checkWindow1 === "1" ||
+            //   checkWindow2 === "1" ||
+            //   checkWindow3 === "1" ||
+            //   checkWindow4 === "1"
+            // ) {
+            //   this.loading = false;
+            //   message = "창문을 닫은 후 반납해 주세요.";
+            // }
+            if (
+              checkDoor1 === "1" ||
+              checkDoor2 === "1" ||
+              checkDoor3 === "1" ||
+              checkDoor4 === "1"
+            ) {
+              this.loading = false;
+              message = "차량 문을 닫은 후 반납해 주세요.";
+            }
+
+            if (checkEngine === "1") {
+              this.loading = false;
+              message = "차량 시동을 끈 후 반납해 주세요.";
+            }
+            if (message === "") {
+              const returnInfo = {
+                tsrdPrctNo: this.$store.state.userInfo.bookNumber
+              };
+              this.$axios
+                .post(
+                  "https://hyundai-driving.mocean.com/mobile/removeUserInfoById.do",
+                  returnInfo
+                )
+                .then(res => {
+                  localStorage.removeItem("userInfo");
+                  // this.removeLocal();
+                  this.$router.replace("returnPage");
+
+                  this.$axios.post(
+                    "https://hyundai-driving.mocean.com/controls/controls/immobilizer.do",
+                    {
+                      tsrdPrctNo: this.$store.userInfo.bookNumber,
+                      action: "lock"
+                    }
+                  );
+                })
+                .catch(() =>
+                  Dialog.alert({
+                    message:
+                      "네트워크 오류가 발생하였습니다. 잠시 후 다시 시도해주세요.",
+                    confirmButtonText: "확인"
+                  })
+                );
+            } else {
+              Dialog.alert({
+                message: message,
+                confirmButtonText: "확인"
+              });
+            }
           }
         })
         .catch(() => {
@@ -623,30 +604,6 @@ export default {
     canclePop(v) {
       this.fellow = v;
       this.$store.commit("sessionEnd");
-    },
-    timer() {
-      // let bookT = this.$store.state.userInfo.bookTime;
-      // let returnT = bookT.split("-")[1];
-      // let returnH = parseInt(returnT.split(":")[0]);
-      // let returnM = parseInt(returnT.split(":")[1]);
-      // const date = new Date();
-      // setTimeout(() => {
-      //   if (date.getHours() === returnH && date.getMinutes() === returnM) {
-      //     Dialog.alert({
-      //       message: "반납시간이 다 되었습니다. 30분 후에 운행이 종료됩니다.",
-      //       confirmButtonText: "확인"
-      //     });
-      //   }
-      //   if (date.getHours() === returnH && date.getMinutes() === returnM + 30) {
-      //     Dialog.alert({
-      //       message: "운행이 종료됩니다. 라운지에 문의해주세요.",
-      //       confirmButtonText: "확인"
-      //     });
-      //     localStorage.removeItem("userInfo");
-      //     this.$router.push("returnPage");
-      //   }
-      //   this.timer();
-      // }, 60000);
     },
     checkReturn(obj, key) {
       let bool = obj.hasOwnProperty(key);
