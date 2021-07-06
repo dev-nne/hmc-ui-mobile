@@ -40,7 +40,9 @@ export const store = new Vuex.Store({
     doorCloseChecked: false,
     doorLightChecked: false,
     latitude: null,
-    longitude: null
+    longitude: null,
+    curLatitude: null,
+    curLongitude: null
   },
   getters: getters,
   mutations: mutations

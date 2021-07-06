@@ -208,6 +208,7 @@ export default {
     };
     this.$store.commit("userInfoSetting", payload);
     this.userInfo = this.$store.state.userInfo;
+    this.getLocation();
   },
   computed: {
     checkDoorOpen() {
@@ -311,10 +312,20 @@ export default {
   },
   methods: {
     posCheck(type) {
+      let longitude, latitude;
+
+      if (type === "return") {
+        longitude = this.$store.state.longitude;
+        latitude = this.$store.state.latitude;
+      } else {
+        longitude = this.$store.state.curLongitude;
+        latitude = this.$store.state.curLatitude;
+      }
+
       let distanceObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
-        destLongitude: this.$store.state.userInfo.longitude,
-        destLatitude: this.$store.state.userInfo.latitude
+        destLongitude: longitude,
+        destLatitude: latitude
       };
       this.show[3] = false;
       this.loading = true;
@@ -611,13 +622,15 @@ export default {
       }
     },
     getLocation() {
-      navigator.geolocation.watchPosition(
+      navigator.geolocation.getCurrentPosition(
         position => {
-          alert(position.coords.latitude + " " + position.coords.longitude);
+          this.$store.state.curLatitude = position.coords.latitude;
+          this.$store.state.curLongitude = position.coords.longitude;
+          // alert(position.coords.latitude + " " + position.coords.longitude);
         },
         () => {
           Dialog.alert({
-            message: "위치값을 불러올 수 없습니다.",
+            message: "위치 접근을 허용으로 설정해주세요.",
             confirmButtonText: "확인"
           });
         },

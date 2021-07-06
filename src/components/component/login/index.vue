@@ -147,6 +147,7 @@ export default {
       localStorage.setItem("bookingId", this.param);
     }
     this.CreateWindowEvent();
+    // this.getLocation();
   },
   computed: {
     sessionEnd() {
@@ -339,6 +340,24 @@ export default {
     removeWindowEvent() {
       window.removeEventListener("touchmove", this.touchWindows);
     }
+    // getLocation() {
+    //   navigator.geolocation.getCurrentPosition(
+    //     position => {
+    //       alert(position.coords.latitude + " " + position.coords.longitude);
+    //     },
+    //     () => {
+    //       Dialog.alert({
+    //         message: "위치 접근을 허용으로 설정해주세요.",
+    //         confirmButtonText: "확인"
+    //       });
+    //     },
+    //     {
+    //       enableHighAccuracy: false,
+    //       maximumAge: 0,
+    //       timeout: Infinity
+    //     }
+    //   );
+    // }
   }
 };
 </script>
