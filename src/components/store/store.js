@@ -12,6 +12,7 @@ export const store = new Vuex.Store({
     userName: "",
     userNumber: "",
     sessionEnd: false,
+    siteName: "",
     // 고객정보
     userInfo: {
       bookNumber: "",

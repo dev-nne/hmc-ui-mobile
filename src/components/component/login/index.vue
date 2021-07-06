@@ -15,8 +15,6 @@
           pattern="[^ㄱ-힣a-zA-Z]*"
           ref="nameInput"
           @keydown="keyCodeEvent"
-          @blur="blurstart"
-          @click="windowEvent"
         />
         <!-- @keydown="checkKorean" -->
         <div class="inputBox">
@@ -32,8 +30,6 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput"
             @keydown="fullText(3)"
-            @blur="blurstart"
-            @click="clickFocus1"
           />
           <div class="line"></div>
           <input
@@ -48,8 +44,6 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput2"
             @keydown="fullText(4)"
-            @blur="blurstart"
-            @click="clickFocus2"
           />
           <div class="line"></div>
           <input
@@ -63,9 +57,7 @@
             oninput="javascript: if (this.value.length >
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="checkNumber"
-            @blur="blurstart"
             @keydown="fullText(4)"
-            @click="clickFocus3"
           />
         </div>
 
@@ -135,88 +127,90 @@ export default {
   },
 
   mounted() {
+    this.$store.commit("sessionSavedPage", "login");
     window.scrollTo(0, 0);
     this.param = this.$route.query.id;
-
-    let savedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (localStorage.getItem("userInfo") !== null) {
-      this.$axios
-        .post(
-          "https://hyundai-driving.mocean.com/mobile/login.do",
-          savedUserInfo
-        )
-        .then(res => {
-          if (res.data.infoResponse.rsp_CD === "200") {
-            const payload = {
-              resData: res.data,
-              booking: savedUserInfo.tsrdPrctNo
-            };
-            this.$store.commit("userInfoSetting", payload);
-            const userCheckObj = {
-              tsrdPrctNo: savedUserInfo.tsrdPrctNo
-            };
-            if ("chanTsrdPrctNo" in res.data.DisplayResponse[0]) {
-              this.$axios
-                .post(
-                  "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
-                  userCheckObj
-                )
-                .then(res => {
-                  // 세션저장
-                  this.$store.commit("sessionEnd");
-                  this.$store.state.auth = true;
-                  this.$store.state.userName = savedUserInfo.userName;
-                  this.$store.state.userNumber = savedUserInfo.phone;
-                  if (!this.$store.state.sessionEnd) {
-                    if (res.data.returnYn === "N") {
-                      if (
-                        res.data.prctInfoAgrYn === "Y" &&
-                        res.data.prctInfoCjgtAgrYn === "Y"
-                      ) {
-                        if (res.data.prctLicenseYn === "Y") {
-                          this.$router.replace("fellowPage");
-                        } else {
-                          this.$router.replace("certification"); // certification
-                        }
-                      } else {
-                        this.$router.replace("provision");
-                      }
-                    }
-                  }
-                });
-            } else {
-              this.$axios
-                .post(
-                  "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
-                  userCheckObj
-                )
-                .then(res => {
-                  this.$store.commit("sessionEnd");
-                  this.$store.state.auth = true;
-                  this.$store.state.userName = savedUserInfo.userName;
-                  this.$store.state.userNumber = savedUserInfo.phone;
-
-                  if (!this.$store.state.sessionEnd) {
-                    if (res.data.returnYn === "N") {
-                      if (
-                        res.data.prctInfoAgrYn === "Y" &&
-                        res.data.prctInfoCjgtAgrYn === "Y"
-                      ) {
-                        if (res.data.prctLicenseYn === "Y") {
-                          this.$router.replace("provision"); // userPage
-                        } else {
-                          this.$router.replace("certification"); // certification
-                        }
-                      } else {
-                        this.$router.replace("provision");
-                      }
-                    }
-                  }
-                });
-            }
-          }
-        });
-    }
+    this.CreateWindowEvent();
+    // let savedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
+    // if (localStorage.getItem("userInfo") !== null) {
+    //   this.$axios
+    //     .post(
+    //       "https://hyundai-driving.mocean.com/mobile/login.do",
+    //       savedUserInfo
+    //     )
+    //     .then(res => {
+    //       if (res.data.infoResponse.rsp_CD === "200") {
+    //         const payload = {
+    //           resData: res.data,
+    //           booking: savedUserInfo.tsrdPrctNo
+    //         };
+    //         this.$store.commit("userInfoSetting", payload);
+    //         const userCheckObj = {
+    //           tsrdPrctNo: savedUserInfo.tsrdPrctNo
+    //         };
+    //         if ("chanTsrdPrctNo" in res.data.DisplayResponse[0]) {
+    //           this.$axios
+    //             .post(
+    //               "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
+    //               userCheckObj
+    //             )
+    //             .then(res => {
+    //               // 세션저장
+    //               this.$store.commit("sessionEnd");
+    //               this.$store.state.auth = true;
+    //               this.$store.state.userName = savedUserInfo.userName;
+    //               this.$store.state.userNumber = savedUserInfo.phone;
+    //               this.removeWindowEvent();
+    //               if (!this.$store.state.sessionEnd) {
+    //                 if (res.data.returnYn === "N") {
+    //                   if (
+    //                     res.data.prctInfoAgrYn === "Y" &&
+    //                     res.data.prctInfoCjgtAgrYn === "Y"
+    //                   ) {
+    //                     if (res.data.prctLicenseYn === "Y") {
+    //                       this.$router.push("fellowPage");
+    //                     } else {
+    //                       this.$router.push("certification"); // certification
+    //                     }
+    //                   } else {
+    //                     this.$router.push("provision");
+    //                   }
+    //                 }
+    //               }
+    //             });
+    //         } else {
+    //           this.$axios
+    //             .post(
+    //               "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
+    //               userCheckObj
+    //             )
+    //             .then(res => {
+    //               this.$store.commit("sessionEnd");
+    //               this.$store.state.auth = true;
+    //               this.$store.state.userName = savedUserInfo.userName;
+    //               this.$store.state.userNumber = savedUserInfo.phone;
+    //               this.removeWindowEvent();
+    //               if (!this.$store.state.sessionEnd) {
+    //                 if (res.data.returnYn === "N") {
+    //                   if (
+    //                     res.data.prctInfoAgrYn === "Y" &&
+    //                     res.data.prctInfoCjgtAgrYn === "Y"
+    //                   ) {
+    //                     if (res.data.prctLicenseYn === "Y") {
+    //                       this.$router.push("userPage"); // userPage
+    //                     } else {
+    //                       this.$router.push("certification"); // certification
+    //                     }
+    //                   } else {
+    //                     this.$router.push("provision");
+    //                   }
+    //                 }
+    //               }
+    //             });
+    //         }
+    //       }
+    //     });
+    // }
   },
   computed: {
     sessionEnd() {
@@ -230,7 +224,7 @@ export default {
           message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
-        this.$router.replace({
+        this.$router.push({
           path: "login",
           query: { id: this.$store.state.userInfo.bookNumber }
         });
@@ -281,19 +275,28 @@ export default {
                       this.$store.commit("sessionEnd");
                       this.$store.state.userName = this.username;
                       this.$store.state.userNumber = phoneNumber;
-
+                      this.removeWindowEvent();
                       if (res.data.returnYn === "N") {
                         if (
                           res.data.prctInfoAgrYn === "Y" &&
                           res.data.prctInfoCjgtAgrYn === "Y"
                         ) {
                           if (res.data.prctLicenseYn === "Y") {
-                            this.$router.replace("fellowPage");
+                            this.$store.commit(
+                              "sessionSavedPage",
+                              "fellowPage"
+                            );
+                            this.$router.push("fellowPage");
                           } else {
-                            this.$router.replace("certification"); // certification
+                            this.$store.commit(
+                              "sessionSavedPage",
+                              "certification"
+                            );
+                            this.$router.push("certification"); // certification
                           }
                         } else {
-                          this.$router.replace("provision");
+                          this.$store.commit("sessionSavedPage", "provision");
+                          this.$router.push("provision");
                         }
                       } else {
                         Dialog.alert({
@@ -317,19 +320,25 @@ export default {
                       this.$store.commit("sessionEnd");
                       this.$store.state.userName = this.username;
                       this.$store.state.userNumber = phoneNumber;
-
+                      this.removeWindowEvent();
                       if (res.data.returnYn === "N") {
                         if (
                           res.data.prctInfoAgrYn === "Y" &&
                           res.data.prctInfoCjgtAgrYn === "Y"
                         ) {
                           if (res.data.prctLicenseYn === "Y") {
-                            this.$router.replace("userPage"); // userPage
+                            this.$store.commit("sessionSavedPage", "userPage");
+                            this.$router.push("userPage"); // userPage
                           } else {
-                            this.$router.replace("certification"); // certification
+                            this.$store.commit(
+                              "sessionSavedPage",
+                              "certification"
+                            );
+                            this.$router.push("certification"); // certification
                           }
                         } else {
-                          this.$router.replace("provision");
+                          this.$store.commit("sessionSavedPage", "provision");
+                          this.$router.push("provision");
                         }
                       } else {
                         Dialog.alert({
@@ -417,46 +426,17 @@ export default {
       let e = event.target.className;
       if (e !== "input") {
         this.$refs.nameInput.blur();
-      } else {
-        event.target.focus();
+        this.$refs.input.blur();
+        this.$refs.input2.blur();
+        this.$refs.input3.blur();
       }
     },
-    blurstart() {
-      window.removeEventListener("touchstart", this.touchWindows);
+    CreateWindowEvent() {
+      window.addEventListener("touchmove", this.touchWindows);
     },
-    windowEvent() {
-      event.stopPropagation();
-      event.preventDefault();
-      window.addEventListener("touchstart", this.touchWindows);
-    },
-    clickFocus1() {
-      window.removeEventListener("touchstart", this.touchWindows);
-      this.$refs.input.focus();
-    },
-    clickFocus2() {
-      window.removeEventListener("touchstart", this.touchWindows);
-      this.$refs.input2.focus();
-    },
-    clickFocus3() {
-      window.removeEventListener("touchstart", this.touchWindows);
-      this.$refs.input3.focus();
+    removeWindowEvent() {
+      window.removeEventListener("touchmove", this.touchWindows);
     }
-    // resetFixed() {
-    //   let browser = navigator.userAgent.toLowerCase();
-    //   const html = document.getElementsByTagName("html");
-
-    //   if (browser.indexOf("crios") === -1 || browser.indexOf("chrome") === -1) {
-    //     if (browser.indexOf("safari") !== -1) {
-    //       // this.focusOn = true;
-    //       html[0].classList.value = "focusOn";
-    //     }
-    //   }
-    // },
-    // resetCss() {
-    //   // this.focusOn = false;
-    //   const html = document.getElementsByTagName("html");
-    //   html[0].classList.value = "";
-    // }
   }
 };
 </script>

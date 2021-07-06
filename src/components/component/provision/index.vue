@@ -193,6 +193,8 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
+    this.$store.commit("sessionSavedPage", "provision");
+    this.$store.commit("sessionReload");
   },
   computed: {
     sessionEnd() {

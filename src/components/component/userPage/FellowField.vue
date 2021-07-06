@@ -101,6 +101,10 @@ export default {
       numRule: false
     };
   },
+  mounted() {
+    this.$store.commit("sessionSavedPage", "fellowPage");
+    this.$store.commit("sessionReload");
+  },
   computed: {
     sessionEnd() {
       return this.$store.state.sessionEnd;

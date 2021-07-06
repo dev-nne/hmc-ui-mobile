@@ -131,7 +131,7 @@
       </van-popup>
 
       <div class="user-main-fellow" @click="fellowAdd">
-        운전자 교대하기
+        동승자 교대 시승하기
       </div>
 
       <van-popup
@@ -196,16 +196,8 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    // if (localStorage.getItem("userInfo") !== null) {
-    //   this.$router.push("returnPage");
-    // }
-    // this.timer();
-    // this.getLocation();
-    // this.getPopCloseLocalNum();
-
-    // if (this.popUp) {
-    //   this.popUpShow = true;
-    // }
+    this.$store.commit("sessionReload");
+    this.$store.commit("sessionSavedPage", "userPage");
   },
   created() {
     this.userInfo = this.$store.state.userInfo;
@@ -555,6 +547,7 @@ export default {
                       )
                       .then(res => {
                         localStorage.removeItem("userInfo");
+                        localStorage.removeItem("site");
                         // this.removeLocal();
                         this.$router.replace("returnPage");
                       })
@@ -616,7 +609,6 @@ export default {
       this.$store.commit("sessionEnd");
     },
     timer() {
-<<<<<<< HEAD
       let bookT = this.$store.state.userInfo.bookTime;
       let returnT = bookT.split("-")[1];
       let returnH = parseInt(returnT.split(":")[0]);
@@ -636,11 +628,11 @@ export default {
             confirmButtonText: "확인"
           });
           localStorage.removeItem("userInfo");
+          localStorage.removeItem("site");
           this.$router.replace("returnPage");
         }
         this.timer();
       }, 60000);
-=======
       // let bookT = this.$store.state.userInfo.bookTime;
       // let returnT = bookT.split("-")[1];
       // let returnH = parseInt(returnT.split(":")[0]);
@@ -663,7 +655,6 @@ export default {
       //   }
       //   this.timer();
       // }, 60000);
->>>>>>> 14975519b287fcbe53be07e346f757d5482339df
     },
     checkReturn(obj, key) {
       let bool = obj.hasOwnProperty(key);
