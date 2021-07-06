@@ -174,12 +174,12 @@ export default {
                         res.data.prctInfoCjgtAgrYn === "Y"
                       ) {
                         if (res.data.prctLicenseYn === "Y") {
-                          this.$router.push("fellowPage");
+                          this.$router.replace("fellowPage");
                         } else {
-                          this.$router.push("certification"); // certification
+                          this.$router.replace("certification"); // certification
                         }
                       } else {
-                        this.$router.push("provision");
+                        this.$router.replace("provision");
                       }
                     }
                   }
@@ -203,12 +203,12 @@ export default {
                         res.data.prctInfoCjgtAgrYn === "Y"
                       ) {
                         if (res.data.prctLicenseYn === "Y") {
-                          this.$router.push("userPage"); // userPage
+                          this.$router.replace("provision"); // userPage
                         } else {
-                          this.$router.push("certification"); // certification
+                          this.$router.replace("certification"); // certification
                         }
                       } else {
-                        this.$router.push("provision");
+                        this.$router.replace("provision");
                       }
                     }
                   }
@@ -230,7 +230,7 @@ export default {
           message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
-        this.$router.push({
+        this.$router.replace({
           path: "login",
           query: { id: this.$store.state.userInfo.bookNumber }
         });
@@ -288,12 +288,12 @@ export default {
                           res.data.prctInfoCjgtAgrYn === "Y"
                         ) {
                           if (res.data.prctLicenseYn === "Y") {
-                            this.$router.push("fellowPage");
+                            this.$router.replace("fellowPage");
                           } else {
-                            this.$router.push("certification"); // certification
+                            this.$router.replace("certification"); // certification
                           }
                         } else {
-                          this.$router.push("provision");
+                          this.$router.replace("provision");
                         }
                       } else {
                         Dialog.alert({
@@ -324,12 +324,12 @@ export default {
                           res.data.prctInfoCjgtAgrYn === "Y"
                         ) {
                           if (res.data.prctLicenseYn === "Y") {
-                            this.$router.push("userPage"); // userPage
+                            this.$router.replace("userPage"); // userPage
                           } else {
-                            this.$router.push("certification"); // certification
+                            this.$router.replace("certification"); // certification
                           }
                         } else {
-                          this.$router.push("provision");
+                          this.$router.replace("provision");
                         }
                       } else {
                         Dialog.alert({
@@ -417,6 +417,8 @@ export default {
       let e = event.target.className;
       if (e !== "input") {
         this.$refs.nameInput.blur();
+      } else {
+        event.target.focus();
       }
     },
     blurstart() {

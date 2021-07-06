@@ -92,7 +92,7 @@ export default {
   data() {
     return {
       fellowname: "",
-      phoneNum1: "",
+      phoneNum1: "010",
       phoneNum2: "",
       phoneNum3: "",
       value: "",
@@ -134,7 +134,7 @@ export default {
 
       if (
         this.fellowname.length < 2 &&
-        this.phoneNum1 === "" &&
+        this.phoneNum1 === "010" &&
         this.phoneNum2 === "" &&
         this.phoneNum3 === ""
       ) {
@@ -175,7 +175,7 @@ export default {
             });
           this.$emit("cancelPop", false);
           this.fellowname = "";
-          this.phoneNum1 = "";
+          this.phoneNum1 = "010";
           this.phoneNum2 = "";
           this.phoneNum3 = "";
         } else {

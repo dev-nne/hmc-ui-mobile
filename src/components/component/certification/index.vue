@@ -238,7 +238,7 @@ export default {
           message: "1시간 이상 사용이 없어 로그인 페이지로 이동합니다.",
           confirmButtonText: "확인"
         });
-        this.$router.push({
+        this.$router.replace({
           path: "login",
           query: { id: this.$store.state.userInfo.bookNumber }
         });
@@ -290,9 +290,9 @@ export default {
                       this.$store.state.userInfo.fellowNum === undefined ||
                       this.$store.state.userInfo.fellowNum === ""
                     ) {
-                      this.$router.push("userPage");
+                      this.$router.replace("userPage");
                     } else {
-                      this.$router.push("fellowPage");
+                      this.$router.replace("fellowPage");
                     }
                   } else {
                     console.log(res.data.resultMap.errCode);
