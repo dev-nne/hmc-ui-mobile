@@ -137,85 +137,10 @@ export default {
   mounted() {
     window.scrollTo(0, 0);
     this.param = this.$route.query.id;
-
-    let savedUserInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (localStorage.getItem("userInfo") !== null) {
-      this.$axios
-        .post(
-          "https://hyundai-driving.mocean.com/mobile/login.do",
-          savedUserInfo
-        )
-        .then(res => {
-          if (res.data.infoResponse.rsp_CD === "200") {
-            const payload = {
-              resData: res.data,
-              booking: savedUserInfo.tsrdPrctNo
-            };
-            this.$store.commit("userInfoSetting", payload);
-            const userCheckObj = {
-              tsrdPrctNo: savedUserInfo.tsrdPrctNo
-            };
-            if ("chanTsrdPrctNo" in res.data.DisplayResponse[0]) {
-              this.$axios
-                .post(
-                  "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
-                  userCheckObj
-                )
-                .then(res => {
-                  // 세션저장
-                  this.$store.commit("sessionEnd");
-                  this.$store.state.auth = true;
-                  this.$store.state.userName = savedUserInfo.userName;
-                  this.$store.state.userNumber = savedUserInfo.phone;
-                  if (!this.$store.state.sessionEnd) {
-                    if (res.data.returnYn === "N") {
-                      if (
-                        res.data.prctInfoAgrYn === "Y" &&
-                        res.data.prctInfoCjgtAgrYn === "Y"
-                      ) {
-                        if (res.data.prctLicenseYn === "Y") {
-                          this.$router.replace("fellowPage");
-                        } else {
-                          this.$router.replace("certification"); // certification
-                        }
-                      } else {
-                        this.$router.replace("provision");
-                      }
-                    }
-                  }
-                });
-            } else {
-              this.$axios
-                .post(
-                  "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
-                  userCheckObj
-                )
-                .then(res => {
-                  this.$store.commit("sessionEnd");
-                  this.$store.state.auth = true;
-                  this.$store.state.userName = savedUserInfo.userName;
-                  this.$store.state.userNumber = savedUserInfo.phone;
-
-                  if (!this.$store.state.sessionEnd) {
-                    if (res.data.returnYn === "N") {
-                      if (
-                        res.data.prctInfoAgrYn === "Y" &&
-                        res.data.prctInfoCjgtAgrYn === "Y"
-                      ) {
-                        if (res.data.prctLicenseYn === "Y") {
-                          this.$router.replace("provision"); // userPage
-                        } else {
-                          this.$router.replace("certification"); // certification
-                        }
-                      } else {
-                        this.$router.replace("provision");
-                      }
-                    }
-                  }
-                });
-            }
-          }
-        });
+    let resId = localStorage.getItem("bookingId");
+    if (resId !== this.param) {
+      localStorage.removeItem("userInfo");
+      localStorage.setItem("bookingId", this.param);
     }
   },
   computed: {
@@ -241,115 +166,9 @@ export default {
   methods: {
     submit() {
       const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
-      const userInfo = {
-        userName: this.username,
-        phone: phoneNumber,
-        // tsrdPrctNo: this.$store.state.userInfo.bookNumber
-        tsrdPrctNo: this.param
-      };
       if (this.username.length > 1) {
         if (phoneNumber.length > 12) {
-          this.$axios
-            .post(
-              "https://hyundai-driving.mocean.com/mobile/login.do",
-              userInfo
-            )
-            .then(res => {
-              if (res.data.infoResponse.rsp_CD === "200") {
-                const payload = {
-                  resData: res.data,
-                  booking: userInfo.tsrdPrctNo
-                };
-                this.$store.state.auth = true;
-                this.$store.commit("userInfoSetting", payload);
-                const userCheckObj = {
-                  tsrdPrctNo: this.$store.state.userInfo.bookNumber
-                };
-
-                if ("chanTsrdPrctNo" in res.data.DisplayResponse[0]) {
-                  this.$axios
-                    .post(
-                      "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
-                      userCheckObj
-                    )
-                    .then(res => {
-                      // 세션저장
-                      localStorage.setItem(
-                        "userInfo",
-                        JSON.stringify(userInfo)
-                      );
-                      this.$store.commit("sessionEnd");
-                      this.$store.state.userName = this.username;
-                      this.$store.state.userNumber = phoneNumber;
-
-                      if (res.data.returnYn === "N") {
-                        if (
-                          res.data.prctInfoAgrYn === "Y" &&
-                          res.data.prctInfoCjgtAgrYn === "Y"
-                        ) {
-                          if (res.data.prctLicenseYn === "Y") {
-                            this.$router.replace("fellowPage");
-                          } else {
-                            this.$router.replace("certification"); // certification
-                          }
-                        } else {
-                          this.$router.replace("provision");
-                        }
-                      } else {
-                        Dialog.alert({
-                          message: "반납이후에는 다시 이용하실 수 없습니다.",
-                          confirmButtonText: "확인"
-                        });
-                      }
-                    });
-                } else {
-                  this.$axios
-                    .post(
-                      "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
-                      userCheckObj
-                    )
-                    .then(res => {
-                      // 세션저장
-                      localStorage.setItem(
-                        "userInfo",
-                        JSON.stringify(userInfo)
-                      );
-                      this.$store.commit("sessionEnd");
-                      this.$store.state.userName = this.username;
-                      this.$store.state.userNumber = phoneNumber;
-
-                      if (res.data.returnYn === "N") {
-                        if (
-                          res.data.prctInfoAgrYn === "Y" &&
-                          res.data.prctInfoCjgtAgrYn === "Y"
-                        ) {
-                          if (res.data.prctLicenseYn === "Y") {
-                            this.$router.replace("userPage"); // userPage
-                          } else {
-                            this.$router.replace("certification"); // certification
-                          }
-                        } else {
-                          this.$router.replace("provision");
-                        }
-                      } else {
-                        Dialog.alert({
-                          message: "반납이후에는 다시 이용하실 수 없습니다.",
-                          confirmButtonText: "확인"
-                        });
-                      }
-                    });
-                }
-              } else {
-                this.alert1 = true;
-              }
-            })
-            .catch(err => {
-              console.log(err);
-              Dialog.alert({
-                message: "예약된 정보를 확인해주세요",
-                confirmButtonText: "확인"
-              });
-            });
+          this.axiosLogin();
         } else {
           Dialog.alert({
             message: "올바른 전화번호를 입력하세요.",
@@ -362,6 +181,89 @@ export default {
           confirmButtonText: "확인"
         });
       }
+    },
+    axiosLogin() {
+      const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
+      const userInfo = {
+        userName: this.username,
+        phone: phoneNumber,
+        // tsrdPrctNo: this.$store.state.userInfo.bookNumber
+        tsrdPrctNo: this.param
+      };
+      this.$axios
+        .post("https://hyundai-driving.mocean.com/mobile/login.do", userInfo)
+        .then(res => {
+          if (res.data.infoResponse.rsp_CD === "200") {
+            localStorage.setItem("userInfo", JSON.stringify(res.data));
+            this.axiosGetUserInfoById(res);
+          } else {
+            this.alert1 = true;
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          Dialog.alert({
+            message: "예약된 정보를 확인해주세요",
+            confirmButtonText: "확인"
+          });
+        });
+    },
+
+    axiosGetUserInfoById(data) {
+      const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
+      const userInfo = {
+        userName: this.username,
+        phone: phoneNumber,
+        // tsrdPrctNo: this.$store.state.userInfo.bookNumber
+        tsrdPrctNo: this.param
+      };
+      const payload = {
+        resData: data.data,
+        booking: userInfo.tsrdPrctNo
+      };
+      this.$store.state.auth = true;
+      this.$store.commit("userInfoSetting", payload);
+      const userCheckObj = {
+        tsrdPrctNo: this.$store.state.userInfo.bookNumber
+      };
+      this.$axios
+        .post(
+          "https://hyundai-driving.mocean.com/mobile/getUserInfoById.do", // updateOriginUserInfo
+          userCheckObj
+        )
+        .then(res => {
+          // 세션저장
+          // localStorage.setItem("userInfo", JSON.stringify(userInfo));
+          this.$store.commit("sessionEnd");
+          this.$store.state.userName = this.username;
+          this.$store.state.userNumber = phoneNumber;
+
+          if (res.data.returnYn === "N") {
+            if (
+              res.data.prctInfoAgrYn === "Y" &&
+              res.data.prctInfoCjgtAgrYn === "Y" &&
+              res.data.procInfoLocCamYn === "Y"
+            ) {
+              if (res.data.prctLicenseYn === "Y") {
+                // 동승자냐
+                if ("chanTsrdPrctNo" in data.data.DisplayResponse[0]) {
+                  this.$router.replace("fellowPage");
+                } else {
+                  this.$router.replace("userPage"); // userPage
+                }
+              } else {
+                this.$router.replace("certification"); // certification
+              }
+            } else {
+              this.$router.replace("provision");
+            }
+          } else {
+            Dialog.alert({
+              message: "반납이후에는 다시 이용하실 수 없습니다.",
+              confirmButtonText: "확인"
+            });
+          }
+        });
     },
 
     nextInput() {

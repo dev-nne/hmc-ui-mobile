@@ -270,9 +270,10 @@ export default {
       this.$store.commit("sessionEnd");
       let userChecking = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
-        prctInfoAgrYn: this.checked_1 === true ? "Y" : "N",
+        procInfoLocCamYn: this.checked_1 === true ? "Y" : "N",
         prctInfoCjgtAgrYn: this.checked_2 === true ? "Y" : "N",
-        prctMarketingYn: this.checked_3 === true ? "Y" : "N",
+        prctInfoAgrYn: this.checked_3 === true ? "Y" : "N",
+        prctMarketingYn: this.checked_4 === true ? "Y" : "N",
         signImg: ""
       };
 

@@ -196,9 +196,18 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
-    // if (localStorage.getItem("userInfo") !== null) {
-    //   this.$router.push("returnPage");
-    // }
+    this.$nextTick(() => {
+      if (localStorage.getItem("userInfo") !== null) {
+        let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        let bookingId = localStorage.getItem("bookingId");
+        const payload = {
+          resData: userInfo,
+          booking: bookingId
+        };
+        this.$store.commit("userInfoSetting", payload);
+        //   this.$router.push("returnPage");
+      }
+    });
     // this.timer();
     // this.getLocation();
     // this.getPopCloseLocalNum();
@@ -616,31 +625,6 @@ export default {
       this.$store.commit("sessionEnd");
     },
     timer() {
-<<<<<<< HEAD
-      let bookT = this.$store.state.userInfo.bookTime;
-      let returnT = bookT.split("-")[1];
-      let returnH = parseInt(returnT.split(":")[0]);
-      let returnM = parseInt(returnT.split(":")[1]);
-      const date = new Date();
-
-      setTimeout(() => {
-        if (date.getHours() === returnH && date.getMinutes() === returnM) {
-          Dialog.alert({
-            message: "반납시간이 다 되었습니다. 30분 후에 운행이 종료됩니다.",
-            confirmButtonText: "확인"
-          });
-        }
-        if (date.getHours() === returnH && date.getMinutes() === returnM + 30) {
-          Dialog.alert({
-            message: "운행이 종료됩니다. 라운지에 문의해주세요.",
-            confirmButtonText: "확인"
-          });
-          localStorage.removeItem("userInfo");
-          this.$router.replace("returnPage");
-        }
-        this.timer();
-      }, 60000);
-=======
       // let bookT = this.$store.state.userInfo.bookTime;
       // let returnT = bookT.split("-")[1];
       // let returnH = parseInt(returnT.split(":")[0]);
@@ -663,7 +647,6 @@ export default {
       //   }
       //   this.timer();
       // }, 60000);
->>>>>>> 14975519b287fcbe53be07e346f757d5482339df
     },
     checkReturn(obj, key) {
       let bool = obj.hasOwnProperty(key);
