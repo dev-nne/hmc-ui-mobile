@@ -208,7 +208,7 @@ export default {
     };
     this.$store.commit("userInfoSetting", payload);
     this.userInfo = this.$store.state.userInfo;
-    this.getLocation();
+    // this.getLocation();
   },
   computed: {
     checkDoorOpen() {
@@ -312,7 +312,7 @@ export default {
   },
   methods: {
     posCheck(type) {
-      this.getLocation();
+      // this.getLocation();
       let longitude, latitude;
 
       if (type === "return") {
@@ -337,22 +337,24 @@ export default {
         )
         .then(res => {
           this.loading = false;
+          if (type === "open") this.confirm1();
+          if (type === "close") this.confirm2();
+          if (type === "horn") this.confirm3();
+
           if (res.data.resultMap.distance < 300) {
-            if (type === "open") this.confirm1();
-            if (type === "close") this.confirm2();
-            if (type === "horn") this.confirm3();
             if (type === "return") this.returnObj();
           } else {
             let alertMessage = "";
             if (type === "return") {
               alertMessage = "차량을 대여한 곳에 주차후 반납해주세요.";
-            } else {
-              alertMessage = "차량 멀리 떨어져 있습니다.";
+              Dialog.alert({
+                message: alertMessage,
+                confirmButtonText: "확인"
+              });
             }
-            Dialog.alert({
-              message: alertMessage,
-              confirmButtonText: "확인"
-            });
+            // else {
+            //   alertMessage = "차량 멀리 떨어져 있습니다.";
+            // }
           }
         })
         .catch(() => {
