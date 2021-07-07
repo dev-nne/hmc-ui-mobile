@@ -219,16 +219,16 @@ const handleDoorClose = (state, res) => {
   }
 };
 const sessionEnd = state => {
-  let sesstionTime = Number(localStorage.getItem("expireTime"));
+  let sesstionTime = Number(sessionStorage.getItem("expireTime"));
   if (new Date().getTime() > sesstionTime && sesstionTime !== 0) {
     localStorage.removeItem("userInfo");
-    localStorage.removeItem("expireTime");
+    sessionStorage.removeItem("expireTime");
     localStorage.removeItem("site");
     state.sessionEnd = true;
     console.log(state.sessionEnd);
   }
   if (!state.sessionEnd) {
-    localStorage.setItem("expireTime", new Date().getTime() + 60 * 60 * 1000);
+    sessionStorage.setItem("expireTime", new Date().getTime() + 60 * 60 * 1000);
   }
 };
 
