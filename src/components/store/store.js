@@ -22,6 +22,7 @@ export const store = new Vuex.Store({
       carNumber: "",
       bookDay: "",
       bookTime: "",
+      bookTimeStr: "",
       address: "",
       spaceNumber: "",
       fellowNum: "",

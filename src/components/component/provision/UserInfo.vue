@@ -3,7 +3,7 @@
     <div class="userInfo-box">
       <div class="userInfo-box-title">시승 일정</div>
       <div class="userInfo-box-time">
-        {{ `${this.userInfo.bookDay} ${this.userInfo.bookTime}` }}
+        {{ `${this.userInfo.bookDay} ${this.userInfo.bookTimeStr}` }}
       </div>
       <div class="userInfo-box-ment">
         ※ 시승차 정비,이동시간 등이 모두 포함된 시간으로 실제 시승 가능 시간은
