@@ -57,7 +57,7 @@ const userInfoSetting = (state, data) => {
     )}일 `,
     bookTime: info.tsrdTim,
     bookTimeStr:
-      lastTimeArr[0] + "-" + pastDate.getHours() + ":" + pastDate.getMinutes(),
+      tsrdTimArr[0] + "-" + pastDate.getHours() + ":" + pastDate.getMinutes(),
     address: info.tsrdAdr,
     spaceNumber: info.tsrdTn,
     fellowNum: info.chanTsrdPrctNo,
@@ -164,13 +164,13 @@ const handleDoorClose = (state, res) => {
                 case "OK":
                   state.doorClose = true;
                   state.doorCloseChecked = true;
-                  axios.post(
-                    "https://hyundai-driving.mocean.com/controls/controls/immobilizer.do",
-                    {
-                      tsrdPrctNo: this.$store.userInfo.bookNumber,
-                      action: "lock"
-                    }
-                  );
+                  // axios.post(
+                  //   "https://hyundai-driving.mocean.com/controls/controls/immobilizer.do",
+                  //   {
+                  //     tsrdPrctNo: this.$store.userInfo.bookNumber,
+                  //     action: "lock"
+                  //   }
+                  // );
                   break;
                 case "IGN_ON":
                   state.checkcarMsg =
