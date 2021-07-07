@@ -28,6 +28,7 @@ const userInfoSetting = (state, data) => {
   });
   let info = bookingData[0];
   let carNick = info.tsrdCar.split("/");
+  console.log(info);
 
   const date = info.tsrdPrctYmd;
 

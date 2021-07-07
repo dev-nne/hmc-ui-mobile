@@ -191,10 +191,7 @@ export default {
       drawingCode: ""
     };
   },
-  created() {},
-  mounted() {
-    window.scrollTo(0, 0);
-    this.$store.commit("sessionReload");
+  created() {
     // store 정보저장하기
     let userInfo = JSON.parse(localStorage.getItem("userInfo"));
     let bookingId = localStorage.getItem("bookingId");
@@ -204,6 +201,11 @@ export default {
       booking: bookingId
     };
     this.$store.commit("userInfoSetting", payload);
+  },
+  mounted() {
+    window.scrollTo(0, 0);
+    window.removeEventListener("touchmove", this.touchWindows);
+    this.$store.commit("sessionReload");
   },
   computed: {
     sessionEnd() {

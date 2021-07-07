@@ -68,29 +68,22 @@ export default {
     };
   },
   mounted() {
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    let bookingId = localStorage.getItem("bookingId");
-
-    const payload = {
-      resData: userInfo,
-      booking: bookingId
-    };
-    this.$store.commit("userInfoSetting", payload);
     const centerName = this.userInfo.centerName;
     this.userInfo = this.$store.state.userInfo;
     this.$refs.callNum.href = `tel:${this.userInfo.spaceNumber}`;
     this.$axios
       .get("static/parkingAddress.json")
       .then(res => {
-        this.centerName = res.data[centerName];
-        this.$store.state.latitude = res.data[centerName].latitude;
-        this.$store.state.longitude = res.data[centerName].longitude;
         if (
           this.centerName === undefined ||
           this.centerName === "" ||
           this.centerName === null
         ) {
           this.showPark = true;
+        } else {
+          this.centerName = res.data[centerName];
+          this.$store.state.latitude = res.data[centerName].latitude;
+          this.$store.state.longitude = res.data[centerName].longitude;
         }
       })
       .catch(err => console.log(err));

@@ -15,6 +15,8 @@
           pattern="[^ㄱ-힣a-zA-Z]*"
           ref="nameInput"
           @keydown="keyCodeEvent"
+          @focus="inputFocus"
+          @blur="inputBlur"
         />
         <!-- @keydown="checkKorean" -->
         <div class="inputBox">
@@ -30,6 +32,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput"
             @keydown="fullText(3)"
+            @focus="inputFocus"
+            @blur="inputBlur"
           />
           <div class="line"></div>
           <input
@@ -44,6 +48,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput2"
             @keydown="fullText(4)"
+            @focus="inputFocus"
+            @blur="inputBlur"
           />
           <div class="line"></div>
           <input
@@ -58,6 +64,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="checkNumber"
             @keydown="fullText(4)"
+            @focus="inputFocus"
+            @blur="inputBlur"
           />
         </div>
 
@@ -76,8 +84,7 @@
     </div>
 
     <div class="login-bottom">
-      <FooterBar />
-      <!-- :class="{ focusOn }" -->
+      <FooterBar :class="{ focusOn }" />
     </div>
   </div>
 </template>
@@ -122,17 +129,28 @@ export default {
       // alert2: false,
       // alert3: false,
       param: "",
-      data: ""
+      data: "",
+      focusOn: false
     };
   },
 
   mounted() {
-    this.param = this.$route.query.id;
+    let query = this.$route.query.id;
+    this.param = query;
     let resId = localStorage.getItem("bookingId");
-    if (resId === this.param || resId === null) {
-      localStorage.setItem("bookingId", this.param);
-      let login = localStorage.getItem("site");
-      if (login === null) {
+
+    console.log(query);
+    if (
+      resId === this.param ||
+      resId === null ||
+      resId === "undefined" ||
+      query === undefined
+    ) {
+      if (this.param !== undefined) {
+        localStorage.setItem("bookingId", this.param);
+      }
+      let site = localStorage.getItem("site");
+      if (site === null) {
         this.$router
           .push({
             path: "login",
@@ -141,10 +159,19 @@ export default {
           .catch(() => {});
       } else {
         this.$store.commit("sessionReload");
+        let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+        let bookingId = localStorage.getItem("bookingId");
+
+        const payload = {
+          resData: userInfo,
+          booking: bookingId
+        };
+        this.$store.commit("userInfoSetting", payload);
       }
     } else {
       localStorage.removeItem("userInfo");
       localStorage.setItem("bookingId", this.param);
+      console.log("뒤로가기노노");
     }
     this.CreateWindowEvent();
     // this.getLocation();
@@ -359,6 +386,14 @@ export default {
     },
     removeWindowEvent() {
       window.removeEventListener("touchmove", this.touchWindows);
+    },
+    inputFocus() {
+      this.focusOn = true;
+    },
+    inputBlur() {
+      setTimeout(() => {
+        this.focusOn = false;
+      }, 100);
     }
     // getLocation() {
     //   navigator.geolocation.getCurrentPosition(
@@ -383,9 +418,6 @@ export default {
 </script>
 <style>
 .focusOn {
-  position: relative;
-  overflow: hidden;
-  width: 100%;
-  height: 100vh;
+  display: none !important;
 }
 </style>

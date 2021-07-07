@@ -72,6 +72,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput"
                 @keydown="fullText(2)"
+                @focus="inputFocus"
+                @blur="inputBlur"
               />
               <div class="line"></div>
               <input
@@ -85,6 +87,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput2"
                 @keydown="fullText(6)"
+                @focus="inputFocus"
+                @blur="inputBlur"
               />
               <div class="line"></div>
               <input
@@ -98,6 +102,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="checkNumber"
                 @keydown="fullText(2)"
+                @focus="inputFocus"
+                @blur="inputBlur"
               />
             </div>
           </div>
@@ -134,7 +140,7 @@
     </div>
 
     <div class="cert-bottom">
-      <FooterBar />
+      <FooterBar :class="{ focusOn }" />
     </div>
   </div>
 </template>
@@ -211,7 +217,8 @@ export default {
       keyValue3: "",
       validate1: false,
       validate2: false,
-      validate3: false
+      validate3: false,
+      focusOn: false
     };
   },
   created() {
@@ -480,7 +487,20 @@ export default {
     },
     removeWindowEvent() {
       window.removeEventListener("touchmove", this.touchWindows);
+    },
+    inputFocus() {
+      this.focusOn = true;
+    },
+    inputBlur() {
+      setTimeout(() => {
+        this.focusOn = false;
+      }, 100);
     }
   }
 };
 </script>
+<style>
+.focusOn {
+  display: none !important;
+}
+</style>
