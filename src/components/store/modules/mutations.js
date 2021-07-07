@@ -43,7 +43,8 @@ const userInfoSetting = (state, data) => {
     bookTime: info.tsrdTim,
     address: info.tsrdAdr,
     spaceNumber: info.tsrdTn,
-    fellowNum: info.chanTsrdPrctNo
+    fellowNum: info.chanTsrdPrctNo,
+    getDate: info.tsrdPrctYmd
   });
 };
 

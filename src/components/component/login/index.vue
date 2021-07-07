@@ -200,8 +200,39 @@ export default {
         .post("https://hyundai-driving.mocean.com/mobile/login.do", userInfo)
         .then(res => {
           if (res.data.infoResponse.rsp_CD === "200") {
+            const userInfo = {
+              userName: this.username,
+              phone: phoneNumber,
+              tsrdPrctNo: this.param
+            };
+            const payload = {
+              resData: res.data,
+              booking: userInfo.tsrdPrctNo
+            };
+            this.$store.state.auth = true;
+            this.$store.commit("userInfoSetting", payload);
+
             localStorage.setItem("userInfo", JSON.stringify(res.data));
-            this.axiosGetUserInfoById(res);
+            // 예약시간 마지막 부분과 현재시간을 비교해서 예약시간이 지났으면...
+            let curTime = new Date();
+            let date = this.$store.state.userInfo.getDate;
+            let time = this.$store.state.userInfo.bookTime;
+            let timeSplit = time.split("-")[1];
+            let pastTime = new Date(
+              date.slice(0, 4),
+              Number(date.slice(4, 6)) - 1,
+              date.slice(6, 8),
+              timeSplit.split(":")[0],
+              timeSplit.split(":")[1]
+            );
+            if (curTime.getTime() > pastTime.getTime()) {
+              Dialog.alert({
+                message: "예약시간 이후에는 이용하실 수 없습니다.",
+                confirmButtonText: "확인"
+              });
+            } else {
+              this.axiosGetUserInfoById(res);
+            }
           } else {
             this.alert1 = true;
           }
@@ -217,18 +248,7 @@ export default {
 
     axiosGetUserInfoById(data) {
       const phoneNumber = `${this.phoneNum1}-${this.phoneNum2}-${this.phoneNum3}`;
-      const userInfo = {
-        userName: this.username,
-        phone: phoneNumber,
-        // tsrdPrctNo: this.$store.state.userInfo.bookNumber
-        tsrdPrctNo: this.param
-      };
-      const payload = {
-        resData: data.data,
-        booking: userInfo.tsrdPrctNo
-      };
-      this.$store.state.auth = true;
-      this.$store.commit("userInfoSetting", payload);
+
       const userCheckObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber
       };
