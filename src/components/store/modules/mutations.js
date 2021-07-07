@@ -30,6 +30,21 @@ const userInfoSetting = (state, data) => {
   let carNick = info.tsrdCar.split("/");
 
   const date = info.tsrdPrctYmd;
+
+  let tsrdPrctYmd = date;
+  let tsrdTim = info.tsrdTim;
+  let tsrdTimArr = tsrdTim.split("-");
+  let lastTimeStr = tsrdTimArr[1];
+  let lastTimeArr = lastTimeStr.split(":");
+  let bookDate = new Date(
+    tsrdPrctYmd.substr(0, 4),
+    tsrdPrctYmd.substr(4, 2),
+    tsrdPrctYmd.substr(6, 2),
+    lastTimeArr[0],
+    lastTimeArr[1]
+  );
+  var pastDate = new Date(bookDate.getTime() - 30 * 60 * 1000);
+
   return (state.userInfo = {
     bookNumber: info.tsrdPrctNo,
     centerName: info.tsrdCtrNm,
@@ -41,6 +56,8 @@ const userInfoSetting = (state, data) => {
       2
     )}일 `,
     bookTime: info.tsrdTim,
+    bookTimeStr:
+      lastTimeArr[0] + "-" + pastDate.getHours() + ":" + pastDate.getMinutes(),
     address: info.tsrdAdr,
     spaceNumber: info.tsrdTn,
     fellowNum: info.chanTsrdPrctNo

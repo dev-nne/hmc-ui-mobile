@@ -312,6 +312,7 @@ export default {
   },
   methods: {
     posCheck(type) {
+      this.getLocation();
       let longitude, latitude;
 
       if (type === "return") {
