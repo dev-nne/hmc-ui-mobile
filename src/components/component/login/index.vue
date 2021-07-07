@@ -15,8 +15,8 @@
           pattern="[^ㄱ-힣a-zA-Z]*"
           ref="nameInput"
           @keydown="keyCodeEvent"
-          @focus="inputFocus"
           @blur="inputBlur"
+          @focus="inputFocus"
         />
         <!-- @keydown="checkKorean" -->
         <div class="inputBox">
@@ -32,8 +32,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput"
             @keydown="fullText(3)"
-            @focus="inputFocus"
             @blur="inputBlur"
+            @focus="inputFocus"
           />
           <div class="line"></div>
           <input
@@ -48,8 +48,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="nextInput2"
             @keydown="fullText(4)"
-            @focus="inputFocus"
             @blur="inputBlur"
+            @focus="inputFocus"
           />
           <div class="line"></div>
           <input
@@ -64,8 +64,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
             @keyup="checkNumber"
             @keydown="fullText(4)"
-            @focus="inputFocus"
             @blur="inputBlur"
+            @focus="inputFocus"
           />
         </div>
 
@@ -139,7 +139,6 @@ export default {
     this.param = query;
     let resId = localStorage.getItem("bookingId");
 
-    console.log(query);
     if (
       resId === this.param ||
       resId === null ||
@@ -171,10 +170,8 @@ export default {
     } else {
       localStorage.removeItem("userInfo");
       localStorage.setItem("bookingId", this.param);
-      console.log("뒤로가기노노");
     }
     this.CreateWindowEvent();
-    // this.getLocation();
   },
   computed: {
     sessionEnd() {
@@ -288,6 +285,7 @@ export default {
           // 세션저장
           // localStorage.setItem("userInfo", JSON.stringify(userInfo));
           this.$store.commit("sessionEnd");
+
           this.$store.state.userName = this.username;
           this.$store.state.userNumber = phoneNumber;
           this.removeWindowEvent();
@@ -373,27 +371,48 @@ export default {
 
     touchWindows() {
       event.stopPropagation();
-      let e = event.target.className;
-      if (e !== "input") {
+      let e = event.target.className.indexOf("input");
+
+      if (e === -1) {
         this.$refs.nameInput.blur();
         this.$refs.input.blur();
         this.$refs.input2.blur();
         this.$refs.input3.blur();
+        setTimeout(() => {
+          this.focusOn = false;
+        }, 100);
       }
+      this.inputBlur();
+    },
+    moveWindows() {
+      event.stopPropagation();
+
+      this.$refs.nameInput.blur();
+      this.$refs.input.blur();
+      this.$refs.input2.blur();
+      this.$refs.input3.blur();
+      setTimeout(() => {
+        this.focusOn = false;
+      }, 100);
     },
     CreateWindowEvent() {
-      window.addEventListener("touchmove", this.touchWindows);
+      window.addEventListener("touchstart", this.touchWindows);
+      window.addEventListener("touchmove", this.moveWindows);
     },
     removeWindowEvent() {
-      window.removeEventListener("touchmove", this.touchWindows);
+      window.removeEventListener("touchstart", this.touchWindows);
+      window.removeEventListener("touchmove", this.moveWindows);
     },
     inputFocus() {
       this.focusOn = true;
     },
     inputBlur() {
-      setTimeout(() => {
-        this.focusOn = false;
-      }, 100);
+      let e = event.target.className.indexOf("input");
+      if (e === -1) {
+        setTimeout(() => {
+          this.focusOn = false;
+        }, 100);
+      }
     }
     // getLocation() {
     //   navigator.geolocation.getCurrentPosition(

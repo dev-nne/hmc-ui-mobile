@@ -45,7 +45,12 @@
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup1" />
-              <van-popup v-model="show1" closeable class="consent-popup"
+              <van-popup
+                v-model="show1"
+                closeable
+                @click-close-icon="closePop1"
+                class="consent-popup"
+                :close-on-click-overlay="false"
                 ><Consent @sentToAgreement="getAgreement1"
               /></van-popup>
             </div>
@@ -67,7 +72,11 @@
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup2" />
-              <van-popup v-model="show2" closeable class="consent-popup"
+              <van-popup
+                v-model="show2"
+                closeable
+                @click-close-icon="closePop2"
+                class="consent-popup"
                 ><Consent2 @sentToAgreement="getAgreement2"
               /></van-popup>
             </div>
@@ -89,7 +98,11 @@
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup3" />
-              <van-popup v-model="show3" closeable class="consent-popup"
+              <van-popup
+                v-model="show3"
+                closeable
+                @click-close-icon="closePop3"
+                class="consent-popup"
                 ><Consent3 @sentToAgreement="getAgreement3"
               /></van-popup>
             </div>
@@ -113,7 +126,11 @@
                 </div>
               </div>
               <van-icon name="arrow" class="goProv" @click="showPopup4" />
-              <van-popup v-model="show4" closeable class="consent-popup"
+              <van-popup
+                v-model="show4"
+                closeable
+                @click-close-icon="closePop4"
+                class="consent-popup"
                 ><Consent4 @sentToAgreement="getAgreement4"
               /></van-popup>
             </div>
@@ -191,21 +208,13 @@ export default {
       drawingCode: ""
     };
   },
-  created() {
-    // store 정보저장하기
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    let bookingId = localStorage.getItem("bookingId");
-
-    const payload = {
-      resData: userInfo,
-      booking: bookingId
-    };
-    this.$store.commit("userInfoSetting", payload);
-  },
   mounted() {
+    this.$store.commit("timeOutFun");
     window.scrollTo(0, 0);
-    window.removeEventListener("touchmove", this.touchWindows);
+    window.removeEventListener("touchstart", this.touchWindows);
+    window.removeEventListener("touchmove", this.moveWindows);
     this.$store.commit("sessionReload");
+    this.$store.commit("timeOutFun");
   },
   computed: {
     sessionEnd() {
@@ -229,6 +238,7 @@ export default {
   methods: {
     toggle(name) {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       if (name === "a") {
         !this.checked_1 ? (this.checked_1 = true) : (this.checked_1 = false);
         this.$refs.checkbox_1.toggle(this.checked_1);
@@ -285,6 +295,7 @@ export default {
     // },
     sendFormAndMove() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       let userChecking = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber, // 임시
         procInfoLocCamYn: this.checked_1 === true ? "Y" : "N",
@@ -325,29 +336,34 @@ export default {
     },
     showPopup1() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show1 = true;
     },
     showPopup2() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show2 = true;
     },
     showPopup3() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show3 = true;
     },
     showPopup4() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show4 = true;
     },
     getAgreement1() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show1 = false;
       this.checked_1 = true;
       this.$refs.checkbox_1.toggle(true);
-      this.toggle();
     },
     getAgreement2() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show2 = false;
       this.checked_2 = true;
       this.$refs.checkbox_2.toggle(true);
@@ -355,6 +371,7 @@ export default {
     },
     getAgreement3() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show3 = false;
       this.checked_3 = true;
       this.$refs.checkbox_3.toggle(true);
@@ -362,6 +379,7 @@ export default {
     },
     getAgreement4() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show4 = false;
       this.checked_4 = true;
       this.$refs.checkbox_4.toggle(true);
@@ -370,6 +388,23 @@ export default {
     drawingTrue(v) {
       this.drawing = v;
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
+    },
+    closePop1() {
+      this.checked_1 = false;
+      this.$refs.checkbox_1.toggle(false);
+    },
+    closePop2() {
+      this.checked_2 = false;
+      this.$refs.checkbox_2.toggle(false);
+    },
+    closePop3() {
+      this.checked_3 = false;
+      this.$refs.checkbox_3.toggle(false);
+    },
+    closePop4() {
+      this.checked_4 = false;
+      this.$refs.checkbox_4.toggle(false);
     }
   }
 };

@@ -72,8 +72,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput"
                 @keydown="fullText(2)"
-                @focus="inputFocus"
                 @blur="inputBlur"
+                @focus="inputFocus"
               />
               <div class="line"></div>
               <input
@@ -87,8 +87,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="nextInput2"
                 @keydown="fullText(6)"
-                @focus="inputFocus"
                 @blur="inputBlur"
+                @focus="inputFocus"
               />
               <div class="line"></div>
               <input
@@ -102,8 +102,8 @@
               this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                 @keyup="checkNumber"
                 @keydown="fullText(2)"
-                @focus="inputFocus"
                 @blur="inputBlur"
+                @focus="inputFocus"
               />
             </div>
           </div>
@@ -253,6 +253,7 @@ export default {
   methods: {
     showPop() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show = true;
     },
     parents(data) {
@@ -269,6 +270,7 @@ export default {
     },
     sendFormAndMove() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       let keyvalue = this.keyValue1 + this.keyValue2 + this.keyValue3;
       if (this.checked !== "") {
         if (this.validate1) {
@@ -430,6 +432,7 @@ export default {
     },
     onConfirm(value) {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       let v = value.replace(/[^0-9]/g, "");
       this.value = v;
       this.showPicker = false;
@@ -475,26 +478,44 @@ export default {
     },
     touchWindows() {
       event.stopPropagation();
-      let e = event.target.className;
-      if (e !== "input") {
+      let e = event.target.className.indexOf("input");
+      if (e === -1) {
         this.$refs.input.blur();
         this.$refs.input2.blur();
         this.$refs.input3.blur();
+        setTimeout(() => {
+          this.focusOn = false;
+        }, 100);
       }
     },
+    moveWindows() {
+      event.stopPropagation();
+
+      this.$refs.input.blur();
+      this.$refs.input2.blur();
+      this.$refs.input3.blur();
+      setTimeout(() => {
+        this.focusOn = false;
+      }, 100);
+    },
     CreateWindowEvent() {
-      window.addEventListener("touchmove", this.touchWindows);
+      window.addEventListener("touchstart", this.touchWindows);
+      window.addEventListener("touchmove", this.moveWindows);
     },
     removeWindowEvent() {
-      window.removeEventListener("touchmove", this.touchWindows);
+      window.removeEventListener("touchstart", this.touchWindows);
+      window.removeEventListener("touchmove", this.moveWindows);
     },
     inputFocus() {
       this.focusOn = true;
     },
     inputBlur() {
-      setTimeout(() => {
-        this.focusOn = false;
-      }, 100);
+      let e = event.target.className.indexOf("input");
+      if (e === -1) {
+        setTimeout(() => {
+          this.focusOn = false;
+        }, 100);
+      }
     }
   }
 };

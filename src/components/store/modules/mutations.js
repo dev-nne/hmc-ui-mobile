@@ -1,10 +1,30 @@
 import { router } from "@/router";
 import axios from "axios";
 
+const timeOutFun = state => {
+  let curTime = new Date();
+  let date = state.userInfo.getDate;
+  let time = state.userInfo.bookTime;
+  let timeSplit = time.split("-")[1];
+  let pastTime = new Date(
+    date.slice(0, 4),
+    Number(date.slice(4, 6)) - 1,
+    date.slice(6, 8),
+    timeSplit.split(":")[0],
+    timeSplit.split(":")[1]
+  );
+  if (curTime.getTime() > pastTime.getTime()) {
+    localStorage.removeItem("userInfo");
+    sessionStorage.removeItem("expireTime");
+    localStorage.removeItem("site");
+    router.replace("/login").catch(() => {});
+  }
+};
+
 const sessionReload = state => {
   let savedUserInfo = localStorage.getItem("site");
   if (savedUserInfo === "provision") {
-    router.replace("provision").catch(() => {});
+    router.replace("/provision").catch(() => {});
   } else if (savedUserInfo === "certification") {
     router.replace("/certification").catch(() => {});
   } else if (savedUserInfo === "userPage") {
@@ -28,7 +48,6 @@ const userInfoSetting = (state, data) => {
   });
   let info = bookingData[0];
   let carNick = info.tsrdCar.split("/");
-  console.log(info);
 
   const date = info.tsrdPrctYmd;
 
@@ -227,7 +246,6 @@ const sessionEnd = state => {
     sessionStorage.removeItem("expireTime");
     localStorage.removeItem("site");
     state.sessionEnd = true;
-    console.log(state.sessionEnd);
   }
   if (!state.sessionEnd) {
     sessionStorage.setItem("expireTime", new Date().getTime() + 60 * 60 * 1000);
@@ -309,5 +327,6 @@ export {
   handleLightOnOff,
   sessionEnd,
   sessionSavedPage,
-  sessionReload
+  sessionReload,
+  timeOutFun
 };

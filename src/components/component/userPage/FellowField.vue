@@ -1,6 +1,6 @@
 <template>
   <div class="fel">
-    <div class="fel-title">[동승자 정보 입력]</div>
+    <div class="fel-title">[운전자 정보 입력]</div>
 
     <van-form>
       <div class="nameInput">
@@ -102,8 +102,7 @@ export default {
     };
   },
   mounted() {
-    this.$store.commit("sessionReload");
-    this.$store.commit("getUserInfoLocalStorage");
+    this.$store.commit("timeOutFun");
   },
   computed: {
     sessionEnd() {
@@ -157,6 +156,7 @@ export default {
               fellowInfo
             )
             .then(res => {
+              console.log(res.data.infoResponse.rsp_CD);
               if (res.data.infoResponse.rsp_CD === "200") {
                 this.$store.commit("felloInfoSetting", res.data);
                 Dialog.alert({

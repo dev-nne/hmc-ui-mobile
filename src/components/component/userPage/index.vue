@@ -131,7 +131,7 @@
       </van-popup>
 
       <div class="user-main-fellow" @click="fellowAdd">
-        동승자 교대 시승하기
+        운전자 교대 시승하기
       </div>
 
       <van-popup
@@ -196,17 +196,18 @@ export default {
   },
   mounted() {
     window.scrollTo(0, 0);
+    this.$store.commit("timeOutFun");
     this.$store.commit("sessionReload");
     // store 정보저장하기
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    // let userInfo = JSON.parse(localStorage.getItem("userInfo"));
 
-    let bookingId = localStorage.getItem("bookingId");
+    // let bookingId = localStorage.getItem("bookingId");
 
-    const payload = {
-      resData: userInfo,
-      booking: bookingId
-    };
-    this.$store.commit("userInfoSetting", payload);
+    // const payload = {
+    //   resData: userInfo,
+    //   booking: bookingId
+    // };
+    // this.$store.commit("userInfoSetting", payload);
     this.userInfo = this.$store.state.userInfo;
     // this.getLocation();
   },
@@ -396,6 +397,7 @@ export default {
     },
     confirm1() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show = [...false];
 
       let doorObj = {
@@ -410,6 +412,7 @@ export default {
     },
     confirm2() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show = [...false];
 
       let doorObj = {
@@ -424,6 +427,7 @@ export default {
     },
     confirm3() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show = [...false];
       let hornObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
@@ -436,6 +440,7 @@ export default {
     },
     clickCarReturn() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       let returnObj = {
         tsrdPrctNo: this.$store.state.userInfo.bookNumber // 임시
       };
@@ -601,20 +606,24 @@ export default {
     },
     handlePopup(x) {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.show = [...this.show];
       this.show[x] = true;
     },
     cancel(x) {
       this.show = [...false];
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
     },
     fellowAdd() {
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
       this.fellow = true;
     },
     canclePop(v) {
       this.fellow = v;
       this.$store.commit("sessionEnd");
+      this.$store.commit("timeOutFun");
     },
     checkReturn(obj, key) {
       let bool = obj.hasOwnProperty(key);
