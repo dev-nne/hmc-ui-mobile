@@ -83,9 +83,7 @@
       </div>
     </div>
 
-    <div class="login-bottom">
-      <FooterBar :class="{ focusOn }" />
-    </div>
+    <FooterBar :class="{ focusOn }" />
   </div>
 </template>
 
@@ -404,7 +402,7 @@ export default {
       window.removeEventListener("touchmove", this.moveWindows);
     },
     inputFocus() {
-      this.focusOn = true;
+      // this.focusOn = true;
     },
     inputBlur() {
       let e = event.target.className.indexOf("input");
@@ -436,6 +434,12 @@ export default {
 };
 </script>
 <style>
+.login-bottom {
+  position: fixed;
+  height: 100px;
+  width: 100%;
+  bottom: 0;
+}
 .focusOn {
   display: none !important;
 }
