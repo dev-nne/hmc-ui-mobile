@@ -16,7 +16,6 @@
           ref="nameInput"
           @keydown="keyCodeEvent"
           @blur="inputBlur"
-          @focus="inputFocus"
         />
         <!-- @keydown="checkKorean" -->
         <div class="inputBox">
@@ -33,7 +32,6 @@
             @keyup="nextInput"
             @keydown="fullText(3)"
             @blur="inputBlur"
-            @focus="inputFocus"
           />
           <div class="line"></div>
           <input
@@ -49,7 +47,6 @@
             @keyup="nextInput2"
             @keydown="fullText(4)"
             @blur="inputBlur"
-            @focus="inputFocus"
           />
           <div class="line"></div>
           <input
@@ -65,7 +62,6 @@
             @keyup="checkNumber"
             @keydown="fullText(4)"
             @blur="inputBlur"
-            @focus="inputFocus"
           />
         </div>
 
@@ -367,21 +363,6 @@ export default {
       this.inputTarget();
     },
 
-    touchWindows() {
-      event.stopPropagation();
-      let e = event.target.className.indexOf("input");
-
-      if (e === -1) {
-        this.$refs.nameInput.blur();
-        this.$refs.input.blur();
-        this.$refs.input2.blur();
-        this.$refs.input3.blur();
-        setTimeout(() => {
-          this.focusOn = false;
-        }, 100);
-      }
-      this.inputBlur();
-    },
     moveWindows() {
       event.stopPropagation();
 
@@ -389,29 +370,14 @@ export default {
       this.$refs.input.blur();
       this.$refs.input2.blur();
       this.$refs.input3.blur();
-      setTimeout(() => {
-        this.focusOn = false;
-      }, 100);
     },
     CreateWindowEvent() {
-      window.addEventListener("touchstart", this.touchWindows);
       window.addEventListener("touchmove", this.moveWindows);
     },
     removeWindowEvent() {
-      window.removeEventListener("touchstart", this.touchWindows);
       window.removeEventListener("touchmove", this.moveWindows);
-    },
-    inputFocus() {
-      // this.focusOn = true;
-    },
-    inputBlur() {
-      let e = event.target.className.indexOf("input");
-      if (e === -1) {
-        setTimeout(() => {
-          this.focusOn = false;
-        }, 100);
-      }
     }
+
     // getLocation() {
     //   navigator.geolocation.getCurrentPosition(
     //     position => {
