@@ -352,22 +352,21 @@ export default {
           if (type === "open") this.confirm1();
           if (type === "close") this.confirm2();
           if (type === "horn") this.confirm3();
-
-          if (res.data.resultMap.distance < 300) {
-            if (type === "return") this.returnObj();
-          } else {
-            let alertMessage = "";
-            if (type === "return") {
-              alertMessage = "차량을 대여한 곳에 주차후 반납해주세요.";
-              Dialog.alert({
-                message: alertMessage,
-                confirmButtonText: "확인"
-              });
-            }
-            // else {
-            //   alertMessage = "차량 멀리 떨어져 있습니다.";
-            // }
-          }
+          if (type === "return") this.clickCarReturn();
+          // if (res.data.resultMap.distance < 300) {
+          // } else {
+          //   let alertMessage = "";
+          //   if (type === "return") {
+          //     alertMessage = "차량을 대여한 곳에 주차후 반납해주세요.";
+          //     Dialog.alert({
+          //       message: alertMessage,
+          //       confirmButtonText: "확인"
+          //     });
+          //   }
+          // else {
+          //   alertMessage = "차량 멀리 떨어져 있습니다.";
+          // }
+          // }
         })
         .catch(() => {
           this.loading = false;
