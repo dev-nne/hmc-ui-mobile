@@ -194,6 +194,17 @@ export default {
       // popUpShow: false
     };
   },
+  created() {
+    // store 정보저장하기
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let bookingId = localStorage.getItem("bookingId");
+
+    const payload = {
+      resData: userInfo,
+      booking: bookingId
+    };
+    this.$store.commit("userInfoSetting", payload);
+  },
   mounted() {
     window.scrollTo(0, 0);
     this.$store.commit("timeOutFun");

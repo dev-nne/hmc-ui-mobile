@@ -6,9 +6,8 @@
         {{ `${this.userInfo.bookDay} ${this.userInfo.bookTimeStr}` }}
       </div>
       <div class="userInfo-box-ment">
-        ※ 시승차 정비,이동시간 등이 모두 포함된 시간으로 실제 시승 가능 시간은
-        30~40분입니다. 다음 고객님을 위해 “시승 종료 시간 30분 전 반납”
-        부탁드립니다.
+        ※ 차량 준비부터 시승 안내, 이동시간 등이 모두 포함된 시간으로 다른
+        고객님을 위해 시승시간 준수 부탁드립니다.
       </div>
     </div>
 
@@ -67,17 +66,7 @@ export default {
       showPark: false
     };
   },
-  created() {
-    // store 정보저장하기
-    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    let bookingId = localStorage.getItem("bookingId");
 
-    const payload = {
-      resData: userInfo,
-      booking: bookingId
-    };
-    this.$store.commit("userInfoSetting", payload);
-  },
   mounted() {
     const centerName = this.userInfo.centerName;
     this.userInfo = this.$store.state.userInfo;

@@ -208,6 +208,17 @@ export default {
       drawingCode: ""
     };
   },
+  created() {
+    // store 정보저장하기
+    let userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    let bookingId = localStorage.getItem("bookingId");
+
+    const payload = {
+      resData: userInfo,
+      booking: bookingId
+    };
+    this.$store.commit("userInfoSetting", payload);
+  },
   mounted() {
     this.$store.commit("timeOutFun");
     window.scrollTo(0, 0);
