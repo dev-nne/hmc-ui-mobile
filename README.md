@@ -17,5 +17,5 @@ npm run build
 
 ### 실행이미지
 
-<img src="https://user-images.githubusercontent.com/65656330/177089749-664d95ce-feba-4115-b62e-311aecb53546.png" />
+<img src="https://user-images.githubusercontent.com/65656330/177090358-fc3933b3-bb10-410b-b75b-9880897f6dbc.png" />
 
