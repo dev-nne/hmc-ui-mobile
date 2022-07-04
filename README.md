@@ -14,3 +14,7 @@ npm run dev
 # build for production with minification
 npm run build
 ```
+
+### 실행이미지
+
+<img src="user-images.githubusercontent.com/65656330/177088884-dc3b9944-84bc-4dbd-b911-e8550866aca8.png" width="200" />
