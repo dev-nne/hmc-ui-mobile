@@ -1,6 +1,6 @@
 # 현대자동차 비대면 시승 웹 어플리케이션
 
-> A Vue.js project
+> hyundai mobile non-face-to-face test drive services.
 
 ## Build Setup
 
@@ -13,19 +13,4 @@ npm run dev
 
 # build for production with minification
 npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-
-# run unit tests
-npm run unit
-
-# run e2e tests
-npm run e2e
-
-# run all tests
-npm test
 ```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
-"# hyundai-driving-webapp-ui" 
